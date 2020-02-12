@@ -10,6 +10,7 @@ class App extends Component {
   setBody = obj => {
     this.setState({ body: obj });
   };
+
   render() {
     return (
       <div style={{ backgroundColor: "white" }}>

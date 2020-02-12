@@ -6,6 +6,7 @@ class Login extends Component {
     return (
       <div className="Login">
         <form>
+          <h3>Login</h3>
           <FormGroup controlId="email" bsSize="large">
             <FormLabel>Email</FormLabel>
             <FormControl
