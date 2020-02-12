@@ -6,6 +6,7 @@ import { Form } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { FormControl } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
+import Login from "../login/login.jsx";
 
 class Header extends Component {
   render() {
@@ -15,18 +16,21 @@ class Header extends Component {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+            <Nav.Link
+              href="#login"
+              onSelect={() => {
+                this.props.setBody(<Login />);
+              }}
+            >
+              Login
+            </Nav.Link>
+            <Nav.Link href="#link">Sign Up</Nav.Link>
+            <NavDropdown title="More" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">About us</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">Career</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">TBD</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.4">TBD </NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Form inline>
