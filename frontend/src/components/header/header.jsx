@@ -10,6 +10,7 @@ import Login from "../login/login.jsx";
 import Signup from "../signup/signup.jsx";
 import Body from "../body/body.jsx";
 import "./header.css";
+
 class Header extends Component {
   render() {
     return (
@@ -24,7 +25,7 @@ class Header extends Component {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
+          <Nav className="">
             <Nav.Link
               href="#login"
               onSelect={() => {
@@ -36,7 +37,9 @@ class Header extends Component {
             <Nav.Link
               href="#signup"
               onSelect={() => {
-                this.props.setBody(<Signup />);
+                this.props.setBody(
+                  <Signup setBody={this.props.setBody} api={this.props.api} />
+                );
               }}
             >
               Sign Up
@@ -49,8 +52,12 @@ class Header extends Component {
               <NavDropdown.Item href="#action/3.4">TBD </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+          <Form className="search-bar" inline>
+            <FormControl
+              type="text"
+              placeholder="Search"
+              className="mr-sm-2 myClass"
+            />
             <Button variant="outline-success">Search</Button>
           </Form>
         </Navbar.Collapse>
