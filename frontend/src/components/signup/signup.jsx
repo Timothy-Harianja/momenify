@@ -3,22 +3,45 @@ import "./signup.css";
 import axios from "axios";
 import Login from "../login/login.jsx";
 
+function makeTime() {
+  let ts = Date.now();
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+  return month + "-" + "date" + "-" + year;
+}
+
+function makeToken(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 class Signup extends Component {
   state = {
-    id: 123,
     nickname: null,
     password: null,
-    email: null
+    email: null,
+    activation: false,
+    activeToken: null,
+    activeTokenExpire: null,
+    lastLogin: null
   };
 
   putDataToUsers = json => {
-    console.log("this.json:", json);
-    console.log("this.props:", this.props);
+    // console.log("this.json:", json);
+    // console.log("this.props:", this.props);
     axios
       .post(this.props.api + "/putUser", json)
       .then(res => {
-        console.log("res: ", res);
-        console.log("res data: ", res.data);
+        // console.log("res: ", res);
+        // console.log("res data: ", res.data);
 
         if (res.data.success) {
           alert("register successed");
@@ -48,16 +71,6 @@ class Signup extends Component {
           </div>
 
           <div className="form-group">
-            <label>Password</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Password"
-              onChange={e => this.setState({ password: e.target.value })}
-            />
-          </div>
-
-          <div className="form-group">
             <label>Email address</label>
             <input
               type="email"
@@ -66,25 +79,28 @@ class Signup extends Component {
               onChange={e => this.setState({ email: e.target.value })}
             />
           </div>
-          {/* 
+
           <div className="form-group">
             <label>Password</label>
             <input
               type="password"
               className="form-control"
-              placeholder="Enter password"
+              placeholder="Password"
+              onChange={e => this.setState({ password: e.target.value })}
             />
-          </div> */}
-
+          </div>
           <button
             type="submit"
             className="btn btn-primary btn-block"
             onClick={() => {
               this.putDataToUsers({
-                id: this.state.id,
                 nickname: this.state.nickname,
                 password: this.state.password,
-                email: this.state.email
+                email: this.state.email,
+                activation: this.state.activation,
+                lastLogin: makeTime(),
+                activeToken: makeToken(30),
+                activeTokenExpire: new Date().getTime() + 24 * 60 * 60 * 1000
               });
             }}
           >
