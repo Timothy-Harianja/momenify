@@ -8,6 +8,7 @@ const app = express();
 var cors = require("cors"); //use cors for cross-site request
 const User = require("./user");
 const bcrypt = require("bcryptjs");
+
 const nodemailer = require("nodemailer");
 var crypto = require("crypto");
 var transporter = nodemailer.createTransport({
@@ -119,6 +120,39 @@ router.post("/putUser", (req, res) => {
     });
   });
 });
+
+router.post("/login", (req, res) => {
+  console.log("req information in login:", req.body);
+  User.findOne({ email: req.body.email }, function(err, result) {
+    if (err) {
+      console.log(err);
+      return err;
+    }
+    if (result != null) {
+      // check result's hashed password and the hash value of the given password
+      if (hashingPassword(req.body.password, 10) == result.password) {
+        console.log("password matches!");
+        return "true";
+      }
+      console.log("password does not matches");
+      return "password incorrect";
+    } else {
+      console.log("user not exist");
+      return "user not exist";
+    }
+  });
+});
+
+function hashingPassword(password, saltRounds) {
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    if (err) return err;
+    bcrypt.hash(password, salt, function(err, hash) {
+      if (err) return err;
+      console.log("hash value", hash);
+      return hash;
+    });
+  });
+}
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
