@@ -28,8 +28,11 @@ class Header extends Component {
           <Nav className="">
             <Nav.Link
               href="#login"
+              // to="/login"
               onSelect={() => {
-                this.props.setBody(<Login />);
+                this.props.setBody(
+                  <Login setBody={this.props.setBody} api={this.props.api} />
+                );
               }}
             >
               Login
