@@ -3,9 +3,15 @@ import logo from "./logo.svg";
 import "./App.css";
 import Header from "./components/header/header.jsx";
 import Body from "./components/body/body.jsx";
+import Active from "./components/active/active.jsx";
 import axios from "axios";
+import { NavLink } from "react-bootstrap";
 class App extends Component {
-  state = { body: <Body />, api: "http://localhost:3001/api" };
+  state = {
+    body: <Body />,
+    active: <Active />,
+    api: "http://localhost:3001/api"
+  };
 
   setBody = obj => {
     console.log("clicked");
@@ -21,6 +27,7 @@ class App extends Component {
           api={this.state.api}
         ></Header>
         {this.state.body}
+        {this.state.active}
       </div>
     );
   }

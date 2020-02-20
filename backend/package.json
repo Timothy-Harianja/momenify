@@ -16,6 +16,8 @@
     "express": "^4.17.1",
     "lsof": "^0.1.0",
     "mongoose": "^5.8.12",
-    "nodemon": "^2.0.2"
+    "nodemailer": "^6.4.2",
+    "nodemon": "^2.0.2",
+    "react-router-dom": "^5.1.2"
   }
 }
