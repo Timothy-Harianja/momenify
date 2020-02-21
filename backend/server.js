@@ -130,11 +130,16 @@ router.post("/login", (req, res) => {
     }
     if (result != null) {
       // check result's hashed password and the hash value of the given password
-      if (hashingPassword(req.body.password, 10) == result.password) {
-        console.log("password matches!");
-        return "true";
-      }
-      console.log("password does not matches");
+      bcrypt.compare(req.body.password, result.password, function(err, result) {
+        if (result == true) {
+          //res.redirect("/home");
+          console.log("password  matches");
+        } else {
+          //res.send("Incorrect password");
+          //res.redirect("/");
+          console.log("password does not matches");
+        }
+      });
       return "password incorrect";
     } else {
       console.log("user not exist");
