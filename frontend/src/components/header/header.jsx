@@ -10,61 +10,56 @@ import Login from "../login/login.jsx";
 import Signup from "../signup/signup.jsx";
 import Body from "../body/body.jsx";
 import "./header.css";
+import styled from "styled-components";
+
+const Styles = styled.div`
+  .navbar {
+    background-color: #e3ebfd;
+  }
+  a,
+  .navbar-nav,
+  .navbar-light .nav-link {
+    color: black;
+    &:hover {
+      color: white;
+    }
+  }
+  .navbar-brand {
+    font-size: 1.4em;
+    color: black;
+    &:hover {
+      color: white;
+    }
+  }
+  .form-center {
+    position: absolute !important;
+    left: 25%;
+    right: 25%;
+  }
+`;
 
 class Header extends Component {
   render() {
     return (
-      <Navbar bg="light" expand="lg">
-        <Navbar.Brand
-          href="#home"
-          onSelect={() => {
-            this.props.setBody(<Body />);
-          }}
-        >
-          Moment Chat
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="">
-            <Nav.Link
-              href="#login"
-              // to="/login"
-              onSelect={() => {
-                this.props.setBody(
-                  <Login setBody={this.props.setBody} api={this.props.api} />
-                );
-              }}
-            >
-              Login
-            </Nav.Link>
-            <Nav.Link
-              href="#signup"
-              onSelect={() => {
-                this.props.setBody(
-                  <Signup setBody={this.props.setBody} api={this.props.api} />
-                );
-              }}
-            >
-              Sign Up
-            </Nav.Link>
-            <NavDropdown title="More" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">About us</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Career</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">TBD</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">TBD </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-          <Form className="search-bar" inline>
-            <FormControl
-              type="text"
-              placeholder="Search"
-              className="mr-sm-2 myClass"
-            />
-            <Button variant="outline-success">Search</Button>
+      <Styles>
+        <Navbar expand="lg">
+          <Navbar.Brand href="/">Momenify</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Form className="form-center">
+            <FormControl type="text" placeholder="Search" className="" />
           </Form>
-        </Navbar.Collapse>
-      </Navbar>
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ml-auto">
+              <Nav.Item>
+                <Nav.Link href="/login">Login</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link href="/signup">Sign Up</Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+      </Styles>
     );
   }
 }
