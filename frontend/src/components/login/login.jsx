@@ -10,18 +10,27 @@ class Login extends Component {
     console.log("obj", obj);
     console.log("props: ", this.props);
     axios
-      .post(this.props.api + "/login", obj)
+      .post("http://localhost:3001" + "/login", obj)
       .then(res => {
-        console.log("res:", res);
+        if (res.data.success == true) {
+          alert("password matches");
+        } else {
+          alert("password does not matches");
+        }
       })
       .catch(err => {
         console.log("error of catch:", err);
       });
   };
+
+  submitHandler = e => {
+    e.preventDefault();
+  };
+
   render() {
     return (
       <div className="Login">
-        <form>
+        <form onSubmit={this.submitHandler}>
           <h3>Login</h3>
           <FormGroup controlId="email" bsSize="large">
             <FormLabel>Email</FormLabel>
@@ -41,7 +50,6 @@ class Login extends Component {
             />
           </FormGroup>
           <Button
-            bsSize="large"
             type="submit"
             onClick={() =>
               this.tryLogin({
