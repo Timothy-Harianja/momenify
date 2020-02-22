@@ -63,7 +63,7 @@ router.post("/putUser", (req, res) => {
             "Thank you for signing up Momenify, below is your link for activation: \n" +
             user.nickname +
             "\n" +
-            "\n Momenify"
+            "\n Momenifys"
         };
         transporter.sendMail(mail);
         return "successed";
