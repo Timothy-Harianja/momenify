@@ -69,16 +69,17 @@ router.post("/putUser", (req, res) => {
               message: "User is not register"
             });
           } else {
-            //  console.log("stored");
+            // console.log("req:", req.headers.origin);
+            tokenLink = req.headers.origin + "/active/" + user.activeToken;
             mail = {
               from: "themomenify@gmail.com",
               to: user.email,
               subject: "Welcome to Momenify",
               text:
                 "Thank you for signing up Momenify, below is your link for activation: \n" +
-                user.nickname +
+                tokenLink +
                 "\n" +
-                "\n Momenifys"
+                "\n Momenify, Inc."
             };
             transporter.sendMail(mail);
             return res.json({ success: true, message: "User Register" });

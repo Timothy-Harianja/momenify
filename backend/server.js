@@ -32,6 +32,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.post("/putUser", signupRote);
 app.post("/login", loginRoute);
+app.post("/active", confirmationRoute);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
