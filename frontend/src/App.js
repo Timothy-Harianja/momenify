@@ -11,6 +11,7 @@ import Home from "./components/body/body.jsx";
 import Login from "./components/login/login.jsx";
 import Signup from "./components/signup/signup.jsx";
 import { NoMatch } from "./components/404/404.jsx";
+import { Confirmation } from "./components/active/confirmation.jsx";
 class App extends Component {
   state = {
     body: <Body />,
@@ -33,7 +34,9 @@ class App extends Component {
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/active" component={Active} />
-            {/* <Route component={NoMatch} /> */}
+            <Route path="/confirmation" component={Confirmation} />
+
+            <Route component={NoMatch} />
           </Switch>
         </Router>
       </React.Fragment>

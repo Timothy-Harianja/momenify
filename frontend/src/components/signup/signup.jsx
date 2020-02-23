@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./signup.css";
 import axios from "axios";
 import Login from "../login/login.jsx";
+import { Redirect } from "react-router-dom";
 
 function makeTime() {
   let ts = Date.now();
@@ -48,7 +49,9 @@ class Signup extends Component {
         console.log("res data: ", res.data);
 
         if (res.data.success) {
-          alert("register successed");
+          window.location = "/confirmation";
+
+          // return <Redirect to="/login" />;
         } else {
           alert("failed");
         }

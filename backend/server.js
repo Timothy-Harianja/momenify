@@ -11,7 +11,7 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const loginRoute = require("./routes/login-route.js");
 const signupRote = require("./routes/signup-route.js");
-
+const confirmationRoute = require("./routes/confirmation-route.js");
 // app.use(cors(corsOptions));
 // this is our MongoDB database
 const dbRoute =

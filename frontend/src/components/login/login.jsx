@@ -15,7 +15,9 @@ class Login extends Component {
         if (res.data.success == true) {
           alert("password matches");
         } else {
-          alert("password does not matches");
+          alert(
+            "password does not matches or the account is not yet activated!"
+          );
         }
       })
       .catch(err => {
