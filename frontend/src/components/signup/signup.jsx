@@ -34,14 +34,18 @@ class Signup extends Component {
     lastLogin: null
   };
 
+  submitHandler = e => {
+    e.preventDefault();
+  };
+
   putDataToUsers = json => {
-    // console.log("this.json:", json);
-    // console.log("this.props:", this.props);
+    console.log("this.json:", json);
+    console.log("this.props:", this.props);
     axios
-      .post(this.props.api + "/putUser", json)
+      .post("http://localhost:3001" + "/putUser", json)
       .then(res => {
-        // console.log("res: ", res);
-        // console.log("res data: ", res.data);
+        console.log("res: ", res);
+        console.log("res data: ", res.data);
 
         if (res.data.success) {
           alert("register successed");
@@ -56,8 +60,8 @@ class Signup extends Component {
 
   render() {
     return (
-      <div class="SignUp">
-        <form>
+      <div className="SignUp">
+        <form onSubmit={this.submitHandler}>
           <h3>Sign Up</h3>
 
           <div className="form-group">
