@@ -49,24 +49,42 @@ router.post("/putUser", (req, res) => {
   user.activeTokenExpire = req.body.activeTokenExpire;
   user.password = hashPassword(req.body.password).then(result => {
     user.password = result;
-    user.save(err => {
+
+    User.findOne({ email: req.body.email }, function(err, result) {
       if (err) {
         console.log(err);
-        return "failed";
+        return err;
+      } else if (result != null) {
+        console.log("result", result);
+        return res.json({
+          success: false,
+          message: "User alreayd register"
+        });
       } else {
-        //  console.log("stored");
-        mail = {
-          from: "themomenify@gmail.com",
-          to: user.email,
-          subject: "Welcome to Momenify",
-          text:
-            "Thank you for signing up Momenify, below is your link for activation: \n" +
-            user.nickname +
-            "\n" +
-            "\n Momenifys"
-        };
-        transporter.sendMail(mail);
-        return "successed";
+        user.save(err => {
+          if (err) {
+            console.log(err);
+            return res.json({
+              success: false,
+              message: "User is not register"
+            });
+          } else {
+            // console.log("req:", req.headers.origin);
+            tokenLink = req.headers.origin + "/active/" + user.activeToken;
+            mail = {
+              from: "themomenify@gmail.com",
+              to: user.email,
+              subject: "Welcome to Momenify",
+              text:
+                "Thank you for signing up Momenify, below is your link for activation: \n" +
+                tokenLink +
+                "\n" +
+                "\n Momenify, Inc."
+            };
+            transporter.sendMail(mail);
+            return res.json({ success: true, message: "User Register" });
+          }
+        });
       }
     });
   });

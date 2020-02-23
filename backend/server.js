@@ -11,7 +11,7 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const loginRoute = require("./routes/login-route.js");
 const signupRote = require("./routes/signup-route.js");
-
+const confirmationRoute = require("./routes/confirmation-route.js");
 // app.use(cors(corsOptions));
 // this is our MongoDB database
 const dbRoute =
@@ -32,6 +32,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.post("/putUser", signupRote);
 app.post("/login", loginRoute);
+app.post("/active", confirmationRoute);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
