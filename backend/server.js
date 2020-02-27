@@ -20,9 +20,7 @@ const dbRoute =
   "mongodb+srv://junjie:jackjack@cse312-rdygi.mongodb.net/test?retryWrites=true&w=majority";
 
 // connects our back end code with the database
-app.engine(".html", require("ejs").__express);
-app.set("views", __dirname + "/views");
-app.set("view engine", "ejs");
+
 mongoose.connect(dbRoute, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = mongoose.connection;
 db.once("open", () => console.log("connected to the database"));
