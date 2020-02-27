@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../user");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
+const signupPage = require("../frontend/src/components/login/login.jsx");
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -13,6 +14,7 @@ var transporter = nodemailer.createTransport({
 const router = express.Router();
 
 router.get("/signup", (req, res) => {
+  res.redirect("/");
   //res.render("/", null);
 });
 async function hashPassword(password) {
