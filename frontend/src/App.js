@@ -31,10 +31,10 @@ class App extends Component {
           <Header></Header>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-            <Route path="/active" component={Active} />
-            <Route path="/confirmation" component={Confirmation} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/active" component={Active} />
+            <Route exact path="/confirmation" component={Confirmation} />
 
             <Route component={NoMatch} />
           </Switch>
