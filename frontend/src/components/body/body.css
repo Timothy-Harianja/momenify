@@ -1,0 +1,38 @@
+.home-page {
+    display: flex;
+    flex-direction: row;
+    width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+}
+
+.main-posts-container {
+    width: 67%;
+    display: flex;
+    border-style: solid;
+    margin-right: 3%;
+}
+
+.side-posts-container {
+    width: 30%;
+    display: flex;
+    border-style: solid;
+}
+
+@media only screen and (max-width: 1100px) {
+    .side-posts-container {
+        display: none;
+        width: 0%;
+    }
+
+    .main-posts-container {
+        width: 732px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .home-page {
+        width: 100%;
+    }
+}
