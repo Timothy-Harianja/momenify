@@ -34,9 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
-router.get("/signup", (req, res) => {
-  res.render("/", navbarUserInfo);
-});
+app.get("/signup", signupRote);
 app.post("/putUser", signupRote);
 app.post("/login", loginRoute);
 app.post("/active", confirmationRoute);

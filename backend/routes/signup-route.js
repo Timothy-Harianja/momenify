@@ -12,6 +12,9 @@ var transporter = nodemailer.createTransport({
 
 const router = express.Router();
 
+router.get("/signup", (req, res) => {
+  res.render("/", navbarUserInfo);
+});
 async function hashPassword(password) {
   const saltRounds = 10;
   const hashedPassword = await new Promise((resolve, reject) => {
