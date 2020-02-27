@@ -2,7 +2,7 @@ const express = require("express");
 const User = require("../user");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const signupPage = require("../frontend/src/components/login/login.jsx");
+// const signupPage = require("../frontend/src/components/login/login.jsx");
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
