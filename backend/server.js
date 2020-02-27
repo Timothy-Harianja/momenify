@@ -29,7 +29,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
-app.use(express.static(path.join(__dirname, "../frontend/public")));
+app.use(express.static(path.join(__dirname, "../frontend")));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
