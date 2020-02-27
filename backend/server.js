@@ -33,10 +33,10 @@ app.use(express.static(path.join(__dirname, "../frontend/build")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use("/putUser", signupRote);
-app.use("/login", signupRote);
-app.use("/active", signupRote);
 
+router.get("/signup", (req, res) => {
+  res.render("/", navbarUserInfo);
+});
 app.post("/putUser", signupRote);
 app.post("/login", loginRoute);
 app.post("/active", confirmationRoute);
