@@ -13,7 +13,6 @@ const loginRoute = require("./routes/login-route.js");
 const signupRote = require("./routes/signup-route.js");
 const confirmationRoute = require("./routes/confirmation-route.js");
 const path = require("path");
-const logger = require("morgan");
 
 // app.use(cors(corsOptions));
 // this is our MongoDB database
@@ -30,12 +29,11 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
-// app.use(express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-app.use(logger("dev"));
 
 app.get("/signup", signupRote);
 app.post("/putUser", signupRote);
