@@ -43,7 +43,7 @@ class Signup extends Component {
     console.log("this.json:", json);
     console.log("this.props:", this.props);
     axios
-      .post("/api/putUser", json)
+      .post("/api/signupRoute/putUser", json)
       .then(res => {
         console.log("res: ", res);
         console.log("res data: ", res.data);

@@ -35,19 +35,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(cors());
 
-app.use("/api", signupRote);
-app.use("/api", loginRoute);
-app.use("/api", confirmationRoute);
+app.use("/api/signupRoute", signupRote);
+app.use("/api/loginRoute", loginRoute);
+app.use("/api/activeRoute", confirmationRoute);
 
-// if (process.env.NODE_ENV === "production") {
-// Set static folder
-app.use(express.static("frontend/build"));
+if (process.env.NODE_ENV == "production") {
+  app.use(express.static(path.join(__dirname, "build")));
 
-// index.html for all page routes
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-// });
-// }
-// launch our backend into a port
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+}
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

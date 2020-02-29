@@ -8,7 +8,7 @@ class Active extends Component {
   };
   confirm = () => {
     axios
-      .post("/api/active")
+      .post("/api/activeRoute")
       .then(data => {
         console.log("this is true or false: " + data.data.message);
         this.setState({
