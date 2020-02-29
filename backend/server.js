@@ -10,7 +10,7 @@ const User = require("./user");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
 const loginRoute = require("./routes/login-route.js");
-const signupRote = require("./routes/signup-route.js");
+const signupRote = require("./routes/signup-route");
 const confirmationRoute = require("./routes/confirmation-route.js");
 const path = require("path");
 
@@ -29,16 +29,25 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+// app.use(cors());
 
-app.get("/signup", signupRote);
-app.post("/putUser", signupRote);
-app.post("/login", loginRoute);
-app.post("/active", confirmationRoute);
+app.use("/api", signupRote);
+app.use("/api", loginRoute);
+app.use("/api", confirmationRoute);
 
+if (process.env.NODE_ENV === "production") {
+  // Set static folder
+  app.use(express.static("client/build"));
+
+  // index.html for all page routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 // launch our backend into a port
+
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

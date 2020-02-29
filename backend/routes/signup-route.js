@@ -28,7 +28,7 @@ async function hashPassword(password) {
   return hashedPassword;
 }
 
-router.post("/putUser", (req, res) => {
+router.post("/signup", (req, res) => {
   console.log("sigu up function called");
   var user = new User();
   User.countDocuments({}, function(err, c) {

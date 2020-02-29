@@ -10,7 +10,7 @@ class Login extends Component {
     console.log("obj", obj);
     console.log("props: ", this.props);
     axios
-      .post("http://localhost:3001" + "/login", obj)
+      .post("/api/login", obj)
       .then(res => {
         if (res.data.success == true) {
           alert("password matches");

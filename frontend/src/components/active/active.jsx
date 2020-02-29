@@ -5,7 +5,7 @@ import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 class Active extends Component {
   confirm = () => {
     axios
-      .post("http://localhost:3001" + "/active")
+      .post("api/active")
       .then(data => data.json())
       .catch(err => {
         console.log(err);
