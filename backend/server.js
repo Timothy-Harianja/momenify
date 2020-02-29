@@ -33,7 +33,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 
 app.use("/api/signupRoute", signupRote);
 app.use("/api/loginRoute", loginRoute);
