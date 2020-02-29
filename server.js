@@ -40,11 +40,11 @@ app.use("/api/loginRoute", loginRoute);
 app.use("/api/activeRoute", confirmationRoute);
 
 // if (process.env.NODE_ENV == "production") {
-// app.use(express.static("frontend/build"));
-// //serve that index.html file ('*' means anything aside from these api routes above)
-// app.get("*", (req, res) => {
-//   //load the index.html file
-//   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-// });
+app.use(express.static("frontend/build"));
+//serve that index.html file ('*' means anything aside from these api routes above)
+app.get("*", (req, res) => {
+  //load the index.html file
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+});
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
