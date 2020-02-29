@@ -22,7 +22,8 @@ router.post("/login", (req, res) => {
           console.log("password  matches");
 
           return res.json({
-            success: true
+            success: true,
+            message: "login success"
           });
         } else {
           //res.send("Incorrect password");
@@ -35,10 +36,11 @@ router.post("/login", (req, res) => {
           });
         }
       });
-      return "password incorrect";
     } else {
       console.log("user not exist");
-      return "user not exist";
+      return res.json({
+        success: false
+      });
     }
   });
 });

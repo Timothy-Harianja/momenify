@@ -2,7 +2,6 @@ const express = require("express");
 const User = require("../user");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-// const signupPage = require("../frontend/src/components/login/login.jsx");
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -13,9 +12,6 @@ var transporter = nodemailer.createTransport({
 
 const router = express.Router();
 
-// router.get("/signup", (req, res) => {
-//   // res.render("/signup", null);
-// });
 async function hashPassword(password) {
   const saltRounds = 10;
   const hashedPassword = await new Promise((resolve, reject) => {
@@ -28,7 +24,7 @@ async function hashPassword(password) {
   return hashedPassword;
 }
 
-router.post("/signup", (req, res) => {
+router.post("/putUser", (req, res) => {
   console.log("sigu up function called");
   var user = new User();
   User.countDocuments({}, function(err, c) {

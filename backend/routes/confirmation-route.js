@@ -17,6 +17,38 @@ router.post("/active", (req, res) => {
   let tokenLink = req.headers.referer;
   token = getToken(tokenLink);
   console.log("url: ", token);
+  User.findOne({ activeToken: token }, (err, user) => {
+    if (err) {
+      console.log("error find an unactivated user: " + err);
+      return res.json({
+        success: false,
+        message: "somthing's going wrong"
+      });
+    } else if (user == null) {
+      console.log("cannot find  this unactivated user");
+      return res.json({
+        success: false,
+        message: "Account not found!"
+      });
+    } else if (user.activation == true) {
+      return res.json({
+        success: false,
+        message: "Account already activated!"
+      });
+    } else {
+      user.activation = true;
+      user.save(err => {
+        if (err) {
+          console.log("error saving activation");
+        } else {
+          return res.json({
+            success: true,
+            message: "Account activated!"
+          });
+        }
+      });
+    }
+  });
 });
 
 module.exports = router;
