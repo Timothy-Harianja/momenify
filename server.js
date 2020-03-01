@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 // const { ObjectId } = require("mongodb");
 // const mongodb = require("mongodb");
-const API_PORT = process.env.PORT || 3001;
+const API_PORT = 3001;
 const app = express();
 var cors = require("cors"); //use cors for cross-site request
 const User = require("./backend/user");
@@ -33,7 +33,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 
 app.use("/api/signupRoute", signupRote);
 app.use("/api/loginRoute", loginRoute);

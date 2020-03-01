@@ -69,7 +69,7 @@ router.post("/putUser", (req, res) => {
               message: "User is not register"
             });
           } else {
-            // console.log("req:", req.headers.origin);
+            //console.log("req:", req.headers);
             tokenLink = req.headers.origin + "/active/" + user.activeToken;
             mail = {
               from: "themomenify@gmail.com",
