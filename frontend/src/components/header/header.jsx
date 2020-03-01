@@ -44,10 +44,10 @@ class Header extends Component {
       <Styles>
         <Navbar expand="lg">
           <Navbar.Brand href="/">Momenify</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Form className="form-center">
             <FormControl type="text" placeholder="Search" className="" />
           </Form>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
               <Nav.Item>

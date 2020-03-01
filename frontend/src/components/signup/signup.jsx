@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./signup.css";
 import axios from "axios";
 import Login from "../login/login.jsx";
+import { Redirect } from "react-router-dom";
 
 function makeTime() {
   let ts = Date.now();
@@ -42,13 +43,15 @@ class Signup extends Component {
     console.log("this.json:", json);
     console.log("this.props:", this.props);
     axios
-      .post("http://localhost:3001" + "/putUser", json)
+      .post("/api/signupRoute/putUser", json)
       .then(res => {
         console.log("res: ", res);
         console.log("res data: ", res.data);
 
         if (res.data.success) {
-          alert("register successed");
+          window.location = "/confirmation";
+
+          // return <Redirect to="/login" />;
         } else {
           alert("failed");
         }

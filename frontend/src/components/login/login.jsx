@@ -4,18 +4,34 @@ import "./login.css";
 import axios from "axios";
 
 class Login extends Component {
-  state = { email: null, password: null };
+  state = {
+    email: null,
+    password: null,
+    message: null
+  };
 
   tryLogin = obj => {
     console.log("obj", obj);
     console.log("props: ", this.props);
     axios
-      .post("http://localhost:3001" + "/login", obj)
+      .post("/api/loginRoute/login", obj)
       .then(res => {
         if (res.data.success == true) {
           alert("password matches");
+          this.setState({
+            message: "login success"
+          });
         } else {
-          alert("password does not matches");
+          this.setState({
+            message: "username or password incorrect"
+          });
+          // console.log("password not correct:v", res.data.emailStatus);
+          // this.setState({
+          //   passwordStatus: <span id="alert">{res.data.passwordStatus}</span>
+          // });
+          // alert(
+          //   "password does not matches or the account is not yet activated!"
+          // );
         }
       })
       .catch(err => {
@@ -42,7 +58,7 @@ class Login extends Component {
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Password </FormLabel>
             <FormControl
               //   value={password}
               onChange={e => this.setState({ password: e.target.value })}
@@ -61,6 +77,8 @@ class Login extends Component {
             Login
           </Button>
         </form>
+
+        <div id="message">{this.state.message}</div>
       </div>
     );
   }
