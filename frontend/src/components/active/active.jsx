@@ -13,8 +13,6 @@ class Active extends Component {
         console.log("data: ", data.data.success);
         if (data.data.success) {
           this.props.history.push("/login");
-        } else {
-          this.props.history.push("/signup");
         }
         this.setState({
           body: <div id="buttom-text">{data.data.message}</div>
