@@ -14,6 +14,7 @@ import { NoMatch } from "./components/404/404.jsx";
 import { Confirmation } from "./components/active/confirmation.jsx";
 import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
+import Message from "./components/message/message.jsx";
 class App extends Component {
   state = {
     body: <Body />,
@@ -39,6 +40,7 @@ class App extends Component {
             <Route path="/confirmation" component={Confirmation} />
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
+            <Route path="/message" component={Message} />
             <Route component={NoMatch} />
           </Switch>
         </Router>
