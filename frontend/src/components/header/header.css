@@ -1,0 +1,14 @@
+.search-bar {
+  margin-left: 25%;
+}
+
+@media all and (max-width: 1000px) {
+  .search-bar {
+    margin-left: 0;
+  }
+
+  .myClass {
+    width: auto;
+    margin-right: 8px;
+  }
+}

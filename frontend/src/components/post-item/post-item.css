@@ -1,0 +1,14 @@
+.post-item {
+    display: flex;
+    width: 100%;
+    max-height: auto;
+    margin-bottom: 60px;
+    border-style: solid;
+}
+
+
+@media only screen and (max-width: 732px) {
+    .post-item {
+        max-width: 732px;
+    }
+}
