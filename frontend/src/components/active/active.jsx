@@ -10,7 +10,12 @@ class Active extends Component {
     axios
       .post("/api/activeRoute/active")
       .then(data => {
-        console.log("this is true or false: " + data.data.message);
+        console.log("data: ", data.data.success);
+        if (data.data.success) {
+          this.props.history.push("/login");
+        } else {
+          this.props.history.push("/signup");
+        }
         this.setState({
           body: <div id="buttom-text">{data.data.message}</div>
         });
