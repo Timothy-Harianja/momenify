@@ -1,0 +1,19 @@
+#header {
+  text-align: center;
+}
+
+#body {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 100px;
+  margin-left: 100px;
+  font-size: 120%;
+}
+
+#h5 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 100px;
+  margin-left: 100px;
+  font-size: 150%;
+}

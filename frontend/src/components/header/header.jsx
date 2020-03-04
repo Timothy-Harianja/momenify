@@ -56,6 +56,12 @@ class Header extends Component {
               <Nav.Item>
                 <Nav.Link href="/signup">Sign Up</Nav.Link>
               </Nav.Item>
+              <Nav.Item>
+                <Nav.Link href="/about-us">About Us</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link href="/term-of-use">Terms of Use</Nav.Link>
+              </Nav.Item>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
