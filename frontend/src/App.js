@@ -14,7 +14,7 @@ import { NoMatch } from "./components/404/404.jsx";
 import { Confirmation } from "./components/active/confirmation.jsx";
 import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
-import Message from "./components/message/message.jsx";
+import Message from "./components/Messenger/index.js";
 class App extends Component {
   state = {
     body: <Body />,
