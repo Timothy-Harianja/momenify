@@ -74,9 +74,8 @@ class Login extends Component {
           >
             Login
           </Button>
+          <div id="message">{this.state.message}</div>
         </form>
-
-        <div id="message">{this.state.message}</div>
       </div>
     );
   }
