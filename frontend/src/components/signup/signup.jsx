@@ -124,8 +124,10 @@ class Signup extends Component {
             >
               sign in?
             </a>
-            <div id="signup-message">{this.state.message}</div>
           </p>
+          <div style={{ color: "red", textAlign: "center" }}>
+            {this.state.message}
+          </div>
         </form>
       </div>
     );
