@@ -17,13 +17,11 @@ class Login extends Component {
       .post("/api/loginRoute/login", obj)
       .then(res => {
         if (res.data.success == true) {
-          alert("password matches");
-          this.setState({
-            message: "login success"
-          });
+          this.props.history.push("/");
         } else {
           this.setState({
-            message: "username or password incorrect"
+            message:
+              "The account is not activated or the username or password is incorrect"
           });
           // console.log("password not correct:v", res.data.emailStatus);
           // this.setState({
@@ -47,7 +45,7 @@ class Login extends Component {
     return (
       <div className="Login">
         <form onSubmit={this.submitHandler}>
-          <h3>Login</h3>
+          <h1>Login</h1>
           <FormGroup controlId="email" bsSize="large">
             <FormLabel>Email</FormLabel>
             <FormControl
@@ -76,9 +74,8 @@ class Login extends Component {
           >
             Login
           </Button>
+          <div id="login-message">{this.state.message}</div>
         </form>
-
-        <div id="message">{this.state.message}</div>
       </div>
     );
   }

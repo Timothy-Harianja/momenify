@@ -1,38 +1,116 @@
 .home-page {
-    display: flex;
-    flex-direction: row;
-    width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+}
+
+.create-post-container {
+  margin-top: 2%;
 }
 
 .main-posts-container {
-    width: 67%;
-    display: flex;
-    border-style: solid;
-    margin-right: 3%;
+  width: 67%;
+  display: flex;
+  border-style: solid;
+  margin-right: 3%;
 }
 
 .side-posts-container {
-    width: 30%;
-    display: flex;
-    border-style: solid;
+  width: 30%;
+  display: flex;
+  border-style: solid;
+  height: 30%;
+  margin-top: -20.7%;
 }
 
 @media only screen and (max-width: 1100px) {
-    .side-posts-container {
-        display: none;
-        width: 0%;
-    }
+  .side-posts-container {
+    display: none;
+    width: 0%;
+  }
 
-    .main-posts-container {
-        width: 732px;
-        margin-right: auto;
-        margin-left: auto;
-    }
+  .main-posts-container {
+    width: 732px;
+    margin-right: auto;
+    margin-left: auto;
+  }
 
-    .home-page {
-        width: 100%;
-    }
+  .home-page {
+    width: 100%;
+  }
 }
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-gap: 10px;
+  background-color: #fff;
+  color: #444;
+}
+
+.box {
+  background-color: rgb(160, 186, 207);
+  color: #fff;
+  border-radius: 1px;
+  padding: 0px;
+  font-size: 150%;
+  width: 100%;
+}
+.top {
+  height: 300px;
+}
+.middle {
+  height: 220px;
+}
+.bottom {
+  height: 60px;
+}
+
+#kun {
+  width: 60px;
+  height: 60px;
+}
+
+/* ############################################# */
+#trend-list {
+  margin: 0px;
+  margin-left: -10%;
+}
+
+#trend-img {
+  width: 30px;
+  height: 30px;
+}
+
+ul {
+  list-style-type: none;
+  /* width: 500px; */
+}
+
+h3 {
+  font: bold 10px/1.5 Helvetica, Verdana, sans-serif;
+}
+
+li img {
+  float: left;
+  margin: 0 15px 0 0;
+}
+
+li p {
+  font: 200 8px/1.5 Georgia, Times New Roman, serif;
+}
+
+li {
+  height: 45px;
+  margin: 0 0 0 0;
+}
+
+li:hover {
+  background: #eee;
+  cursor: pointer;
+}
+
+/* ############################################# */
