@@ -13,10 +13,11 @@ class Active extends Component {
         console.log("data: ", data.data.success);
         if (data.data.success) {
           this.props.history.push("/login");
+        } else {
+          this.setState({
+            message: "This email has already activated!"
+          });
         }
-        this.setState({
-          body: <div id="buttom-text">{data.data.message}</div>
-        });
       })
       .catch(err => {
         console.log(err);
@@ -31,7 +32,10 @@ class Active extends Component {
         <Button id="active-button" type="submit" onClick={() => this.confirm()}>
           Activate
         </Button>
-        {this.state.body}
+        <p></p>
+        <div style={{ color: "red", textAlign: "center" }}>
+          {this.state.message}
+        </div>
       </div>
     );
   }
