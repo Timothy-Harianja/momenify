@@ -66,7 +66,7 @@ class Signup extends Component {
     return (
       <div className="SignUp">
         <form onSubmit={this.submitHandler}>
-          <h3>Sign Up</h3>
+          <h1>Sign Up</h1>
 
           <div className="form-group">
             <label>Nickname</label>
@@ -124,7 +124,7 @@ class Signup extends Component {
             >
               sign in?
             </a>
-            <div id="message">{this.state.message}</div>
+            <div id="signup-message">{this.state.message}</div>
           </p>
         </form>
       </div>

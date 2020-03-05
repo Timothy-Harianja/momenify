@@ -45,7 +45,7 @@ class Login extends Component {
     return (
       <div className="Login">
         <form onSubmit={this.submitHandler}>
-          <h3>Login</h3>
+          <h1>Login</h1>
           <FormGroup controlId="email" bsSize="large">
             <FormLabel>Email</FormLabel>
             <FormControl
@@ -74,7 +74,7 @@ class Login extends Component {
           >
             Login
           </Button>
-          <div id="message">{this.state.message}</div>
+          <div id="login-message">{this.state.message}</div>
         </form>
       </div>
     );
