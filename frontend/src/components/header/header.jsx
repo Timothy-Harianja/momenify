@@ -35,6 +35,9 @@ const Styles = styled.div`
     position: absolute !important;
     left: 25%;
     right: 25%;
+    width: 30%;
+    margin: 0 auto;
+    float: left;
   }
 `;
 
