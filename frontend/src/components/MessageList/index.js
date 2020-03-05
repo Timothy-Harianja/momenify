@@ -5,6 +5,7 @@ import moment from "moment";
 
 import "./MessageList.css";
 
+
 const MY_USER_ID = "apple";
 
 export default function MessageList(props) {
