@@ -18,7 +18,6 @@ router.post("/login", (req, res) => {
       ) {
         console.log("result: ", result2.activation);
         if (result == true && result2.activation) {
-          //res.redirect("/home");
           console.log("password  matches");
 
           return res.json({
@@ -26,8 +25,6 @@ router.post("/login", (req, res) => {
             message: "login success"
           });
         } else {
-          //res.send("Incorrect password");
-          //res.redirect("/");
           console.log(
             "password does not matches or the account is not yet activated!"
           );

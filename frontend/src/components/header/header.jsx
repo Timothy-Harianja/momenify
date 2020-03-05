@@ -35,6 +35,9 @@ const Styles = styled.div`
     position: absolute !important;
     left: 25%;
     right: 25%;
+    width: 30%;
+    margin: 0 auto;
+    float: left;
   }
 `;
 
@@ -55,6 +58,12 @@ class Header extends Component {
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link href="/signup">Sign Up</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link href="/about-us">About Us</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link href="/term-of-use">Terms of Use</Nav.Link>
               </Nav.Item>
             </Nav>
           </Navbar.Collapse>

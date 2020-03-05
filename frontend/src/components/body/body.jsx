@@ -6,7 +6,6 @@ import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
 import TrendContainer from "../posts-container/trend-container";
 import kun from "./kun.png";
-import Sidebar from "react-sidebar";
 import CreatePost from "../create-post/create-post";
 
 class Body extends Component {
@@ -72,6 +71,9 @@ class Body extends Component {
             </div>
           </div>
         </div>
+        {/* <div className='side-posts-container'>
+          <PostsContainer/>
+        </div> */}
       </div>
     );
   }

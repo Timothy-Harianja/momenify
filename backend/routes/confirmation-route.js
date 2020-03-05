@@ -22,18 +22,18 @@ router.post("/active", (req, res) => {
       console.log("error find an unactivated user: " + err);
       return res.json({
         success: false,
-        message: "somthing's going wrong"
+        message: "The account is already activated or the link is invalid!"
       });
     } else if (user == null) {
       console.log("cannot find  this unactivated user");
       return res.json({
         success: false,
-        message: "Account not found!"
+        message: "The account is already activated or the link is invalid!"
       });
     } else if (user.activation == true) {
       return res.json({
         success: false,
-        message: "Account already activated!"
+        message: "The account is already activated or the link is invalid!"
       });
     } else {
       user.activation = true;
