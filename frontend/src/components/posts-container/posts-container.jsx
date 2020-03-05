@@ -1,32 +1,24 @@
 import React, { Component } from "react";
 
-import PostItem from "../post-item/post-item";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
+import PostItem from "../post-item/post-item";
 import "./posts-container.css";
 
 class PostsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: 3,
-      loading: false
+      posts: 3
     };
   }
 
   componentDidMount() {
-    //Detect when scrolled to bottom
-    this.refs.infiniteScroll.addEventListener("scroll", () => {
-      if (
-        this.refs.infiniteScroll.scrollTop +
-          this.refs.infiniteScroll.clientHeight >=
-        this.refs.infiniteScroll.scrollHeight
-      ) {
-        this.loadMorePosts();
-      }
-    });
   }
 
-  showPosts() {
+
+
+  showPosts = () => {
     // get all the posts from the
     var posts = [];
     for (var i = 0; i < this.state.posts; i++) {
@@ -39,22 +31,23 @@ class PostsContainer extends Component {
     return posts;
   }
 
-  loadMorePosts() {
-    this.setState({ loading: true });
+  loadMorePosts = () => {
     setTimeout(() => {
-      this.setState({ posts: this.state.posts + 2, loading: false });
+      this.setState({ posts: this.state.posts + 2});
     }, 2000);
   }
 
   render() {
     return (
-      <div className="posts-container" ref="infiniteScroll">
-        {this.showPosts()}
-        {this.state.loading ? (
-          <p className="loading-text">loading more posts...</p>
-        ) : (
-          ""
-        )}
+      <div className="posts-container">
+        <InfiniteScroll
+          dataLength={this.state.posts}
+          next={this.loadMorePosts}
+          hasMore={true}
+          loader={<h4>Loading more...</h4>}
+        >
+          {this.showPosts()}
+        </InfiniteScroll>
       </div>
     );
   }

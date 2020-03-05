@@ -11,9 +11,9 @@ class Body extends Component {
         <div className='main-posts-container'>
           <PostsContainer/>
         </div>
-        <div className='side-posts-container'>
+        {/* <div className='side-posts-container'>
           <PostsContainer/>
-        </div>
+        </div> */}
       </div>
     );
   }
