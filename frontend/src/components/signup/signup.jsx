@@ -49,11 +49,12 @@ class Signup extends Component {
         console.log("res data: ", res.data);
 
         if (res.data.success) {
-          window.location = "/confirmation";
-
+          this.props.history.push("/confirmation");
           // return <Redirect to="/login" />;
         } else {
-          alert("failed");
+          this.setState({
+            message: "This email has already registered"
+          });
         }
       })
       .catch(err => {
@@ -65,7 +66,7 @@ class Signup extends Component {
     return (
       <div className="SignUp">
         <form onSubmit={this.submitHandler}>
-          <h3>Sign Up</h3>
+          <h1>Sign Up</h1>
 
           <div className="form-group">
             <label>Nickname</label>
@@ -116,13 +117,14 @@ class Signup extends Component {
           <p className="forgot-password text-right">
             Already registered{" "}
             <a
-              href="#login"
+              href="/login"
               onSelect={() => {
                 this.props.setBody(<Login />);
               }}
             >
               sign in?
             </a>
+            <div id="signup-message">{this.state.message}</div>
           </p>
         </form>
       </div>

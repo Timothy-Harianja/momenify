@@ -71,6 +71,9 @@ class Body extends Component {
             </div>
           </div>
         </div>
+        {/* <div className='side-posts-container'>
+          <PostsContainer/>
+        </div> */}
       </div>
     );
   }
