@@ -15,7 +15,7 @@ class Active extends Component {
           this.props.history.push("/login");
         } else {
           this.setState({
-            message: "This email has already activated!"
+            message: "This email has already activated or the link is expired!"
           });
         }
       })
