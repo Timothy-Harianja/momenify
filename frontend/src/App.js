@@ -27,6 +27,16 @@ class App extends Component {
     this.setState({ body: obj });
   };
 
+  state = {
+    userId: null
+  };
+  componentDidMount() {
+    axios.get("/api/loginRoute/session").then(res => {
+      console.log(res.data);
+      this.setState({ userId: res.data.userId });
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -42,7 +52,10 @@ class App extends Component {
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
             <Route path="/message" component={Message} />
-            <Route path="/accountpage" component={AccountPage} />
+            <Route
+              path="/accountpage"
+              component={this.state.userId != undefined ? AccountPage : Login}
+            />
             <Route component={NoMatch} />
           </Switch>
         </Router>

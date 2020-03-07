@@ -1,17 +1,11 @@
 import React, { Component } from "react";
 import { Navbar } from "react-bootstrap";
 import { Nav } from "react-bootstrap";
-import { NavDropdown } from "react-bootstrap";
 import { Form } from "react-bootstrap";
-import { Button } from "react-bootstrap";
 import { FormControl } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
-import Login from "../login/login.jsx";
-import Signup from "../signup/signup.jsx";
-import Body from "../body/body.jsx";
 import "./header.css";
 import styled from "styled-components";
-import session from "express-session";
 import axios from "axios";
 
 const Styles = styled.div`
@@ -76,11 +70,7 @@ class Header extends Component {
                     <Nav.Link href="/accountpage">My Account</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link
-                      href="/"
-                      type="submit"
-                      onClick={() => this.logout()}
-                    >
+                    <Nav.Link href="/" onClick={() => this.logout()}>
                       Logout
                     </Nav.Link>
                   </Nav.Item>

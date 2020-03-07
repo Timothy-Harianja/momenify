@@ -22,8 +22,7 @@ class Login extends Component {
           window.location = "/";
         } else {
           this.setState({
-            message:
-              "The account is not activated or the username or password is incorrect"
+            message: "Password is incorrect or the account is not activated yet"
           });
           // console.log("password not correct:v", res.data.emailStatus);
           // this.setState({
