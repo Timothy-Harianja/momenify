@@ -3,8 +3,22 @@ const router = express.Router();
 const User = require("../user");
 const bcrypt = require("bcryptjs");
 
+router.get("/session", (req, res) => {
+  console.log("session get called!");
+  console.log(req.session);
+  res.send(req.session);
+});
+
+router.post("/logout", (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.log(err);
+    }
+  });
+  res.clearCookie();
+});
 router.post("/login", (req, res) => {
-  console.log("req information in login:", req.body);
+  console.log("req session in login:", req.session);
   User.findOne({ email: req.body.email }, function(err, result2) {
     if (err) {
       console.log(err);
@@ -19,6 +33,10 @@ router.post("/login", (req, res) => {
         console.log("result: ", result2.activation);
         if (result == true && result2.activation) {
           console.log("password  matches");
+          req.session.userId = result2._id;
+          req.session.username = result2.nickname;
+          req.session.email = result2.email;
+          console.log("req session in login:", req.session);
 
           return res.json({
             success: true,

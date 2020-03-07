@@ -11,6 +11,8 @@ import Signup from "../signup/signup.jsx";
 import Body from "../body/body.jsx";
 import "./header.css";
 import styled from "styled-components";
+import session from "express-session";
+import axios from "axios";
 
 const Styles = styled.div`
   .navbar {
@@ -42,6 +44,21 @@ const Styles = styled.div`
 `;
 
 class Header extends Component {
+  state = {
+    userId: null
+  };
+  componentDidMount() {
+    axios.get("/api/loginRoute/session").then(res => {
+      console.log(res.data);
+      this.setState({ userId: res.data.userId });
+    });
+  }
+
+  logout = () => {
+    axios.post("/api/loginRoute/logout").then(res => {
+      console.log("logout done!");
+    });
+  };
   render() {
     return (
       <Styles>
@@ -53,18 +70,37 @@ class Header extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              <Nav.Item>
-                <Nav.Link href="/login">Login</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link href="/signup">Sign Up</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
+              {this.state.userId != undefined ? (
+                <Nav>
+                  <Nav.Item>
+                    <Nav.Link href="/accountpage">My Account</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link
+                      href="/"
+                      type="submit"
+                      onClick={() => this.logout()}
+                    >
+                      Logout
+                    </Nav.Link>
+                  </Nav.Item>
+                </Nav>
+              ) : (
+                <Nav>
+                  <Nav.Item>
+                    <Nav.Link href="/login">Login</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link href="/signup">Sign Up</Nav.Link>
+                  </Nav.Item>
+                </Nav>
+              )}
+              {/* <Nav.Item>
                 <Nav.Link href="/about-us">About Us</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link href="/term-of-use">Terms of Use</Nav.Link>
-              </Nav.Item>
+              </Nav.Item> */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
