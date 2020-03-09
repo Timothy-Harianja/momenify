@@ -19,7 +19,7 @@ router.post("/active", (req, res) => {
   console.log("url: ", token);
   User.findOne({ activeToken: token }, (err, user) => {
     if (err) {
-      console.log("error find an unactivated user: " + err);
+      console.log("error finding an unactivated user: " + err);
       return res.json({
         success: false,
         message: "The account is already activated or the link is invalid!"

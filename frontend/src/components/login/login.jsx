@@ -65,6 +65,7 @@ class Login extends Component {
             />
           </FormGroup>
           <Button
+            className="btn btn-primary btn-block"
             type="submit"
             onClick={() =>
               this.tryLogin({
@@ -75,6 +76,18 @@ class Login extends Component {
           >
             Login
           </Button>
+          <p className="forgot-password text-right">
+            <a
+              href="/forgetPassword"
+              // onSelect={() => {
+              //   this.props.setBody(
+              //     <resetPassword  />
+              //   );
+              // }}
+            >
+              Forget password?
+            </a>
+          </p>
           <div id="login-message">{this.state.message}</div>
         </form>
       </div>
