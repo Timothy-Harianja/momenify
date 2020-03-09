@@ -15,6 +15,7 @@ import { Confirmation } from "./components/active/confirmation.jsx";
 import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
+import AccountPage from "./components/accountPage/accountpage.jsx";
 class App extends Component {
   state = {
     body: <Body />,
@@ -25,6 +26,16 @@ class App extends Component {
     console.log("clicked");
     this.setState({ body: obj });
   };
+
+  state = {
+    userId: null
+  };
+  componentDidMount() {
+    axios.get("/api/loginRoute/session").then(res => {
+      console.log(res.data);
+      this.setState({ userId: res.data.userId });
+    });
+  }
 
   render() {
     return (
@@ -41,6 +52,10 @@ class App extends Component {
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
             <Route path="/message" component={Message} />
+            <Route
+              path="/accountpage"
+              component={this.state.userId != undefined ? AccountPage : Login}
+            />
             <Route component={NoMatch} />
           </Switch>
         </Router>

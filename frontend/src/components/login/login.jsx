@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./login.css";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 class Login extends Component {
   state = {
@@ -17,11 +18,11 @@ class Login extends Component {
       .post("/api/loginRoute/login", obj)
       .then(res => {
         if (res.data.success == true) {
-          this.props.history.push("/");
+          // this.props.history.push("/");
+          window.location = "/";
         } else {
           this.setState({
-            message:
-              "The account is not activated or the username or password is incorrect"
+            message: "Password is incorrect or the account is not activated yet"
           });
           // console.log("password not correct:v", res.data.emailStatus);
           // this.setState({

@@ -22,8 +22,8 @@ class Body extends Component {
             <PostsContainer />
           </div>
           <div className="side-posts-container">
-            <div class="wrapper">
-              <div class="box top">
+            <div className="wrapper">
+              <div className="box top">
                 <div id="sticky">
                   <img src={kun} alt="kun" id="kun" />
                   <button>follower</button>
@@ -32,7 +32,7 @@ class Body extends Component {
 
                 <TopRightContainer />
               </div>
-              <div class="box middle">
+              <div className="box middle">
                 <div id="trend-list">
                   <ul>
                     <li>
@@ -63,7 +63,7 @@ class Body extends Component {
                   </ul>
                 </div>
               </div>
-              <div class="box bottom">
+              <div className="box bottom">
                 <button>about</button>
                 <button>privacy</button>
                 <button>term of use</button>

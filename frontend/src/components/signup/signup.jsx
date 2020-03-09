@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./signup.css";
 import axios from "axios";
 import Login from "../login/login.jsx";
-import { Redirect } from "react-router-dom";
 
 function makeTime() {
   let ts = Date.now();
@@ -10,7 +9,7 @@ function makeTime() {
   let date = date_ob.getDate();
   let month = date_ob.getMonth() + 1;
   let year = date_ob.getFullYear();
-  return month + "-" + "date" + "-" + year;
+  return month + "-" + date + "-" + year;
 }
 
 function makeToken(length) {

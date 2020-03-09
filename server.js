@@ -13,6 +13,7 @@ const loginRoute = require("./backend/routes/login-route.js");
 const signupRote = require("./backend/routes/signup-route.js");
 const confirmationRoute = require("./backend/routes/confirmation-route.js");
 const path = require("path");
+const session = require("express-session");
 
 // app.use(cors(corsOptions));
 // this is our MongoDB database
@@ -34,6 +35,19 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
+const halfDay = 1000 * 60 * 60 * 12;
+
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "quit it",
+    cookie: {
+      maxAge: halfDay,
+      sameSite: true
+    }
+  })
+);
 
 app.use("/api/signupRoute", signupRote);
 app.use("/api/loginRoute", loginRoute);
