@@ -19,6 +19,7 @@
     "react-dom": "^16.12.0",
     "react-horizontal-scrolling-menu": "^0.7.6",
     "react-infinite-scroll-component": "^5.0.4",
+    "react-password-strength": "^2.4.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.1",
