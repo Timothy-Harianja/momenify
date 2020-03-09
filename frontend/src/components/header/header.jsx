@@ -43,15 +43,12 @@ class Header extends Component {
   };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then(res => {
-      console.log(res.data);
       this.setState({ userId: res.data.userId });
     });
   }
 
   logout = () => {
-    axios.post("/api/loginRoute/logout").then(res => {
-      console.log("logout done!");
-    });
+    axios.post("/api/loginRoute/logout").then(res => {});
   };
   render() {
     return (
