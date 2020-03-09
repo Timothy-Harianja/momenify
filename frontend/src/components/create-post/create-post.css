@@ -2,6 +2,8 @@
   width: 100%;
 }
 
+
+
 #message {
   width: 57.5%;
   height: 150px;
@@ -15,26 +17,53 @@
 }
 
 .buttons {
-  margin-left: 44.5%;
+  margin-left: 43.5%;
+  
 }
 
 #post {
-  background-color: #ccc;
+  background-color: white;
   padding: 6px 10px;
+  font-family: sans-serif;
+  font-weight: bold;
 }
 
 #tag {
-  background-color: #ccc;
+  background-color: white;
   padding: 6px 10px;
+  font-family: sans-serif;
+  font-weight: bold;
 }
 
 #upload {
-  background-color: #ccc;
+  background-color: white;
   padding: 6px 10px;
+  font-family: sans-serif;
+  font-weight: bold;
 }
+
+#pic {
+  width: 20px;
+  height: 20px;
+}
+
+#postan{
+  background-color: white;
+  padding: 6px 10px;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 1200px){
+  .buttons{
+    margin-left: 41.5%;
+  }
+}
+
+
 @media only screen and (max-width: 1100px) {
   .buttons {
-    margin-left: 33%;
+    margin-left: 30%;
     margin-right: auto;
   }
   #message {
@@ -42,21 +71,41 @@
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width:850px){
+  .buttons{
+    margin-left: 32%;
+  }
+}
+
+@media only screen and (max-width:750px){
+  .buttons{
+    margin-left: 29%;
+  }
+}
+
+
+
+@media only screen and (max-width: 650px) {
   .buttons {
-    margin-left: 23.5%;
+    margin-left: 27%;
+  }
+}
+
+@media only screen and (max-width: 600px){
+  .buttons{
+    margin-left: 25%;
   }
 }
 
 @media only screen and (max-width: 550px) {
   .buttons {
-    margin-left: 23%;
+    margin-left: 22%;
   }
 }
 
 @media only screen and (max-width: 450px) {
   .buttons {
-    margin-left: 17%;
+    margin-left: 15%;
   }
 }
 @media only screen and (max-width: 380px) {
