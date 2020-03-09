@@ -4,8 +4,6 @@ const User = require("../user");
 const bcrypt = require("bcryptjs");
 
 router.get("/session", (req, res) => {
-  console.log("session get called!");
-  console.log(req.session);
   res.send(req.session);
 });
 
@@ -18,7 +16,6 @@ router.post("/logout", (req, res) => {
   res.clearCookie();
 });
 router.post("/login", (req, res) => {
-  console.log("req session in login:", req.session);
   User.findOne({ email: req.body.email }, function(err, result2) {
     if (err) {
       console.log(err);
