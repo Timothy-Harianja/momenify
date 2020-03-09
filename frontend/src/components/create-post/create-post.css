@@ -6,7 +6,7 @@
 
 #message {
   width: 57.5%;
-  height: 150px;
+  height: 60px;
   padding: 12px 20px;
   box-sizing: border-box;
   border: 2px solid #ccc;
@@ -14,6 +14,9 @@
   resize: none;
   margin-left: 7%;
   margin-right: auto;
+  white-space: normal;
+  word-wrap: break-word;
+  display: block;
 }
 
 .buttons {

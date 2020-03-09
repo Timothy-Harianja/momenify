@@ -8,8 +8,8 @@ class CreatePost extends Component {
     return (
       <div className="create-post">
         <form>
-          <input type="text" id="message" placeholder="You can say something here.">
-          </input>
+          <textarea id="message" placeholder="You can say something here.">
+          </textarea>
           <div className="buttons">
             <button type="tag" className="btn btn-light" id="tag">
             <img src={hash} alt="pic" id="pic" />
