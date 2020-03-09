@@ -1,46 +1,35 @@
 import React, { Component } from "react";
+import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./accountpage.css";
 import axios from "axios";
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { Redirect } from "react-router-dom";
 
-// import resetPassword from "./resetPassword.jsx";
-class AccountPage extends Component {
+class resetPassword extends Component {
   state = {
-    userId: null,
-    userEmail: null,
-    userNickname: null,
     oldPassword: null,
     newPassword: null,
     confirmPassword: null,
     message: null
   };
-  componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
-      console.log(res.data);
-      this.setState({
-        userId: res.data.userId,
-        userEmail: res.data.email,
-        userNickname: res.data.username
-      });
-    });
-  }
+
+  submitHandler = e => {
+    e.preventDefault();
+  };
 
   tryReset = obj => {
-    var confirmNewP = this.state.newPassword === this.state.confirmPassword;
-    console.log("confirmnewp", confirmNewP);
+    var confirmNewP = this.state.newPassword == this.state.confirmPassword;
     if (confirmNewP) {
       axios
         .post("/api/resetPasswordRoute/resetPassword", obj)
         .then(res => {
-          // if (res.data.success == true) {
-          //   // this.props.history.push("/");
-          //   window.location = "/";
-          // } else {
-          //   this.setState({
-          //     message:
-          //       "Password is incorrect or the account is not activated yet"
-          //   });
-          // }
+          if (res.data.success == true) {
+            // this.props.history.push("/");
+            window.location = "/";
+          } else {
+            this.setState({
+              message: "Password incorrect"
+            });
+          }
         })
         .catch(err => {
           console.log("error of catch:", err);
@@ -56,38 +45,7 @@ class AccountPage extends Component {
 
   render() {
     return (
-      <div className="account">
-        <form onSubmit={this.submitHandler}>
-          <h2>Account Information</h2>
-
-          <div className="form-group">
-            <label>ID:</label>
-            <input
-              className="form-control"
-              value={this.state.userId}
-              disabled
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Email:</label>
-            <input
-              className="form-control"
-              value={this.state.userEmail}
-              disabled
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Nickname</label>
-            <input
-              className="form-control"
-              value={this.state.userNickname}
-              disabled
-            />
-          </div>
-        </form>
-
+      <div className="reset-password">
         <form onSubmit={this.submitHandler}>
           <h1>Change password</h1>
 
@@ -121,7 +79,7 @@ class AccountPage extends Component {
             onClick={() =>
               this.tryReset({
                 oldPassword: this.state.oldPassword,
-                newPassword: this.state.newPassword
+                password: this.state.newPassword
               })
             }
           >
@@ -134,4 +92,4 @@ class AccountPage extends Component {
   }
 }
 
-export default AccountPage;
+export default resetPassword;

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./signup.css";
 import axios from "axios";
 import Login from "../login/login.jsx";
+import ReactPasswordStrength from "react-password-strength";
 
 function makeTime() {
   let ts = Date.now();
@@ -27,11 +28,14 @@ class Signup extends Component {
   state = {
     nickname: null,
     password: null,
+    ReEnterPassword: null,
     email: null,
     activation: false,
     activeToken: null,
     activeTokenExpire: null,
-    lastLogin: null
+    lastLogin: null,
+    content:
+      "An confirmation link has been sent to your email, please activate in 24 hours!"
   };
 
   submitHandler = e => {
@@ -39,26 +43,49 @@ class Signup extends Component {
   };
 
   putDataToUsers = json => {
-    console.log("this.json:", json);
-    console.log("this.props:", this.props);
-    axios
-      .post("/api/signupRoute/putUser", json)
-      .then(res => {
-        console.log("res: ", res);
-        console.log("res data: ", res.data);
+    var checkAll = true;
+    if (this.state.email) {
+      //not null
+      if (!this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+        checkAll = false;
+        console.log("email incorrect");
+      }
+    } else {
+      //null
+      checkAll = false;
+      this.setState({ message: "email cannot be empty" });
+    }
 
-        if (res.data.success) {
-          this.props.history.push("/confirmation");
-          // return <Redirect to="/login" />;
-        } else {
-          this.setState({
-            message: "This email has already registered"
-          });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (!(this.state.ReEnterPassword == this.state.password)) {
+      checkAll = false;
+      console.log("password doesn't match");
+      this.setState({ message: "Password doesn't match" });
+    }
+
+    if (checkAll) {
+      console.log("this.json:", json);
+      console.log("this.props:", this.props);
+      axios
+        .post("/api/signupRoute/putUser", json)
+        .then(res => {
+          console.log("res: ", res);
+          console.log("res data: ", res.data);
+
+          if (res.data.success) {
+            // this.props.setConfirmationContent(this.state.content);
+            this.props.history.push("/confirmation");
+          } else {
+            this.setState({
+              message: "This email has already registered"
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      console.log("somthing is wrong");
+    }
   };
 
   render() {
@@ -96,6 +123,16 @@ class Signup extends Component {
               onChange={e => this.setState({ password: e.target.value })}
             />
           </div>
+          <div className="form-group">
+            <label>Re-enter Password</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Re-enter Password"
+              onChange={e => this.setState({ ReEnterPassword: e.target.value })}
+            />
+          </div>
+
           <button
             type="submit"
             className="btn btn-primary btn-block"

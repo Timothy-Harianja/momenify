@@ -12,6 +12,8 @@ const router = express.Router();
 const loginRoute = require("./backend/routes/login-route.js");
 const signupRote = require("./backend/routes/signup-route.js");
 const confirmationRoute = require("./backend/routes/confirmation-route.js");
+const resetPasswordRoute = require("./backend/routes/reset-password-route.js");
+const forgetPasswordRoute = require("./backend/routes/forget-password-route.js");
 const path = require("path");
 const session = require("express-session");
 
@@ -52,6 +54,8 @@ app.use(
 app.use("/api/signupRoute", signupRote);
 app.use("/api/loginRoute", loginRoute);
 app.use("/api/activeRoute", confirmationRoute);
+app.use("/api/resetPasswordRoute", resetPasswordRoute);
+app.use("/api/forgetPasswordRoute", forgetPasswordRoute);
 
 // if (process.env.NODE_ENV == "production") {
 app.use(express.static("frontend/build"));

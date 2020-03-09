@@ -2,14 +2,26 @@
   .Login {
     padding: 60px 0;
   }
+  .reset-password form {
+    padding: 60px 0;
+  }
 
   .Login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+  .reset-password form {
     margin: 0 auto;
     max-width: 320px;
   }
 }
 
 #login-message {
+  text-align: center;
+  margin-top: 10%;
+  color: red;
+}
+#reset-password-message {
   text-align: center;
   margin-top: 10%;
   color: red;
