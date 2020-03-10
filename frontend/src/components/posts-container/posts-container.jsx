@@ -2,8 +2,9 @@ import React, { Component } from "react";
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import kun from "./kun.png";
 import PostItem from "../post-item/post-item";
-import "./posts-container.css";
+import "./container.css";
 
 class PostsContainer extends Component {
   constructor(props) {
@@ -22,11 +23,32 @@ class PostsContainer extends Component {
     // get all the posts from the
     var posts = [];
     for (var i = 0; i < this.state.posts; i++) {
-      posts.push(
-        <div key={i} className="post">
-          <PostItem imageUrl="https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-        </div>
-      );
+
+      if (i%4 == 0) {
+        posts.push(
+          <div key={i} className="post">
+            <PostItem imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" profileUrl={kun} />
+          </div>
+        );
+      } else if (i%3 == 0) {
+        posts.push(
+          <div key={i} className="post">
+            <PostItem imageUrl="https://images.unsplash.com/photo-1542977466-bbacf83cb0b4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1055&q=80" profileUrl={kun} />
+          </div>
+        );
+      } else if (i%2 == 0) {
+        posts.push(
+          <div key={i} className="post">
+            <PostItem imageUrl="https://images.unsplash.com/photo-1541832039-cab7e4310f28?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" profileUrl={kun} />
+          </div>
+        );
+      } else {
+        posts.push(
+          <div key={i} className="post">
+            <PostItem imageUrl="https://images.unsplash.com/photo-1503924087716-07cbd5f49b21?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80" profileUrl={kun} />
+          </div>
+        );
+      }
     }
     return posts;
   }

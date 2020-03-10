@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import PostItem from "../post-item/post-item";
 
-import "./posts-container.css";
+import "./container.css";
 
 class TrendContainer extends Component {
   constructor(props) {
