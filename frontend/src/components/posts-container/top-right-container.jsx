@@ -1,63 +1,56 @@
 import React, { Component } from "react";
 
-import PostItem from "../post-item/post-item";
+import kun from "./kun.png";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import "./posts-container.css";
+import "./container.css";
 
 class TopRightContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: 3,
+      followers: 5,
       loading: false
     };
   }
 
   componentDidMount() {
-    //Detect when scrolled to bottom
-    this.refs.infiniteScroll.addEventListener("scroll", () => {
-      if (
-        this.refs.infiniteScroll.scrollTop +
-          this.refs.infiniteScroll.clientHeight >=
-        this.refs.infiniteScroll.scrollHeight
-      ) {
-        this.loadMorePosts();
-      }
-    });
   }
 
-  showPosts() {
+  showFollowers = () => {
     // get all the posts from the
-    var posts = [];
-    for (var i = 0; i < this.state.posts; i++) {
-      posts.push(
-        <div key={i} className="post">
-          <PostItem imageUrl="https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
+    var followers = [];
+    for (var i = 0; i < this.state.followers; i++) {
+      followers.push(
+        <div key={i} className="follower">
+          {/* <PostItem imageUrl="https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" /> */}
+          <img src={kun} alt="kun" className="trend-img" />
+          <span>Follower {i}</span>
         </div>
       );
     }
-    return posts;
+    return followers;
   }
 
-  loadMorePosts() {
-    this.setState({ loading: true });
+  loadMoreFollowers = () => {
     setTimeout(() => {
-      this.setState({ posts: this.state.posts + 2, loading: false });
+      this.setState({ followers: this.state.followers + 5});
     }, 2000);
   }
 
   render() {
     return (
-      <div>
-        <div className="top-right-container" ref="infiniteScroll">
-          {this.showPosts()}
-          {this.state.loading ? (
-            <p className="loading-text">loading more posts...</p>
-          ) : (
-            ""
-          )}
+        <div className="top-right-container">
+          <InfiniteScroll
+            dataLength={this.state.followers}
+            next={this.loadMoreFollowers}
+            hasMore={true}
+            height={200}
+            loader={<span>Loading more followers...</span>}
+          >
+            {this.showFollowers()}
+          </InfiniteScroll>
         </div>
-      </div>
     );
   }
 }

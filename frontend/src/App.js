@@ -18,6 +18,7 @@ import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
 import AccountPage from "./components/accountPage/accountpage.jsx";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import resetPassword from "./components/accountPage/resetPassword.jsx";
 class App extends Component {
   state = {
