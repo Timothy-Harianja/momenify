@@ -64,6 +64,9 @@ class Header extends Component {
               {this.state.userId != undefined ? (
                 <Nav>
                   <Nav.Item>
+                    <Nav.Link href="/message">Message</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
                     <Nav.Link href="/accountpage">My Account</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
