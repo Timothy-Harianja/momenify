@@ -61,10 +61,12 @@ class Body extends Component {
                 </div>
               </div>
               <div className="box-bottom box">
-                <a href="#">About</a>
+                <a href="/about-us">About</a>
                 <a href="#">Privacy</a>
-                <a href="#">Terms of Use</a>
+                <a href="/term-of-use">Terms of Use</a>
+                <a href="#">Career</a>
               </div>
+              <p style={{ color: "grey" }}> Momenify © 2020</p>
             </div>
           </div>
         </div>

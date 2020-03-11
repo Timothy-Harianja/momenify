@@ -40,11 +40,11 @@
 }
 
 .follower span {
-    position: relative;
-    margin-left: 20px;
-    margin-top: 50px;
-    color: black; 
-    font-size: 15px;
+  position: relative;
+  margin-left: 20px;
+  margin-top: 50px;
+  color: black;
+  font-size: 15px;
 }
 
 .follower img {
