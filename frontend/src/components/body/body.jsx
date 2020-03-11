@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import PostsContainer from "../posts-container/posts-container";
+import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 
 import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
@@ -73,6 +74,7 @@ class Body extends Component {
         {/* <div className='side-posts-container'>
           <PostsContainer/>
         </div> */}
+        <ScrollUpButton />
       </div>
     );
   }
