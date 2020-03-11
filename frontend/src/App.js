@@ -18,7 +18,7 @@ import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
 import AccountPage from "./components/accountPage/accountpage.jsx";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import resetPassword from "./components/accountPage/resetPassword.jsx";
 class App extends Component {
   state = {
@@ -86,7 +86,10 @@ class App extends Component {
             />
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
-            <Route path="/message" component={Message} />
+            <Route
+              path="/message"
+              component={this.state.userId != undefined ? Message : Login}
+            />
             <Route
               path="/accountpage"
               component={this.state.userId != undefined ? AccountPage : Login}
