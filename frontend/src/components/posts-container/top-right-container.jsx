@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import kun from "./kun.png";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import "./container.css";
 
@@ -14,8 +14,7 @@ class TopRightContainer extends Component {
     };
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   showFollowers = () => {
     // get all the posts from the
@@ -30,27 +29,27 @@ class TopRightContainer extends Component {
       );
     }
     return followers;
-  }
+  };
 
   loadMoreFollowers = () => {
     setTimeout(() => {
-      this.setState({ followers: this.state.followers + 5});
+      this.setState({ followers: this.state.followers + 5 });
     }, 2000);
-  }
+  };
 
   render() {
     return (
-        <div className="top-right-container">
-          <InfiniteScroll
-            dataLength={this.state.followers}
-            next={this.loadMoreFollowers}
-            hasMore={true}
-            height={200}
-            loader={<span>Loading more followers...</span>}
-          >
-            {this.showFollowers()}
-          </InfiniteScroll>
-        </div>
+      <div className="top-right-container">
+        <InfiniteScroll
+          dataLength={this.state.followers}
+          next={this.loadMoreFollowers}
+          hasMore={true}
+          height={200}
+          loader={<span>Loading more followers...</span>}
+        >
+          {this.showFollowers()}
+        </InfiniteScroll>
+      </div>
     );
   }
 }
