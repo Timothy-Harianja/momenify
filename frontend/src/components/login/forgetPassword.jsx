@@ -69,7 +69,7 @@ class forgetPassword extends Component {
     return (
       <div className="reset-password">
         <form onSubmit={this.submitHandler}>
-          <h1>login with email confirmation</h1>
+          <h1>Enter your email</h1>
 
           <FormGroup controlId="email" bsSize="large">
             <FormLabel>email </FormLabel>
