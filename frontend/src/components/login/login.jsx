@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./login.css";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 class Login extends Component {
   state = {
@@ -17,13 +18,11 @@ class Login extends Component {
       .post("/api/loginRoute/login", obj)
       .then(res => {
         if (res.data.success == true) {
-          alert("password matches");
-          this.setState({
-            message: "login success"
-          });
+          // this.props.history.push("/");
+          window.location = "/";
         } else {
           this.setState({
-            message: "username or password incorrect"
+            message: "Password is incorrect or the account is not activated yet"
           });
           // console.log("password not correct:v", res.data.emailStatus);
           // this.setState({
@@ -47,7 +46,7 @@ class Login extends Component {
     return (
       <div className="Login">
         <form onSubmit={this.submitHandler}>
-          <h3>Login</h3>
+          <h1>Login</h1>
           <FormGroup controlId="email" bsSize="large">
             <FormLabel>Email</FormLabel>
             <FormControl
@@ -66,6 +65,7 @@ class Login extends Component {
             />
           </FormGroup>
           <Button
+            className="btn btn-primary btn-block"
             type="submit"
             onClick={() =>
               this.tryLogin({
@@ -76,9 +76,20 @@ class Login extends Component {
           >
             Login
           </Button>
+          <p className="forgot-password text-right">
+            <a
+              href="/forgetPassword"
+              // onSelect={() => {
+              //   this.props.setBody(
+              //     <resetPassword  />
+              //   );
+              // }}
+            >
+              Forget password?
+            </a>
+          </p>
+          <div id="login-message">{this.state.message}</div>
         </form>
-
-        <div id="message">{this.state.message}</div>
       </div>
     );
   }

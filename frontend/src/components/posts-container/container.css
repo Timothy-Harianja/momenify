@@ -1,0 +1,53 @@
+.posts-container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.post {
+  display: flex;
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 24px;
+}
+
+.top-right-container {
+  height: 250px;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  color: black;
+}
+
+.trend-container {
+  overflow: auto;
+  height: 250px;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+/* =================================================================================================== */
+/* CSS for followers */
+
+.follower {
+  width: 100%;
+  height: 60px;
+  /* border: solid;
+  border-color: black;
+  border-width: 0.8px; */
+}
+
+.follower span {
+  position: relative;
+  margin-left: 20px;
+  margin-top: 50px;
+  color: black;
+  font-size: 15px;
+}
+
+.follower img {
+  position: relative;
+  margin: 3px 0px 0px 10px;
+}

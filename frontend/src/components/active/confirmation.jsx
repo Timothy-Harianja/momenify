@@ -8,8 +8,8 @@ const Wrapper = styled.div`
 export const Confirmation = () => (
   <Wrapper>
     <h2>
-      An confirmation link has been sent to your email, please activate in 24
-      hours!
+      An confirmation link has been sent to your email, the link will expire in
+      24 hours!
     </h2>
   </Wrapper>
 );
