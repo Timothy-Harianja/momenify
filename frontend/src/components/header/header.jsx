@@ -39,11 +39,15 @@ const Styles = styled.div`
 
 class Header extends Component {
   state = {
-    userId: null
+    userId: null,
+    postExpire: null
   };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then(res => {
-      this.setState({ userId: res.data.userId });
+      this.setState({
+        userId: res.data.userId,
+        postExpire: res.data.postInterval
+      });
     });
   }
 
