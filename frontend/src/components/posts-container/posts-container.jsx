@@ -53,9 +53,12 @@ class PostsContainer extends Component {
   };
 
   loadMorePosts = () => {
-    if (this.state.posts + 3 <= this.state.moments.length) {
+    let leftPost = this.state.moments.length - this.state.posts;
+    let newPost = 0;
+    if (leftPost > 0) {
+      newPost = leftPost >= 3 ? 3 : leftPost;
       setTimeout(() => {
-        this.setState({ posts: this.state.posts + 3 });
+        this.setState({ posts: this.state.posts + newPost });
       }, 500);
     } else {
       this.setState({ loadingFeedback: "You have reached the end..." });
