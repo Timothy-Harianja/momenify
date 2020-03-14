@@ -7,6 +7,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.nickname = req.body.nickname;
   postMoment.userId = req.body.userId;
   postMoment.postmessage = req.body.postmessage;
+  postMoment.postDate = req.body.currentDate;
   postMoment.save(err => {
     if (err) {
       console.log(err);

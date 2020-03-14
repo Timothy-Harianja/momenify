@@ -5,6 +5,9 @@ import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
 
+function makeTime() {
+  return new Date().getTime();
+}
 class CreatePost extends Component {
   state = {
     userId: null,
@@ -68,7 +71,8 @@ class CreatePost extends Component {
                   this.putMoment({
                     postmessage: this.state.postmessage,
                     userId: this.state.userId,
-                    nickname: this.state.username
+                    nickname: this.state.username,
+                    currentDate: makeTime()
                   });
                 }}
               >
