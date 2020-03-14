@@ -21,7 +21,6 @@
     "express-session": "^1.17.0",
     "lsof": "^0.1.0",
     "mongoose": "^5.9.2",
-    "mongoose-simple-random": "^0.4.1",
     "morgan": "^1.9.1",
     "nodemailer": "^6.4.2",
     "nodemon": "^2.0.2",
