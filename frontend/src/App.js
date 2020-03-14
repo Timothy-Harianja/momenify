@@ -22,9 +22,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import resetPassword from "./components/accountPage/resetPassword.jsx";
 class App extends Component {
   state = {
-    body: <Body />,
-    api: "http://localhost:5000",
-    ConfirmationContent: "nothing"
+    userId: null
   };
 
   setConfirmationContent = content => {
@@ -36,9 +34,6 @@ class App extends Component {
     this.setState({ body: obj });
   };
 
-  state = {
-    userId: null
-  };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then(res => {
       console.log(res.data);
@@ -55,13 +50,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
-            <Route
-              path="/forgetPassword"
-              component={forgetPassword}
-              setBody={e => {
-                this.setBody(e);
-              }}
-            />
+            <Route path="/forgetPassword" component={forgetPassword} />
 
             <Route
               path="/signup"

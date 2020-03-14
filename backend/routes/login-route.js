@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require("../user");
 const bcrypt = require("bcryptjs");
 
+// router.post("/postCookie", (req, res) => {});
+
 router.get("/session", (req, res) => {
   res.send(req.session);
 });
