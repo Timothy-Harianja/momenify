@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-
+import axios from "axios";
 import kun from "./kun.png";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 import "./container.css";
 
 class TopRightContainer extends Component {
@@ -10,11 +9,16 @@ class TopRightContainer extends Component {
     super(props);
     this.state = {
       followers: 5,
-      loading: false
+      loading: false,
+      username: null
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    axios.get("/api/loginRoute/session").then(res => {
+      this.setState({ username: res.data.username });
+    });
+  }
 
   showFollowers = () => {
     // get all the posts from the
@@ -22,7 +26,6 @@ class TopRightContainer extends Component {
     for (var i = 0; i < this.state.followers; i++) {
       followers.push(
         <div key={i} className="follower">
-          {/* <PostItem imageUrl="https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" /> */}
           <img src={kun} alt="kun" className="trend-img" />
           <span>Follower {i}</span>
         </div>
@@ -40,15 +43,25 @@ class TopRightContainer extends Component {
   render() {
     return (
       <div className="top-right-container">
-        <InfiniteScroll
-          dataLength={this.state.followers}
-          next={this.loadMoreFollowers}
-          hasMore={true}
-          height={200}
-          loader={<span>Loading more followers...</span>}
-        >
-          {this.showFollowers()}
-        </InfiniteScroll>
+        {this.state.username ? (
+          <InfiniteScroll
+            dataLength={this.state.followers}
+            next={this.loadMoreFollowers}
+            hasMore={true}
+            height={200}
+            loader={<span>Loading more followers...</span>}
+          >
+            {this.showFollowers()}
+          </InfiniteScroll>
+        ) : (
+          <div>
+            <p>Please sign in first to see you follower and following.</p>
+
+            <a href="/login">Login</a>
+            <br></br>
+            <a href="/signup">Sign Up</a>
+          </div>
+        )}
       </div>
     );
   }
