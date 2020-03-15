@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-
 import kun from "./kun.png";
 import PostItem from "../post-item/post-item";
 import "./container.css";
@@ -59,7 +57,7 @@ class PostsContainer extends Component {
       newPost = leftPost >= 3 ? 3 : leftPost;
       setTimeout(() => {
         this.setState({ posts: this.state.posts + newPost });
-      }, 500);
+      }, 200);
     } else {
       this.setState({ loadingFeedback: "You have reached the end..." });
     }
