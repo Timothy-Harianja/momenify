@@ -26,10 +26,10 @@ class CreatePost extends Component {
   }
 
   putMoment = json => {
-    console.log("this.json:", json);
+    // console.log("this.json:", json);
     axios.post("/api/postRoute/postMoment", json).then(res => {
       if (res.data.success) {
-        this.setState({ message: "data stored!" });
+        this.setState({ message: "Your moment has been uploaded!" });
       } else {
         this.setState({ message: "data did not stored!" });
       }

@@ -10,6 +10,7 @@ const PostItem = ({ imageUrl, profileUrl, text, username }) => (
       <span className="post-item-name">{username}</span>
     </div>
     <span>{text}</span>
+
     <img className="post-item-main-image" src={imageUrl} alt="post" />
     <div className="post-item-footer">
       <Button className="post-item-like" variant="primary">

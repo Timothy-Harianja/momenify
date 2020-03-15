@@ -30,7 +30,7 @@ class PostsContainer extends Component {
     // get all the posts from the
     var posts = [];
 
-    console.log("length of moment list: ", this.state.moments.length);
+    // console.log("length of moment list: ", this.state.moments.length);
     for (let i = 0; i < this.state.posts; i++) {
       // console.log("i: " + i + " ", this.state.moments[i]);
       // console.log("i: " + i + " ", this.state.usernameList[i]);
