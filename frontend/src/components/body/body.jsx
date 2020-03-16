@@ -45,12 +45,12 @@ class Body extends Component {
   }
 
   giveLike = post => {
-    console.log(post.postid);
+    // console.log(post.postid);
     let postId = post.postid;
     axios
       .post("/api/getRoute/giveLike", { postId: postId })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;
           newlikeStatus[post.position] = true;
@@ -58,7 +58,7 @@ class Body extends Component {
           newnumofLike[post.position] += 1;
           this.setState({ likeStatus: newlikeStatus });
           this.setState({ numofLike: newnumofLike });
-          console.log("success");
+          // console.log("success");
         } else {
           this.setState({ likeMessage: res.data.message });
           if (res.data.message == "you already liked this post") {
@@ -81,13 +81,13 @@ class Body extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
-    console.log("showed post here");
+    // console.log("showed post here");
     // console.log("length of moment list: ", this.state.moments.length);
     for (let i = 0; i < this.state.posts; i++) {
       // console.log("i: " + i + " ", this.state.moments[i]);
       // console.log("i: " + i + " ", this.state.usernameList[i]);
       if (i == 1) {
-        console.log();
+        // console.log();
       }
       posts.push(
         <div key={i} className="post">
@@ -140,7 +140,7 @@ class Body extends Component {
                     likeStatus: [],
                     numofLike: [],
                     message: []*/
-    console.log("newPost.postmessage", newPost.postmessage);
+    // console.log("newPost.postmessage", newPost.postmessage);
     let newMoments = [newPost.postmessage, ...this.state.moments];
     let newPostidList = [newPost.postId, ...this.state.postidList];
     let newUsernameList = [newPost.username, ...this.state.usernameList];

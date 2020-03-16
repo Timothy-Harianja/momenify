@@ -14,12 +14,14 @@ router.get("/getMoment", (req, res) => {
   let day = 1000 * 60 * 60 * 24;
 
   Post.find({ postDate: { $gte: makeTime() - day } }, function(err, moments) {
-    if (err) console.log(err);
+    if (err) {
+      // console.log(err);
+    }
     let momentsList = [];
     let usernameList = [];
     let postidList = [];
     let numofLike = [];
-    console.log("like list", moments[0]);
+    // console.log("like list", moments[0]);
     for (let i = 0; i < moments.length; i++) {
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
@@ -63,14 +65,12 @@ router.get("/getMoment", (req, res) => {
 });
 
 router.post("/giveLike", (req, res) => {
-  console.log("user who gives a like,", req.session.userId);
-  console.log("req.body.postId,", req.body.postId);
   if (!req.session.userId) {
     return res.json({ success: false, message: "please login to like a post" });
   }
   Post.findOne({ _id: req.body.postId }, (err, result) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       return res.json({ success: false, message: "error finding the post" });
     }
 

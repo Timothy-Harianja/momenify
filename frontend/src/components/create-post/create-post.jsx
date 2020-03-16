@@ -24,7 +24,7 @@ class CreatePost extends Component {
 
   putMoment = json => {
     // console.log("this.json:", json);
-    console.log(this.state.postmessage);
+    // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
       axios.post("/api/postRoute/postMoment", json).then(res => {
         if (res.data.success) {
