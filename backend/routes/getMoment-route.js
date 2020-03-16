@@ -14,17 +14,26 @@ router.get("/getMoment", (req, res) => {
   let day = 1000 * 60 * 60 * 24;
 
   Post.find({ postDate: { $gte: makeTime() - day } }, function(err, moments) {
-    if (err) console.log(err);
+    if (err) {
+      // console.log(err);
+    }
     let momentsList = [];
     let usernameList = [];
     let postidList = [];
     let numofLike = [];
-    console.log("like list", moments[0]);
+
+    let logoList = [];
+
     for (let i = 0; i < moments.length; i++) {
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
       postidList.push(moments[i]._id);
       numofLike.push(moments[i].likeList.length);
+      if (moments[i].nickname == null) {
+        logoList.push("0");
+      } else {
+        logoList.push(moments[i].userLogo);
+      }
     }
 
     // random the moment order
@@ -47,6 +56,10 @@ router.get("/getMoment", (req, res) => {
       let temp4 = numofLike[pos1];
       numofLike[pos1] = numofLike[pos2];
       numofLike[pos2] = temp4;
+
+      let temp5 = logoList[pos1];
+      logoList[pos1] = logoList[pos2];
+      logoList[pos2] = temp5;
     }
 
     // console.log("all moments: ", momentsList);
@@ -57,20 +70,19 @@ router.get("/getMoment", (req, res) => {
       allUsername: usernameList,
       allPostid: postidList,
       numofLike: numofLike,
-      momentLength: moments.length
+      momentLength: moments.length,
+      logoList: logoList
     });
   });
 });
 
 router.post("/giveLike", (req, res) => {
-  console.log("user who gives a like,", req.session.userId);
-  console.log("req.body.postId,", req.body.postId);
   if (!req.session.userId) {
     return res.json({ success: false, message: "please login to like a post" });
   }
   Post.findOne({ _id: req.body.postId }, (err, result) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       return res.json({ success: false, message: "error finding the post" });
     }
 

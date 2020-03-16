@@ -25,11 +25,6 @@ class App extends Component {
     userId: null
   };
 
-  // setConfirmationContent = content => {
-  //   this.setState({ ConfirmationContent: content });
-  //   console.log("this.state, ", this.state.ConfirmationContent);
-  // };
-
   setBody = obj => {
     console.log("clicked");
     this.setState({ body: obj });
@@ -37,7 +32,6 @@ class App extends Component {
 
   componentDidMount() {
     axios.get("/api/loginRoute/session").then(res => {
-      console.log(res.data);
       this.setState({ userId: res.data.userId });
     });
   }
@@ -69,7 +63,7 @@ class App extends Component {
             <Route path="/active" component={Active} />
 
             <Route path="/newpassword" component={newPassword} />
-            <Route path="/confirmation" component={Confirmation} />
+            {/* <Route path="/confirmation" component={Confirmation} /> */}
             <Route path="/resetconfirmation" component={ResetConfirmation} />
 
             <Route path="/about-us" component={AboutUs} />
