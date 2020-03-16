@@ -40,13 +40,12 @@ router.post("/forgetPassword", (req, res) => {
           console.log(err);
           return res.json({ success: false });
         } else {
-          //   tokenLink = req.header.origin + "/emailLogin/" + fp.token;
           console.log("req: ", req);
-          tokenLink = req.headers.origin + "/emailLogin/" + fp.token;
+          tokenLink = req.headers.origin + "/newpassword/" + fp.token;
           mail = {
-            from: "themomenify@gmail.com",
+            from: "Momenify account password reset",
             to: fp.email,
-            subject: "Welcome to Momenify",
+            subject: "Reset your Momenify account password",
             text:
               "Below is your reset password link: \n" +
               tokenLink +
@@ -87,7 +86,7 @@ async function hashPassword(password) {
   return hashedPassword;
 }
 
-router.post("/emailLogin", (req, res) => {
+router.post("/newPassword", (req, res) => {
   console.log("emailLogin");
   var tokenLink = req.headers.referer;
   token = getToken(tokenLink);

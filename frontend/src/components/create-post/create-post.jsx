@@ -20,20 +20,22 @@ class CreatePost extends Component {
     axios.get("/api/loginRoute/session").then(res => {
       this.setState({ userId: res.data.userId, username: res.data.username });
     });
-    // axios.post("/api/loginRoute/postCookie").then(res => {
-    //   console.log("set success!");
-    // });
   }
 
   putMoment = json => {
     // console.log("this.json:", json);
-    axios.post("/api/postRoute/postMoment", json).then(res => {
-      if (res.data.success) {
-        this.setState({ message: "Your moment has been uploaded!" });
-      } else {
-        this.setState({ message: "data did not stored!" });
-      }
-    });
+    console.log(this.state.postmessage);
+    if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
+      axios.post("/api/postRoute/postMoment", json).then(res => {
+        if (res.data.success) {
+          this.setState({ message: res.data.message });
+        } else {
+          this.setState({ message: res.data.message });
+        }
+      });
+    } else {
+      alert("Input cannot be empty");
+    }
   };
 
   submitHandler = e => {
@@ -67,7 +69,7 @@ class CreatePost extends Component {
                 id="post"
                 onClick={() => {
                   document.getElementById("submitform").reset();
-
+                  this.setState({ postmessage: null });
                   this.putMoment({
                     postmessage: this.state.postmessage,
                     userId: this.state.userId,

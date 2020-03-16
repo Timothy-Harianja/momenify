@@ -43,7 +43,7 @@ class Signup extends Component {
 
   putDataToUsers = json => {
     var checkAll = true;
-    if (this.state.nickname == null) {
+    if (this.state.nickname == null || this.state.nickname.trim() == "") {
       checkAll = false;
       this.setState({ message: "Nichname cannot be empty" });
     }
