@@ -10,15 +10,15 @@ class PostsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-//       posts: 3,
-//       moments: [],
-//       usernameList: [],
-//       postidList: [],
-//       loadingFeedback: "Loading More...",
-//       likeStatus: [],
-//       numofLike: [],
-//       message: [],
-//       userLogo: []
+      //       posts: 3,
+      //       moments: [],
+      //       usernameList: [],
+      //       postidList: [],
+      //       loadingFeedback: "Loading More...",
+      //       likeStatus: [],
+      //       numofLike: [],
+      //       message: [],
+      //       userLogo: []
     };
   }
 
@@ -26,15 +26,16 @@ class PostsContainer extends Component {
   giveLike = post => {
     this.props.giveLike(post);
   };
-  
+
+  showPosts = () => {
+    return this.props.showPosts();
+  };
 
   loadMorePosts = () => {
     this.props.loadMorePosts();
   };
 
-
   render() {
- 
     return (
       <div className="posts-container">
         <InfiniteScroll

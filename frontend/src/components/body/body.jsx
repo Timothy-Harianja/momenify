@@ -32,7 +32,7 @@ class Body extends Component {
       likeStatus: [],
       numofLike: [],
       message: [],
-      logoNumber: null
+      userLogo: []
     };
   }
 
@@ -50,7 +50,8 @@ class Body extends Component {
         postidList: res.data.allPostid,
         likeStatus: Array(res.data.momentLength).fill(false),
         numofLike: res.data.numofLike,
-        message: Array(res.data.momentLength).fill("")
+        message: Array(res.data.momentLength).fill(""),
+        userLogo: res.data.logoList
       });
     });
   }
@@ -101,9 +102,7 @@ class Body extends Component {
     for (let i = 0; i < this.state.posts; i++) {
       // console.log("i: " + i + " ", this.state.moments[i]);
       // console.log("i: " + i + " ", this.state.usernameList[i]);
-      if (i == 1) {
-        // console.log();
-      }
+
       posts.push(
         <div key={i} className="post">
           <PostItem
@@ -114,7 +113,7 @@ class Body extends Component {
             }
             text={this.state.moments[i]}
             imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
-             profileUrl={
+            profileUrl={
               this.state.usernameList[i] == undefined
                 ? anonymous
                 : this.getLogo(this.state.userLogo[i])
