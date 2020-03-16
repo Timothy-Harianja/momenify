@@ -75,7 +75,9 @@ class PostsContainer extends Component {
             }
             text={this.state.moments[i]}
             imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
-            profileUrl={this.state.username == undefined ? anonymous : kun}
+            profileUrl={
+              this.state.usernameList[i] == undefined ? anonymous : kun
+            }
             postid={this.state.postidList[i]}
             giveLike={e => this.giveLike(e)}
             likeStatus={this.state.likeStatus[i]}
