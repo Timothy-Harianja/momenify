@@ -26,7 +26,7 @@ class forgetPassword extends Component {
     e.preventDefault();
   };
 
-  emailLogin = obj => {
+  newPasswordRequest = obj => {
     var checkEmail = true;
     if (this.state.email) {
       //not null
@@ -46,7 +46,7 @@ class forgetPassword extends Component {
         .then(res => {
           if (res.data.success == true) {
             // go to a page say you sent email
-            this.props.history.push("/confirmation");
+            this.props.history.push("/resetconfirmation");
           } else {
             this.setState({
               message: "email not registered"
@@ -84,7 +84,7 @@ class forgetPassword extends Component {
             className="btn btn-primary btn-block"
             type="submit"
             onClick={() =>
-              this.emailLogin({
+              this.newPasswordRequest({
                 email: this.state.email,
                 token: makeToken(30),
                 tokenExpire: new Date().getTime() + 15 * 60 * 1000
