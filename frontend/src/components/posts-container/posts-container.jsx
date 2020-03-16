@@ -92,7 +92,7 @@ class PostsContainer extends Component {
             likeStatus={this.state.likeStatus[i]}
             numofLike={this.state.numofLike[i]}
             position={i}
-            message={this.state.message}
+            message={this.state.message[i]}
           />
         </div>
       );
