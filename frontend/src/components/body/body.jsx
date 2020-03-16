@@ -1,15 +1,29 @@
 import React, { Component } from "react";
-
 import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
-
 import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
 import TrendContainer from "../posts-container/trend-container";
 import kun from "./kun.png";
+import anonymous from "../posts-container/anonymous.png";
 import CreatePost from "../create-post/create-post";
+import axios from "axios";
 
 class Body extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userId: null
+    };
+  }
+
+  componentDidMount() {
+    axios.get("/api/loginRoute/session").then(res => {
+      this.setState({
+        userId: res.data.userId
+      });
+    });
+  }
   render() {
     return (
       <div className="body">
@@ -27,7 +41,11 @@ class Body extends Component {
             <div className="wrapper">
               <div className="box top">
                 <div>
-                  <img src={kun} alt="kun" id="side-profile" />
+                  <img
+                    src={this.state.userId == null ? anonymous : kun}
+                    alt="kun"
+                    id="side-profile"
+                  />
                   <button id="follower">Followers</button>
                   <button id="following">Following</button>
                 </div>
