@@ -13,7 +13,7 @@ class EmailLogin extends Component {
     var confirmNewP = this.state.newPassword == this.state.confirmPassword;
     if (confirmNewP) {
       axios
-        .post("/api/forgetPasswordRoute/emailLogin", json)
+        .post("/api/forgetPasswordRoute/newPassword", json)
         .then(res => {
           console.log("res success status: ", res.data.success);
           if (res.data.success) {
