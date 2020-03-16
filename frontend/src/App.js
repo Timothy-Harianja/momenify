@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./components/header/header.jsx";
 import Body from "./components/body/body.jsx";
 import Active from "./components/active/active.jsx";
-import emailLogin from "./components/active/emailLogin.jsx";
+import newPassword from "./components/active/newPassword.jsx";
 import axios from "axios";
 import { NavLink } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -14,6 +14,7 @@ import forgetPassword from "./components/login/forgetPassword.jsx";
 import Signup from "./components/signup/signup.jsx";
 import { NoMatch } from "./components/404/404.jsx";
 import { Confirmation } from "./components/active/confirmation.jsx";
+import { ResetConfirmation } from "./components/active/resetConfirmation.jsx";
 import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
@@ -66,7 +67,10 @@ class App extends Component {
             />
             <Route path="/confirmation" component={Confirmation} />
             <Route path="/active" component={Active} />
-            <Route path="/emailLogin" component={emailLogin} />
+
+            <Route path="/newpassword" component={newPassword} />
+            <Route path="/confirmation" component={Confirmation} />
+            <Route path="/resetconfirmation" component={ResetConfirmation} />
 
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
