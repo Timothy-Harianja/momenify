@@ -12,7 +12,8 @@ const PostItem = ({
   giveLike,
   likeStatus,
   numofLike,
-  position
+  position,
+  message
 }) => (
   <div className="post-item-container">
     <div className="post-item-header">
@@ -34,7 +35,8 @@ const PostItem = ({
       <Button className="post-item-comment" variant="primary">
         Comment
       </Button>
-      {/* {likeStatus ? "You already liked this post" : "aaa"} */}
+      <div>{message}</div>
+      {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
       <div>{numofLike}</div>
     </div>
   </div>

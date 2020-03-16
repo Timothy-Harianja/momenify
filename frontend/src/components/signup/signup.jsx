@@ -34,7 +34,7 @@ class Signup extends Component {
     activeTokenExpire: null,
     lastLogin: null,
     content:
-      "Xingyu LiuAn confirmation link has been sent to your email, please activate in 24 hours!"
+      "An confirmation link has been sent to your email, please activate in 24 hours!"
   };
 
   submitHandler = e => {

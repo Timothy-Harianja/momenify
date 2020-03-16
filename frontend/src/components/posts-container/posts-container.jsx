@@ -17,7 +17,8 @@ class PostsContainer extends Component {
       postidList: [],
       loadingFeedback: "Loading More...",
       likeStatus: [],
-      numofLike: []
+      numofLike: [],
+      message: []
     };
   }
 
@@ -28,7 +29,8 @@ class PostsContainer extends Component {
         usernameList: res.data.allUsername,
         postidList: res.data.allPostid,
         likeStatus: Array(res.data.momentLength).fill(false),
-        numofLike: res.data.numofLike
+        numofLike: res.data.numofLike,
+        message: Array(res.data.momentLength).fill("")
       });
     });
   }
@@ -49,6 +51,16 @@ class PostsContainer extends Component {
           console.log("success");
         } else {
           this.setState({ likeMessage: res.data.message });
+          if (res.data.message == "you already liked this post") {
+            let newMessage = this.state.message;
+            newMessage[post.position] = "you already liked this post";
+            this.setState({ message: newMessage });
+          }
+          if (res.data.message == "please login to like a post") {
+            let newMessage = this.state.message;
+            newMessage[post.position] = "please login to like a post";
+            this.setState({ message: newMessage });
+          }
         }
       })
       .catch(err => {
@@ -82,6 +94,7 @@ class PostsContainer extends Component {
             likeStatus={this.state.likeStatus[i]}
             numofLike={this.state.numofLike[i]}
             position={i}
+            message={this.state.message}
           />
         </div>
       );
