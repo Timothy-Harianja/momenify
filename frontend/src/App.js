@@ -25,9 +25,10 @@ class App extends Component {
     userId: null
   };
 
-  setConfirmationContent = content => {
-    this.setState({ ConfirmationContent: content });
-  };
+  // setConfirmationContent = content => {
+  //   this.setState({ ConfirmationContent: content });
+  //   console.log("this.state, ", this.state.ConfirmationContent);
+  // };
 
   setBody = obj => {
     console.log("clicked");
@@ -64,7 +65,9 @@ class App extends Component {
               //   />
               // )}
             />
+            <Route path="/confirmation" component={Confirmation} />
             <Route path="/active" component={Active} />
+
             <Route path="/newpassword" component={newPassword} />
             <Route path="/confirmation" component={Confirmation} />
             <Route path="/resetconfirmation" component={ResetConfirmation} />
