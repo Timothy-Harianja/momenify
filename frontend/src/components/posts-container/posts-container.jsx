@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import kun from "./kun.png";
+import anonymous from "./anonymous.png";
 import PostItem from "../post-item/post-item";
 import "./container.css";
 
@@ -42,7 +43,9 @@ class PostsContainer extends Component {
             }
             text={this.state.moments[i]}
             imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
-            profileUrl={kun}
+            profileUrl={
+              this.state.usernameList[i] == undefined ? anonymous : kun
+            }
           />
         </div>
       );
