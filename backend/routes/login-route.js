@@ -32,6 +32,7 @@ router.post("/login", (req, res) => {
           req.session.userId = result2._id;
           req.session.username = result2.nickname;
           req.session.email = result2.email;
+          req.session.logoNumber = result2.logo;
           // console.log("req session in login:", req.session);
 
           return res.json({
