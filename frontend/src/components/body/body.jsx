@@ -8,12 +8,21 @@ import kun from "./kun.png";
 import anonymous from "../posts-container/anonymous.png";
 import CreatePost from "../create-post/create-post";
 import axios from "axios";
+import PostItem from "../post-item/post-item";
 
 class Body extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: null
+      userId: null,
+      posts: 3,
+      moments: [],
+      usernameList: [],
+      postidList: [],
+      loadingFeedback: "Loading More...",
+      likeStatus: [],
+      numofLike: [],
+      message: []
     };
   }
 
@@ -23,19 +32,155 @@ class Body extends Component {
         userId: res.data.userId
       });
     });
+    axios.get("/api/getRoute/getMoment").then(res => {
+      this.setState({
+        moments: res.data.allMoments,
+        usernameList: res.data.allUsername,
+        postidList: res.data.allPostid,
+        likeStatus: Array(res.data.momentLength).fill(false),
+        numofLike: res.data.numofLike,
+        message: Array(res.data.momentLength).fill("")
+      });
+    });
   }
+
+  giveLike = post => {
+    console.log(post.postid);
+    let postId = post.postid;
+    axios
+      .post("/api/getRoute/giveLike", { postId: postId })
+      .then(res => {
+        console.log(res);
+        if (res.data.success) {
+          let newlikeStatus = this.state.likeStatus;
+          newlikeStatus[post.position] = true;
+          let newnumofLike = this.state.numofLike;
+          newnumofLike[post.position] += 1;
+          this.setState({ likeStatus: newlikeStatus });
+          this.setState({ numofLike: newnumofLike });
+          console.log("success");
+        } else {
+          this.setState({ likeMessage: res.data.message });
+          if (res.data.message == "you already liked this post") {
+            let newMessage = this.state.message;
+            newMessage[post.position] = "you already liked this post";
+            this.setState({ message: newMessage });
+          }
+          if (res.data.message == "please login to like a post") {
+            let newMessage = this.state.message;
+            newMessage[post.position] = "please login to like a post";
+            this.setState({ message: newMessage });
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  showPosts = () => {
+    // get all the posts from the
+    var posts = [];
+    console.log("showed post here");
+    // console.log("length of moment list: ", this.state.moments.length);
+    for (let i = 0; i < this.state.posts; i++) {
+      // console.log("i: " + i + " ", this.state.moments[i]);
+      // console.log("i: " + i + " ", this.state.usernameList[i]);
+      if (i == 1) {
+        console.log();
+      }
+      posts.push(
+        <div key={i} className="post">
+          <PostItem
+            username={
+              this.state.usernameList[i] == undefined
+                ? " Anonymous"
+                : this.state.usernameList[i]
+            }
+            text={this.state.moments[i]}
+            imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+            profileUrl={
+              this.state.usernameList[i] == undefined ? anonymous : kun
+            }
+            postid={this.state.postidList[i]}
+            giveLike={e => this.giveLike(e)}
+            likeStatus={this.state.likeStatus[i]}
+            numofLike={this.state.numofLike[i]}
+            position={i}
+            message={this.state.message[i]}
+          />
+        </div>
+      );
+    }
+    return posts;
+  };
+
+  loadMorePosts = () => {
+    let leftPost = this.state.moments.length - this.state.posts;
+    let newPost = 0;
+    if (leftPost > 0) {
+      newPost = leftPost >= 3 ? 3 : leftPost;
+      setTimeout(() => {
+        this.setState({ posts: this.state.posts + newPost });
+      }, 200);
+    } else {
+      this.setState({ loadingFeedback: "You have reached the end..." });
+    }
+  };
+
+  addNewPost = newPost => {
+    /*                    postmessage: this.state.postmessage,
+                    userId: this.state.userId,
+                    nickname: this.state.username
+                    
+                    moments: [],
+                    usernameList: [],
+                    postidList: [],
+                    loadingFeedback: "Loading More...",
+                    likeStatus: [],
+                    numofLike: [],
+                    message: []*/
+    console.log("newPost.postmessage", newPost.postmessage);
+    let newMoments = [newPost.postmessage, ...this.state.moments];
+    let newPostidList = [newPost.postId, ...this.state.postidList];
+    let newUsernameList = [newPost.username, ...this.state.usernameList];
+    let newLikeStatus = [false, ...this.state.likeStatus];
+    let newNumofLike = [0, ...this.state.numofLike];
+    let newMessage = ["", ...this.state.message];
+    this.setState({
+      moments: newMoments,
+      postidList: newPostidList,
+      usernameList: newUsernameList,
+      likeStatus: newLikeStatus,
+      numofLike: newNumofLike,
+      Message: newMessage
+    });
+  };
+
+  // resetNewPost = () => {
+  //   let retVal = this.state.postContent;
+  //   this.setState({ postContent: {} });
+  //   return retVal;
+  // };
   render() {
     return (
       <div className="body">
         <div className="create-post-container">
           <div className="create-post-div">
-            <CreatePost />
+            <CreatePost addNewPost={newPost => this.addNewPost(newPost)} />
           </div>
         </div>
 
         <div className="home-page">
           <div className="main-posts-container">
-            <PostsContainer />
+            <PostsContainer
+              postContent={this.state.postContent}
+              resetPostContent={() => this.resetNewPost()}
+              loadMorePosts={() => this.loadMorePosts()}
+              showPosts={() => this.showPosts()}
+              giveLike={post => this.giveLike(post)}
+              state={this.state}
+            />
           </div>
           <div className="side-posts-container">
             <div className="wrapper">

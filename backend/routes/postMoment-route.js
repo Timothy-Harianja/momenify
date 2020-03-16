@@ -21,12 +21,16 @@ router.post("/postMoment", (req, res) => {
   postMoment.likeList = [];
 
   if (req.session.userId) {
-    postMoment.save(err => {
+    postMoment.save((err, newPost) => {
       if (err) {
         console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
-        return res.json({ success: true, message: "Post moment success!" });
+        return res.json({
+          success: true,
+          message: "Post moment success!",
+          postId: newPost._id
+        });
       }
     });
   } else if (req.session.postLeft == 0) {
@@ -37,7 +41,7 @@ router.post("/postMoment", (req, res) => {
     });
   } else {
     req.session.postLeft--;
-    postMoment.save(err => {
+    postMoment.save((err, newPost) => {
       if (err) {
         console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
@@ -47,7 +51,8 @@ router.post("/postMoment", (req, res) => {
           message:
             "Post moment success! You have " +
             req.session.postLeft +
-            " left for today!"
+            " left for today!",
+          postId: newPost._id
         });
       }
     });

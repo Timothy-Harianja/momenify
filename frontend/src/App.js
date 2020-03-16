@@ -69,7 +69,7 @@ class App extends Component {
             <Route path="/active" component={Active} />
 
             <Route path="/newpassword" component={newPassword} />
-            <Route path="/confirmation" component={Confirmation} />
+            {/* <Route path="/confirmation" component={Confirmation} /> */}
             <Route path="/resetconfirmation" component={ResetConfirmation} />
 
             <Route path="/about-us" component={AboutUs} />
