@@ -8,22 +8,38 @@ import kun from "./kun.png";
 import anonymous from "../posts-container/anonymous.png";
 import CreatePost from "../create-post/create-post";
 import axios from "axios";
+import logo1 from "../images/logo1.png";
+import logo2 from "../images/logo2.png";
+import logo3 from "../images/logo3.png";
+import logo4 from "../images/logo4.png";
+import logo5 from "../images/logo5.png";
+import logo6 from "../images/logo6.png";
+import logo7 from "../images/logo7.png";
+import logo8 from "../images/logo1.png";
+import logo9 from "../images/logo9.png";
 
 class Body extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: null
+      userId: null,
+      logoNumber: null
     };
   }
 
   componentDidMount() {
     axios.get("/api/loginRoute/session").then(res => {
       this.setState({
-        userId: res.data.userId
+        userId: res.data.userId,
+        logoNumber: res.data.logoNumber
       });
     });
   }
+
+  getLogo = num => {
+    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
+    return list[parseInt(num) - 1];
+  };
   render() {
     return (
       <div className="body">
@@ -42,7 +58,11 @@ class Body extends Component {
               <div className="box top">
                 <div>
                   <img
-                    src={this.state.userId == null ? anonymous : kun}
+                    src={
+                      this.state.userId == null
+                        ? anonymous
+                        : this.getLogo(this.state.logoNumber)
+                    }
                     alt="kun"
                     id="side-profile"
                   />

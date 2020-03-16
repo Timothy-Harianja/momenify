@@ -19,7 +19,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.postmessage = req.body.postmessage;
   postMoment.postDate = req.body.currentDate;
   postMoment.likeList = [];
-
+  postMoment.userLogo = req.body.userLogo;
   if (req.session.userId) {
     postMoment.save(err => {
       if (err) {

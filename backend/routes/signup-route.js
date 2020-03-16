@@ -47,6 +47,8 @@ router.post("/putUser", (req, res) => {
   user.activation = req.body.activation;
   user.activeToken = req.body.activeToken;
   user.activeTokenExpire = req.body.activeTokenExpire;
+  user.logo = Math.floor(Math.random() * 9 + 1);
+
   user.password = hashPassword(req.body.password).then(result => {
     user.password = result;
 

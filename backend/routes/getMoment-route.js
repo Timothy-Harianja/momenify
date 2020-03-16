@@ -19,12 +19,18 @@ router.get("/getMoment", (req, res) => {
     let usernameList = [];
     let postidList = [];
     let numofLike = [];
-    console.log("like list", moments[0]);
+    let logoList = [];
+
     for (let i = 0; i < moments.length; i++) {
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
       postidList.push(moments[i]._id);
       numofLike.push(moments[i].likeList.length);
+      if (moments[i].nickname == null) {
+        logoList.push("0");
+      } else {
+        logoList.push(moments[i].userLogo);
+      }
     }
 
     // random the moment order
@@ -47,6 +53,10 @@ router.get("/getMoment", (req, res) => {
       let temp4 = numofLike[pos1];
       numofLike[pos1] = numofLike[pos2];
       numofLike[pos2] = temp4;
+
+      let temp5 = logoList[pos1];
+      logoList[pos1] = logoList[pos2];
+      logoList[pos2] = temp5;
     }
 
     // console.log("all moments: ", momentsList);
@@ -57,7 +67,8 @@ router.get("/getMoment", (req, res) => {
       allUsername: usernameList,
       allPostid: postidList,
       numofLike: numofLike,
-      momentLength: moments.length
+      momentLength: moments.length,
+      logoList: logoList
     });
   });
 });
