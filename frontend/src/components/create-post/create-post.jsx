@@ -38,7 +38,8 @@ class CreatePost extends Component {
           this.props.addNewPost({
             username: this.state.username,
             postmessage: this.state.postmessage,
-            postId: res.data.postId
+            postId: res.data.postId,
+            logoNumber: this.state.userLogo
           });
           this.setState({ postmessage: null });
         } else {

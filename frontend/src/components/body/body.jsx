@@ -145,31 +145,21 @@ class Body extends Component {
   };
 
   addNewPost = newPost => {
-    /*                    postmessage: this.state.postmessage,
-                    userId: this.state.userId,
-                    nickname: this.state.username
-                    
-                    moments: [],
-                    usernameList: [],
-                    postidList: [],
-                    loadingFeedback: "Loading More...",
-                    likeStatus: [],
-                    numofLike: [],
-                    message: []*/
-    // console.log("newPost.postmessage", newPost.postmessage);
     let newMoments = [newPost.postmessage, ...this.state.moments];
     let newPostidList = [newPost.postId, ...this.state.postidList];
     let newUsernameList = [newPost.username, ...this.state.usernameList];
     let newLikeStatus = [false, ...this.state.likeStatus];
     let newNumofLike = [0, ...this.state.numofLike];
     let newMessage = ["", ...this.state.message];
+    let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
     this.setState({
       moments: newMoments,
       postidList: newPostidList,
       usernameList: newUsernameList,
       likeStatus: newLikeStatus,
       numofLike: newNumofLike,
-      Message: newMessage
+      Message: newMessage,
+      userLogo: newLogoList
     });
   };
 
