@@ -57,12 +57,10 @@ class Body extends Component {
   }
 
   giveLike = post => {
-    // console.log(post.postid);
     let postId = post.postid;
     axios
       .post("/api/getRoute/giveLike", { postId: postId })
       .then(res => {
-        // console.log(res);
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;
           newlikeStatus[post.position] = true;
@@ -70,7 +68,6 @@ class Body extends Component {
           newnumofLike[post.position] += 1;
           this.setState({ likeStatus: newlikeStatus });
           this.setState({ numofLike: newnumofLike });
-          // console.log("success");
         } else {
           this.setState({ likeMessage: res.data.message });
           if (res.data.message == "you already liked this post") {
@@ -159,7 +156,8 @@ class Body extends Component {
       likeStatus: newLikeStatus,
       numofLike: newNumofLike,
       Message: newMessage,
-      userLogo: newLogoList
+      userLogo: newLogoList,
+      posts: this.state.posts + 1
     });
   };
 
