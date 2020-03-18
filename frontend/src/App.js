@@ -18,6 +18,7 @@ import { ResetConfirmation } from "./components/active/resetConfirmation.jsx";
 import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
+import Career from "./components/career/career.jsx";
 import AccountPage from "./components/accountPage/accountpage.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 class App extends Component {
@@ -68,6 +69,7 @@ class App extends Component {
 
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
+            <Route path="/careers" component={Career}/>
             <Route
               path="/message"
               component={this.state.userId != undefined ? Message : Login}
