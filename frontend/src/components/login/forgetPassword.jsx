@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import "./login.css";
+import "./forgetPassword.css";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -37,7 +37,7 @@ class forgetPassword extends Component {
     } else {
       //null
       checkEmail = false;
-      this.setState({ message: "email cannot be empty" });
+      this.setState({ message: "Email cannot be empty" });
     }
 
     if (checkEmail) {
@@ -49,7 +49,7 @@ class forgetPassword extends Component {
             this.props.history.push("/resetconfirmation");
           } else {
             this.setState({
-              message: "email not registered"
+              message: "Email not registered"
             });
           }
         })
@@ -57,7 +57,7 @@ class forgetPassword extends Component {
           console.log("error of catch:", err);
         });
     } else {
-      this.setState({ message: "your email incorrect" });
+      this.setState({ message: "Your email incorrect" });
     }
   };
 
@@ -69,10 +69,10 @@ class forgetPassword extends Component {
     return (
       <div className="reset-password">
         <form onSubmit={this.submitHandler}>
-          <h1>Enter your email</h1>
+          <h1> Forget Password</h1>
 
           <FormGroup controlId="email" bsSize="large">
-            <FormLabel>email </FormLabel>
+            <FormLabel>Email Address</FormLabel>
             <FormControl
               //   value={password}
               onChange={e => this.setState({ email: e.target.value })}
@@ -91,7 +91,7 @@ class forgetPassword extends Component {
               })
             }
           >
-            send
+            Send
           </Button>
           <div id="forget-password-message">{this.state.message}</div>
         </form>
