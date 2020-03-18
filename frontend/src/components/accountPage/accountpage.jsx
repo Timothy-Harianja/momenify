@@ -84,12 +84,12 @@ class AccountPage extends Component {
             />
           </div>
         </form>
-
+        <br></br>
         <form onSubmit={this.submitHandler}>
-          <h1>Change password</h1>
+          <h2>Change Password</h2>
 
           <FormGroup controlId="old-password" bsSize="large">
-            <FormLabel>old password </FormLabel>
+            <FormLabel>Current Password </FormLabel>
             <FormControl
               //   value={password}
               onChange={e => this.setState({ oldPassword: e.target.value })}
@@ -105,7 +105,7 @@ class AccountPage extends Component {
             />
           </FormGroup>
           <FormGroup controlId="confirm-password" bsSize="large">
-            <FormLabel>Confirm new Password </FormLabel>
+            <FormLabel>Confirm New Password </FormLabel>
             <FormControl
               //   value={password}
               onChange={e => this.setState({ confirmPassword: e.target.value })}
@@ -122,7 +122,7 @@ class AccountPage extends Component {
               })
             }
           >
-            submit
+            Submit
           </Button>
           {this.state.message == "password has resetted" ? (
             <div id="reset-password-message" style={{ color: "green" }}>
