@@ -4,6 +4,7 @@ import pic from "./imageicon.png";
 import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
+import ImageUploader from "react-images-upload";
 
 function makeTime() {
   return new Date().getTime();
@@ -54,6 +55,8 @@ class CreatePost extends Component {
   submitHandler = e => {
     e.preventDefault();
   };
+ 
+  
   render() {
     return (
       <div className="create-post">
@@ -64,6 +67,8 @@ class CreatePost extends Component {
             placeholder="You can say something here."
             onChange={e => this.setState({ postmessage: e.target.value })}
           ></textarea>
+         
+       
           <div className="buttons-container">
             {this.state.message}
 
@@ -72,10 +77,13 @@ class CreatePost extends Component {
                 <img src={hash} alt="pic" id="pic" />
                 Hashtag
               </button>
-              <button type="upload" className="btn btn-light" id="upload">
-                <img src={pic} alt="pic" id="pic" />
+              <div class = "file btn btn-lg btn-light" id="uploadbutton">
+              <img src={pic} alt="pic" id="pic" />
                 Photo
-              </button>
+              <input type="file" name="file" id="uploadfile" />
+              </div>
+              
+              
               <button
                 type="post"
                 className="btn btn-light"
