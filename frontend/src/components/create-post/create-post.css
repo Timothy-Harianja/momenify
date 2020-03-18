@@ -1,7 +1,21 @@
 .create-post {
   width: 100%;
 }
-
+#uploadbutton {
+  position: relative;
+  overflow: hidden;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+  font-weight: bold;
+  font-size: 15px;
+  background-color: white;
+}
+#uploadfile {
+  position: absolute;
+  font-size: 15px;
+  opacity: 0;
+  right: 0;
+  top: 0;
+}
 #message {
   width: 750px;
   height: 75px;
