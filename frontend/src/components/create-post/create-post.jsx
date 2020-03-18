@@ -4,7 +4,6 @@ import pic from "./imageicon.png";
 import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
-// import ImageUploader from "react-images-upload";
 
 function makeTime() {
   return new Date().getTime();
