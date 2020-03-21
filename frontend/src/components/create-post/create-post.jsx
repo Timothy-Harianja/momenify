@@ -54,8 +54,7 @@ class CreatePost extends Component {
   submitHandler = e => {
     e.preventDefault();
   };
- 
-  
+
   render() {
     return (
       <div className="create-post">
@@ -66,8 +65,7 @@ class CreatePost extends Component {
             placeholder="You can say something here."
             onChange={e => this.setState({ postmessage: e.target.value })}
           ></textarea>
-         
-       
+
           <div className="buttons-container">
             {this.state.message}
 
@@ -76,13 +74,12 @@ class CreatePost extends Component {
                 <img src={hash} alt="pic" id="pic" />
                 Hashtag
               </button>
-              <div class = "file btn btn-lg btn-light" id="uploadbutton">
-              <img src={pic} alt="pic" id="pic" />
+              <div class="file btn btn-lg btn-light" id="uploadbutton">
+                <img src={pic} alt="pic" id="pic" />
                 Photo
-              <input type="file" name="file" id="uploadfile" />
+                <input type="file" name="file" id="uploadfile" />
               </div>
-              
-              
+
               <button
                 type="post"
                 className="btn btn-light"

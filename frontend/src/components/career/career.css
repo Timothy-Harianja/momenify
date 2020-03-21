@@ -1,0 +1,73 @@
+@media all and (min-width: 480px) {
+    .career{
+        padding: 60px 0;
+    }
+  
+}
+
+
+#careerheader{
+    text-align: center;
+}
+
+#resume {
+    margin-left: 100px;
+    position: relative;
+    overflow: hidden;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: white;
+  }
+
+#uploadresume {
+    
+    position: absolute;
+    font-size: 15px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+
+#cover{
+    margin-left: 100px;
+    position: relative;
+    overflow: hidden;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: white;
+}
+
+#uploadcover{
+    position: absolute;
+    font-size: 15px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+
+#resbody {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 100px;
+    margin-left: 100px;
+    font-size: 120%;
+  }
+
+  #submit {
+    background-color: white;
+    padding: 6px 10px;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+    font-weight: bold;
+    font-size: 20px;
+    width: 100px;
+    margin-left: 1%;
+    margin-right: auto;
+  }
+
+  #personalinfo{
+      margin-left:100px;
+      margin-right: 100px;
+
+  }

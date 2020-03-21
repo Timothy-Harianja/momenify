@@ -19,6 +19,7 @@ import logo7 from "../images/logo7.png";
 import logo8 from "../images/logo1.png";
 import logo9 from "../images/logo9.png";
 
+
 class Body extends Component {
   constructor(props) {
     super(props);
@@ -229,9 +230,9 @@ class Body extends Component {
               </div>
               <div className="box-bottom box">
                 <a href="/about-us">About</a>
-                <a href="#">Privacy</a>
+                <a href="/privacy">Privacy</a>
                 <a href="/term-of-use">Terms of Use</a>
-                <a href="#">Career</a>
+                <a href="/careers">Careers</a>
               </div>
               <p style={{ color: "grey" }}> Momenify © 2020</p>
             </div>
