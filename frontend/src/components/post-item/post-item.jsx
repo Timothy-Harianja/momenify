@@ -86,7 +86,6 @@ class PostItem extends React.Component {
               </span>
             </div>
             <div className="post-item-description">{this.props.text}</div>
-        
             <img className="post-item-main-image" src={this.props.imageUrl} alt="post" />
             <div className="post-item-footer">
               <div className="post-item-footer-stats">

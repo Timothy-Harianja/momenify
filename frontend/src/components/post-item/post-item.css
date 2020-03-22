@@ -9,6 +9,7 @@
   border-style: solid;
   border-width: 1.5px;
   border-color: rgba(227, 235, 253, 0.8);
+  
 }
 
 .post-item-header {
@@ -17,11 +18,9 @@
   margin-bottom: 12px;
 }
 
-//post text input/description
 .post-item-description {
-  margin-left: 2%;
   word-wrap: break-word;
-  /* padding: 0px 15px; */
+  margin-left: 2%;
 }
 
 .post-item-header-profile {
