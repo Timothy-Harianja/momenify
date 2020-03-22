@@ -19,7 +19,10 @@
 }
 
 .post-item-description {
-  word-wrap: break-word;
+  /* word-wrap: break-word; */
+  overflow-wrap: break-word;
+  width: 96%;
+  margin-right: 2%;
   margin-left: 2%;
 }
 
@@ -128,6 +131,7 @@
 }
 
 .post-item-footer-comment {
+  overflow-wrap: break-word;
   width: 96%;
   margin-right: 2%;
   margin-left: 2%;
