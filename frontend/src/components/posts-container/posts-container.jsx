@@ -22,7 +22,10 @@ class PostsContainer extends Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+
+  }
+  
   giveLike = post => {
     this.props.giveLike(post);
   };

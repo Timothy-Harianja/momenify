@@ -10,7 +10,8 @@ import axios from "axios";
 
 const Styles = styled.div`
   .navbar {
-    background-color: #e3ebfd;
+    background-color: #e3ebfd; /* light blue */
+    /* background-color: white; */
   }
   a,
   .navbar-nav,
