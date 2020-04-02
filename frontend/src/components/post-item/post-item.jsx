@@ -66,35 +66,39 @@ class PostItem extends React.Component {
     super(props)
     this.commentInput = React.createRef();
     this.state ={
-      commentInputBox: false
-      
+      commentInputBox: false,
+      commentNumber: 4
     }
-  }
-
-  showCommentInputBox = () => {
-      this.setState({commentInputBox: !this.state.commentInputBox})
   }
   
   CommentSection = (props) => {
-    if (props.message.length > 5) {
+    if (props.message.length < 4) {
       return (
         <div>
-            <span>
-              {props.message.forEach(message =>
-              "<div>" +
-                message
-               + "</div>"
-              )}
-            </span>
+          <div>
+            {
+              props.message.map((message,index) =>
+                (index < 4) ?
+                <div>{message}</div>
+                :
+                ""
+              )
+            }
+          </div>
         </div>
       )
-    } else if(props.message.length < 5) {
+    } else if(props.message.length > 4) {
         return (
           <div>
             <div>
-              {props.message.map(message =>
+            {
+              props.message.map((message,index) =>
+                (index < this.state.commentNumber) ?
                 <div>{message}</div>
-              )}
+                :
+                ""
+              )
+            }
             </div>
             <div className='show-more-footer-comment' onClick={this.showMoreComment}>
               Show more comment
@@ -107,8 +111,13 @@ class PostItem extends React.Component {
 
   showMoreComment = () => {
     // I think i need access to the state
+    this.setState({commentNumber: this.state.commentNumber + 3})
   }
 
+  showCommentInputBox = () => {
+    this.setState({commentInputBox: !this.state.commentInputBox})
+  }
+  
   focusCommentInput = () => {
     this.commentInput.current.focus();
   }
