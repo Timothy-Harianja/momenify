@@ -37,8 +37,9 @@
 
 .post-item-header-buttons {
   position: relative;
-  top: 5px;
-  right: -270px;
+  top: 9px;
+  margin-right: 9px;
+  float: right;
 }
 
 .post-item-header-name {
@@ -141,6 +142,12 @@
   width: 100%;
 }
 
+.show-more-footer-comment {
+  color: #0645AD;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .comment-box {
   width: 90%;
   height: 50px;
@@ -164,10 +171,5 @@
 @media only screen and (max-width: 732px) {
   .post-item-main-image {
     max-width: 732px;
-  }
-
-  .post-item-header-buttons {
-    position: relative;
-    right: -20px;
   }
 }

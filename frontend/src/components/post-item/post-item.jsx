@@ -3,6 +3,7 @@ import React from "react";
 import "./post-item.css";
 import Button from "react-bootstrap/Button";
 import CustomButton from "../custom-button/custom-button.component";
+import PostDropdown from "../post-dropdown/post-dropdown";
 
 // const PostItem = ({
 //   imageUrl,
@@ -63,13 +64,53 @@ import CustomButton from "../custom-button/custom-button.component";
 class PostItem extends React.Component {
   constructor (props) {
     super(props)
+    this.commentInput = React.createRef();
     this.state ={
       commentInputBox: false
+      
     }
   }
 
   showCommentInputBox = () => {
       this.setState({commentInputBox: !this.state.commentInputBox})
+  }
+  
+  CommentSection = (props) => {
+    if (props.message.length > 5) {
+      return (
+        <div>
+            <span>
+              {props.message.forEach(message =>
+              "<div>" +
+                message
+               + "</div>"
+              )}
+            </span>
+        </div>
+      )
+    } else if(props.message.length < 5) {
+        return (
+          <div>
+            <div>
+              {props.message.map(message =>
+                <div>{message}</div>
+              )}
+            </div>
+            <div className='show-more-footer-comment' onClick={this.showMoreComment}>
+              Show more comment
+            </div> 
+          </div>
+      )
+    }
+    
+  }
+
+  showMoreComment = () => {
+    // I think i need access to the state
+  }
+
+  focusCommentInput = () => {
+    this.commentInput.current.focus();
   }
 
   render () 
@@ -80,10 +121,12 @@ class PostItem extends React.Component {
               <img className="post-item-header-profile" src={this.props.profileUrl} />
               <span className="post-item-header-name">{this.props.username}</span>
               <span className="post-item-header-buttons">
-                <CustomButton color="base">Follow</CustomButton>
+                {/* <CustomButton color="base">Follow</CustomButton>
                 <CustomButton color="base">Message</CustomButton>
-                <CustomButton color="red">Report</CustomButton>    
+                <CustomButton color="red">Report</CustomButton>     */}
+                <PostDropdown></PostDropdown>
               </span>
+             
             </div>
             <div className="post-item-description">{this.props.text}</div>
             <img className="post-item-main-image" src={this.props.imageUrl} alt="post" />
@@ -106,26 +149,23 @@ class PostItem extends React.Component {
                   /* onClick={() => this.props.giveLike({ postid, position })} */
                   className="post-item-footer-comment-button" 
                   variant="primary"
-                  onClick={this.showCommentInputBox}
+                  for="focus-post"
+                  onClick={this.focusCommentInput}
+                  /* onClick={this.showCommentInputBox} */
                 >
                   Comment
                 </Button>
               </div> 
-              <div className="post-item-footer-comment">{this.props.message}123123213</div>
-              {
-                  this.state.commentInputBox ?
-                  (
-                    <div className="post-item-footer-comment-box">
-                      <form>
-                        <input className ="comment-box" type="text" id="commentInputBox" required></input>
-                        <input className ="comment-post" type="submit" value="POST"></input>
-                      </form>
-                    </div>
-
-                  )
-                  :
-                  ""
-                }
+              <div className="post-item-footer-comment">
+                <this.CommentSection message={this.props.message}>
+                </this.CommentSection>
+              </div>
+              <div className="post-item-footer-comment-box">
+                <form>
+                  <input ref={this.commentInput} className ="comment-box" type="text" id="commentInputBox" required></input>
+                  <input className ="comment-post" type="submit" value="POST"></input>
+                </form>
+              </div>
             </div>
           </div>
         );
