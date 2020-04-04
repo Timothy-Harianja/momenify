@@ -13,7 +13,7 @@ function getRandomInt(max) {
 router.get("/getMoment", (req, res) => {
   let day = 1000 * 60 * 60 * 24 * 7;
 
-  Post.find({ postDate: { $gte: makeTime() - day } }, function(err, moments) {
+  Post.find({ postDate: { $gte: makeTime() - day } }, function (err, moments) {
     if (err) {
       // console.log(err);
     }
@@ -21,7 +21,6 @@ router.get("/getMoment", (req, res) => {
     let usernameList = [];
     let postidList = [];
     let numofLike = [];
-
     let logoList = [];
 
     for (let i = 0; i < moments.length; i++) {
@@ -35,6 +34,8 @@ router.get("/getMoment", (req, res) => {
         logoList.push(moments[i].userLogo);
       }
     }
+
+    console.log("numofLike: ", numofLike);
 
     // random the moment order
     for (let j = 0; j < moments.length; j++) {
@@ -71,7 +72,7 @@ router.get("/getMoment", (req, res) => {
       allPostid: postidList,
       numofLike: numofLike,
       momentLength: moments.length,
-      logoList: logoList
+      logoList: logoList,
     });
   });
 });
@@ -86,24 +87,26 @@ router.post("/giveLike", (req, res) => {
       return res.json({ success: false, message: "error finding the post" });
     }
 
+    console.log("result from givelike: ", result);
+
     if (result.likeList.includes(req.session.userId)) {
       return res.json({
         success: false,
-        message: "you already liked this post"
+        message: "you already liked this post",
       });
     }
     result.likeList.push(req.session.userId);
-    result.save(err => {
+    result.save((err) => {
       if (err) {
         return res.json({
           success: false,
-          message: "error save you like to database"
+          message: "error save you like to database",
         });
       }
       return res.json({
         success: true,
         message: "success",
-        numofLike: result.likeList.length
+        numofLike: result.likeList.length,
       });
     });
   });

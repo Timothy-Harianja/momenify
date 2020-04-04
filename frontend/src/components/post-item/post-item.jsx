@@ -63,10 +63,13 @@ import PostDropdown2 from "../post-dropdown/post-dropdown2";
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
+    // console.log("props: ", props);
     this.commentInput = React.createRef();
     this.state = {
       commentInputBox: false,
       commentNumber: 4,
+      postid: this.props.postid,
+      position: this.props.position,
     };
   }
 
@@ -114,6 +117,7 @@ class PostItem extends React.Component {
   };
 
   render() {
+    // console.log("current position", this.state.position);
     return (
       <div className="post-item-container">
         <div className="post-item-header">
@@ -123,9 +127,6 @@ class PostItem extends React.Component {
           />
           <span className="post-item-header-name">{this.props.username}</span>
           <span className="post-item-header-buttons">
-            {/* <CustomButton color="base">Follow</CustomButton>
-                <CustomButton color="base">Message</CustomButton>
-                <CustomButton color="red">Report</CustomButton>     */}
             <PostDropdown2></PostDropdown2>
           </span>
         </div>
@@ -138,15 +139,25 @@ class PostItem extends React.Component {
         <div className="post-item-footer">
           <div className="post-item-footer-stats">
             <span className="post-item-footer-number-like">
-              Number of likes: {this.props.numofLike}512
+              Number of likes: {this.props.numofLike}
             </span>
             {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
             <span className="post-item-footer-number-comment">
               Number of comments: 5
             </span>
           </div>
+
           <div className="post-item-footer-buttons">
-            <Button className="post-item-footer-like-button" variant="primary">
+            <Button
+              className="post-item-footer-like-button"
+              variant="primary"
+              onClick={() =>
+                this.props.giveLike({
+                  postid: this.state.postid,
+                  position: this.state.position,
+                })
+              }
+            >
               Like
             </Button>
 
