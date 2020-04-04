@@ -9,7 +9,8 @@
   font-size: 15px;
   background-color: white;
 }
-#uploadfile {
+
+#file {
   position: absolute;
   font-size: 15px;
   opacity: 0;

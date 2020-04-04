@@ -121,7 +121,8 @@ class Body extends Component {
             likeStatus={this.state.likeStatus[i]}
             numofLike={this.state.numofLike[i]}
             position={i}
-            message={this.state.message[i]}
+            message={["What a cool pic!", "Nice picture!", "Awesomeeee", "Interesting", "Random Text Random Text", "qksdlbmntisd", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum"]} // i change it so we can get the whole list
+            
           />
         </div>
       );
