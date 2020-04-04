@@ -11,7 +11,7 @@ function getRandomInt(max) {
 }
 
 router.get("/getMoment", (req, res) => {
-  let day = 1000 * 60 * 60 * 24;
+  let day = 1000 * 60 * 60 * 24 * 7;
 
   Post.find({ postDate: { $gte: makeTime() - day } }, function(err, moments) {
     if (err) {
