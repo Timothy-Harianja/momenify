@@ -2,8 +2,8 @@ import React from "react";
 
 import "./post-item.css";
 import Button from "react-bootstrap/Button";
-import CustomButton from "../custom-button/custom-button.component";
-import PostDropdown from "../post-dropdown/post-dropdown";
+// import CustomButton from "../custom-button/custom-button.component";
+// import PostDropdown from "../post-dropdown/post-dropdown";
 import PostDropdown2 from "../post-dropdown/post-dropdown2";
 
 // const PostItem = ({
