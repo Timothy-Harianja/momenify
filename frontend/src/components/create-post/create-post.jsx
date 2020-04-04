@@ -15,24 +15,24 @@ class CreatePost extends Component {
     postmessage: null,
     message: null,
     userLogo: null,
-    fileName: ''
+    fileName: "",
   };
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
+    axios.get("/api/loginRoute/session").then((res) => {
       this.setState({
         userId: res.data.userId,
         username: res.data.username,
-        userLogo: res.data.logoNumber
+        userLogo: res.data.logoNumber,
       });
     });
   }
 
-  putMoment = json => {
+  putMoment = (json) => {
     // console.log("this.json:", json);
     // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      axios.post("/api/postRoute/postMoment", json).then(res => {
+      axios.post("/api/postRoute/postMoment", json).then((res) => {
         if (res.data.success) {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
@@ -40,7 +40,7 @@ class CreatePost extends Component {
             username: this.state.username,
             postmessage: this.state.postmessage,
             postId: res.data.postId,
-            logoNumber: this.state.userLogo
+            logoNumber: this.state.userLogo,
           });
           this.setState({ postmessage: null });
         } else {
@@ -52,30 +52,31 @@ class CreatePost extends Component {
     }
   };
 
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
   };
- 
-  
-  onChange = e => {
-    switch(e.target.name){
-    case 'selectedFile':
-    if (e.target.files.length>0) {
 
-        this.setState({ fileName: e.target.files[0].name });
-    }
-    break;
+  onChange = (e) => {
+    switch (e.target.name) {
+      case "selectedFile":
+        if (e.target.files.length > 0) {
+          this.setState({ fileName: e.target.files[0].name });
+        }
+        break;
       default:
         this.setState({ [e.target.name]: e.target.value });
-     }
+    }
   };
-
 
   render() {
     const { fileName } = this.state;
     let file = null;
 
-   file = fileName?(<span>You have selected: {fileName}</span>):(<span></span>)
+    file = fileName ? (
+      <span>You have selected: {fileName}</span>
+    ) : (
+      <span></span>
+    );
     return (
       <div className="create-post">
         <form onSubmit={this.submitHandler} id="submitform">
@@ -83,7 +84,7 @@ class CreatePost extends Component {
             id="message"
             type="text"
             placeholder="You can say something here."
-            onChange={e => this.setState({ postmessage: e.target.value })}
+            onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
           <div className="buttons-container">
@@ -97,11 +98,14 @@ class CreatePost extends Component {
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />
                 Photo
-              <input id ="file" type="file" name="file" name="selectedFile" onChange = {(event)=>this.onChange(event)}/>
-              
-              
-<!--                 <input type="file" name="file" id="uploadfile" />
- -->
+                <input
+                  id="file"
+                  type="file"
+                  name="file"
+                  name="selectedFile"
+                  onChange={(event) => this.onChange(event)}
+                />
+                {/* <input type="file" name="file" id="uploadfile" /> */}
               </div>
 
               <button
@@ -115,7 +119,7 @@ class CreatePost extends Component {
                     userId: this.state.userId,
                     nickname: this.state.username,
                     currentDate: makeTime(),
-                    userLogo: this.state.userLogo
+                    userLogo: this.state.userLogo,
                   });
                 }}
               >
@@ -123,11 +127,11 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
-            <label id="imagelabel" htmlFor="file">{file}</label>
+            <label id="imagelabel" htmlFor="file">
+              {file}
+            </label>
           </div>
-          
         </form>
-        
       </div>
     );
   }
