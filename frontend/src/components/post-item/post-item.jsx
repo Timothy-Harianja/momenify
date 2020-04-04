@@ -4,6 +4,7 @@ import "./post-item.css";
 import Button from "react-bootstrap/Button";
 import CustomButton from "../custom-button/custom-button.component";
 import PostDropdown from "../post-dropdown/post-dropdown";
+import PostDropdown2 from "../post-dropdown/post-dropdown2";
 
 // const PostItem = ({
 //   imageUrl,
@@ -133,7 +134,7 @@ class PostItem extends React.Component {
                 {/* <CustomButton color="base">Follow</CustomButton>
                 <CustomButton color="base">Message</CustomButton>
                 <CustomButton color="red">Report</CustomButton>     */}
-                <PostDropdown></PostDropdown>
+                <PostDropdown2></PostDropdown2>
               </span>
              
             </div>
