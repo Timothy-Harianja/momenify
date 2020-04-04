@@ -14,7 +14,8 @@ class CreatePost extends Component {
     username: null,
     postmessage: null,
     message: null,
-    userLogo: null
+    userLogo: null,
+    fileName: ''
   };
 
   componentDidMount() {
@@ -56,7 +57,24 @@ class CreatePost extends Component {
   };
  
   
+  onChange = e => {
+    switch(e.target.name){
+    case 'selectedFile':
+    if (e.target.files.length>0) {
+
+        this.setState({ fileName: e.target.files[0].name });
+    }
+    break;
+      default:
+        this.setState({ [e.target.name]: e.target.value });
+     }
+  };
+
   render() {
+    const { fileName } = this.state;
+    let file = null;
+
+   file = fileName?(<span>You have selected: {fileName}</span>):(<span></span>)
     return (
       <div className="create-post">
         <form onSubmit={this.submitHandler} id="submitform">
@@ -79,7 +97,9 @@ class CreatePost extends Component {
               <div class = "file btn btn-lg btn-light" id="uploadbutton">
               <img src={pic} alt="pic" id="pic" />
                 Photo
-              <input type="file" name="file" id="uploadfile" />
+              <input id ="file" type="file" name="file" name="selectedFile" onChange = {(event)=>this.onChange(event)}/>
+              
+              
               </div>
               
               
@@ -102,8 +122,11 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
+            <label id="imagelabel" htmlFor="file">{file}</label>
           </div>
+          
         </form>
+        
       </div>
     );
   }
