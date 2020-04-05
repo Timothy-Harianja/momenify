@@ -61,7 +61,7 @@ import PostDropdown2 from "../post-dropdown/post-dropdown2";
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
-    // console.log("props: ", props);
+    console.log("props: ", props);
     this.commentInput = React.createRef();
     this.state = {
       commentInputBox: false,
@@ -73,21 +73,23 @@ class PostItem extends React.Component {
   }
 
   CommentSection = (props) => {
-    if (props.message.length < 3) {
+    console.log("comment: ", props.message);
+    console.log("comment length: ", props.message[0].length);
+    if (props.message[0].length < 3) {
       return (
         <div>
           <div>
-            {props.message.map((message, index) =>
+            {props.message[0].map((message, index) =>
               index < 3 ? <div>{message}</div> : ""
             )}
           </div>
         </div>
       );
-    } else if (props.message.length > 3) {
+    } else if (props.message[0].length > 3) {
       return (
         <div>
           <div>
-            {props.message.map((message, index) =>
+            {props.message[0].map((message, index) =>
               index < this.state.commentNumber ? <div>{message}</div> : ""
             )}
           </div>
@@ -99,7 +101,6 @@ class PostItem extends React.Component {
           </div>
         </div>
       );
-    } else {
     }
   };
 

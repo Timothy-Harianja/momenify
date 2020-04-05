@@ -127,7 +127,13 @@ class Body extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
-
+    console.log("type of comment list:", typeof ["Lorem ipsum", "Lorem ipsum"]);
+    // console.log(
+    //   "type of comment list from database:",
+    //   typeof {
+    //     ...this.state.commentList[0],
+    //   }
+    // );
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
         posts.push(
@@ -153,7 +159,7 @@ class Body extends Component {
               giveComment={(e) => this.giveComment(e)}
               likeStatus={this.state.likeStatus[i]}
               numofLike={this.state.numofLike[i]}
-              message={this.state.commentList[i]}
+              message={[this.state.commentList[i]]}
             />
           </div>
         );
