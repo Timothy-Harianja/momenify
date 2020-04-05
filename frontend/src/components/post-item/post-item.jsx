@@ -67,7 +67,6 @@ class PostItem extends React.Component {
       commentInputBox: false,
       commentNumber: 3,
       commentText: null,
-      commentsCount: this.props.commentsCount,
       postid: this.props.postid,
       position: this.props.position,
     };
@@ -148,7 +147,7 @@ class PostItem extends React.Component {
             </span>
             {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
             <span className="post-item-footer-number-comment">
-              Number of comments: {this.state.commentsCount}
+              Number of comments: {this.props.commentsCount}
             </span>
           </div>
 
@@ -158,8 +157,8 @@ class PostItem extends React.Component {
               variant="primary"
               onClick={() =>
                 this.props.giveLike({
-                  postid: this.state.postid,
-                  position: this.state.position,
+                  postid: this.props.postid,
+                  position: this.props.position,
                 })
               }
             >
