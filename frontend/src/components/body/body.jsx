@@ -34,6 +34,7 @@ class Body extends Component {
       message: [],
       userLogo: [],
       positionList: [],
+      commentList: [],
       loadStatus: false,
     };
   }
@@ -57,10 +58,21 @@ class Body extends Component {
         numofLike: res.data.numofLike,
         message: Array(res.data.momentLength).fill(""),
         userLogo: res.data.logoList,
+        commentList: res.data.commentList,
         loadStatus: true,
       });
     });
   }
+
+  giveComment = (comment) => {
+    console.log(comment);
+    axios.post("./api/getRoute/postComment", comment).then((res) => {
+      console.log(res);
+      if (res.data.success == false) {
+        alert("Please login to make a comment!");
+      }
+    });
+  };
 
   giveLike = (post) => {
     console.log("current post: ", post);
@@ -129,22 +141,12 @@ class Body extends Component {
               }
               postid={this.state.postidList[i]}
               position={this.state.positionList[i]}
+              commentsCount={this.state.commentList[i].length}
               giveLike={(e) => this.giveLike(e)}
+              giveComment={(e) => this.giveComment(e)}
               likeStatus={this.state.likeStatus[i]}
               numofLike={this.state.numofLike[i]}
-              message={[
-                "What a cool pic!",
-                "Nice picture!",
-                "Awesomeeee",
-                "Interesting",
-                "Random Text Random Text",
-                "qksdlbmntisd",
-                "Lorem ipsum",
-                "Lorem ipsum",
-                "Lorem ipsum",
-                "Lorem ipsum",
-                "Lorem ipsum",
-              ]} // i change it so we can get the whole list
+              message={this.state.commentList[i]}
             />
           </div>
         );

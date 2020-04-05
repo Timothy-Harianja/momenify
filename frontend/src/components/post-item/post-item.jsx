@@ -1,8 +1,6 @@
 import React from "react";
-
 import "./post-item.css";
 import Button from "react-bootstrap/Button";
-
 import PostDropdown2 from "../post-dropdown/post-dropdown2";
 
 // const PostItem = ({
@@ -67,24 +65,26 @@ class PostItem extends React.Component {
     this.commentInput = React.createRef();
     this.state = {
       commentInputBox: false,
-      commentNumber: 4,
+      commentNumber: 3,
+      commentText: null,
+      commentsCount: this.props.commentsCount,
       postid: this.props.postid,
       position: this.props.position,
     };
   }
 
   CommentSection = (props) => {
-    if (props.message.length < 4) {
+    if (props.message.length < 3) {
       return (
         <div>
           <div>
             {props.message.map((message, index) =>
-              index < 4 ? <div>{message}</div> : ""
+              index < 3 ? <div>{message}</div> : ""
             )}
           </div>
         </div>
       );
-    } else if (props.message.length > 4) {
+    } else if (props.message.length > 3) {
       return (
         <div>
           <div>
@@ -96,10 +96,11 @@ class PostItem extends React.Component {
             className="show-more-footer-comment"
             onClick={this.showMoreComment}
           >
-            Show more comment
+            View more comment
           </div>
         </div>
       );
+    } else {
     }
   };
 
@@ -114,6 +115,10 @@ class PostItem extends React.Component {
 
   focusCommentInput = () => {
     this.commentInput.current.focus();
+  };
+
+  submitHandler = (e) => {
+    e.preventDefault();
   };
 
   render() {
@@ -143,7 +148,7 @@ class PostItem extends React.Component {
             </span>
             {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
             <span className="post-item-footer-number-comment">
-              Number of comments: 5
+              Number of comments: {this.state.commentsCount}
             </span>
           </div>
 
@@ -178,9 +183,10 @@ class PostItem extends React.Component {
             ></this.CommentSection>
           </div>
           <div className="post-item-footer-comment-box">
-            <form>
+            <form onSubmit={this.submitHandler} id="submitform">
               <input
                 ref={this.commentInput}
+                onChange={(e) => this.setState({ commentText: e.target.value })}
                 className="comment-box"
                 type="text"
                 id="commentInputBox"
@@ -188,8 +194,15 @@ class PostItem extends React.Component {
               ></input>
               <input
                 className="comment-post"
-                type="submit"
+                type="reset"
                 value="POST"
+                onClick={() => {
+                  this.props.giveComment({
+                    postid: this.state.postid,
+                    position: this.state.position,
+                    postComment: this.state.commentText,
+                  });
+                }}
               ></input>
             </form>
           </div>
