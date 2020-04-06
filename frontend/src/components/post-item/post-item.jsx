@@ -61,7 +61,6 @@ import PostDropdown2 from "../post-dropdown/post-dropdown2";
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
-    console.log("props: ", props);
     this.commentInput = React.createRef();
     this.state = {
       commentInputBox: false,
@@ -73,12 +72,6 @@ class PostItem extends React.Component {
   }
 
   CommentSection = (props) => {
-    // console.log("comment: ", props.message);
-    // console.log("comment length: ", props.message[0].length);
-    // console.log("current comment list: ", props.message[0]);
-    // console.log("comment list type: ", typeof props.message);
-
-    // props.message => [[]];
     return (
       <div>
         {props.message.map((message, index) =>
@@ -135,7 +128,6 @@ class PostItem extends React.Component {
   };
 
   render() {
-    // console.log("current position", this.state.position);
     return (
       <div className="post-item-container">
         <div className="post-item-header">
