@@ -33,54 +33,65 @@ class Body extends Component {
       numofLike: [],
       message: [],
       userLogo: [],
-      positionList: [],
       commentList: [],
       loadStatus: false,
     };
   }
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then((res) => {
-      this.setState({
-        userId: res.data.userId,
-        logoNumber: res.data.logoNumber,
+    axios
+      .get("/api/loginRoute/session")
+      .then((res) => {
+        this.setState({
+          userId: res.data.userId,
+          logoNumber: res.data.logoNumber,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
-    axios.get("/api/getRoute/getMoment").then((res) => {
-      for (let i = 0; i < res.data.allMoments.length; i++) {
-        this.state.positionList.push(i);
-      }
-      this.setState({
-        moments: res.data.allMoments,
-        usernameList: res.data.allUsername,
-        postidList: res.data.allPostid,
-        likeStatus: Array(res.data.momentLength).fill(false),
-        numofLike: res.data.numofLike,
-        message: Array(res.data.momentLength).fill(""),
-        userLogo: res.data.logoList,
-        commentList: res.data.commentList,
-        loadStatus: true,
+    axios
+      .get("/api/getRoute/getMoment")
+      .then((res) => {
+        this.setState({
+          moments: res.data.allMoments,
+          usernameList: res.data.allUsername,
+          postidList: res.data.allPostid,
+          likeStatus: Array(res.data.momentLength).fill(false),
+          numofLike: res.data.numofLike,
+          message: Array(res.data.momentLength).fill(""),
+          userLogo: res.data.logoList,
+          commentList: res.data.commentList,
+          loadStatus: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
   }
 
   giveComment = (comment) => {
-    console.log(comment);
-    axios.post("./api/getRoute/postComment", comment).then((res) => {
-      console.log(res);
-      if (res.data.success == false) {
-        alert("Please login to make a comment!");
-      }
-    });
+    axios
+      .post("./api/getRoute/postComment", comment)
+      .then((res) => {
+        if (res.data.success == false) {
+          alert("Please login to make a comment!");
+        } else {
+          let newCommentList = this.state.commentList;
+          newCommentList[comment.position].push(res.data.message);
+          this.setState({ commentList: newCommentList });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   giveLike = (post) => {
-    console.log("current post: ", post);
     let postId = post.postid;
     axios
       .post("/api/getRoute/giveLike", { postId: postId })
       .then((res) => {
-        console.log("res from givelike: ", res);
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;
           newlikeStatus[post.position] = true;
@@ -116,13 +127,21 @@ class Body extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
-    // console.log("showed post here");
-    // console.log("length of moment list: ", this.state.moments.length);
+    console.log(
+      "type of comment list:",
+      typeof [["this.state.commentList[i]", "sss", "sse1", "sdad"]]
+    );
+    console.log("type of comment list2: ", typeof [this.state.commentList[0]]);
+    // console.log(
+    //   "type of comment list from database:",
+    //   typeof {
+    //     ...this.state.commentList[0],
+    //   }
+    // );
+
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
-        // console.log("i: " + i + " ", this.state.postidList[i]);
-        // console.log("i: " + i + " ", this.state.numofLike[i]);
-        // console.log("position list: ", this.state.positionList);
+        let currentCommentList = this.state.commentList[i];
         posts.push(
           <div key={i} className="post">
             <PostItem
@@ -140,13 +159,13 @@ class Body extends Component {
                   : this.getLogo(this.state.userLogo[i])
               }
               postid={this.state.postidList[i]}
-              position={this.state.positionList[i]}
+              position={i}
               commentsCount={this.state.commentList[i].length}
               giveLike={(e) => this.giveLike(e)}
               giveComment={(e) => this.giveComment(e)}
               likeStatus={this.state.likeStatus[i]}
               numofLike={this.state.numofLike[i]}
-              message={this.state.commentList[i]}
+              comment={currentCommentList}
             />
           </div>
         );
@@ -169,11 +188,6 @@ class Body extends Component {
   };
 
   addNewPost = (newPost) => {
-    // for (let i = 0; i < this.state.positionList.length; i++) {
-    //   this.state.positionList[i]++;
-    // }
-    // this.state.positionList.unshift(0);
-
     let newMoments = [newPost.postmessage, ...this.state.moments];
     let newPostidList = [newPost.postId, ...this.state.postidList];
     let newUsernameList = [newPost.username, ...this.state.usernameList];
@@ -181,7 +195,7 @@ class Body extends Component {
     let newNumofLike = [0, ...this.state.numofLike];
     let newMessage = ["", ...this.state.message];
     let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
-    // console.log("new position list: ", this.state.positionList);
+    let newCommentlist = [[], ...this.state.commentList];
     this.setState({
       moments: newMoments,
       postidList: newPostidList,
@@ -190,6 +204,7 @@ class Body extends Component {
       numofLike: newNumofLike,
       Message: newMessage,
       userLogo: newLogoList,
+      commentList: newCommentlist,
       posts: this.state.posts + 1,
     });
   };

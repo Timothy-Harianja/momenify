@@ -61,51 +61,64 @@ import PostDropdown2 from "../post-dropdown/post-dropdown2";
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
-    // console.log("props: ", props);
+    console.log("props: ", props);
     this.commentInput = React.createRef();
     this.state = {
       commentInputBox: false,
       commentNumber: 3,
       commentText: null,
-      commentsCount: this.props.commentsCount,
       postid: this.props.postid,
       position: this.props.position,
     };
   }
 
   CommentSection = (props) => {
-    if (props.message.length < 3) {
-      return (
-        <div>
-          <div>
-            {props.message.map((message, index) =>
-              index < 3 ? <div>{message}</div> : ""
-            )}
-          </div>
-        </div>
-      );
-    } else if (props.message.length > 3) {
-      return (
-        <div>
-          <div>
-            {props.message.map((message, index) =>
-              index < this.state.commentNumber ? <div>{message}</div> : ""
-            )}
-          </div>
-          <div
-            className="show-more-footer-comment"
-            onClick={this.showMoreComment}
-          >
-            View more comment
-          </div>
-        </div>
-      );
-    } else {
-    }
+    // console.log("comment: ", props.message);
+    // console.log("comment length: ", props.message[0].length);
+    // console.log("current comment list: ", props.message[0]);
+    // console.log("comment list type: ", typeof props.message);
+
+    // props.message => [[]];
+    return (
+      <div>
+        {props.message.map((message, index) =>
+          index < props.message.length ? <div>{message}</div> : ""
+        )}
+      </div>
+    );
+
+    // if (props.message.length < 3) {
+    //   return (
+    //     <div>
+    //       <div>
+    //         {props.message.map((message, index) =>
+    //           index < 3 ? <div>{message}</div> : ""
+    //         )}
+    //       </div>
+    //     </div>
+    //   );
+    // } else if (props.message.length > 3) {
+    //   return (
+    //     <div>
+    //       <div>
+    //         {props.message.map((message, index) =>
+    //           index < this.state.commentNumber ? <div>{message}</div> : ""
+    //         )}
+    //       </div>
+    //       <div
+    //         className="show-more-footer-comment"
+    //         onClick={this.showMoreComment}
+    //       >
+    //         View more comment
+    //       </div>
+    //     </div>
+    //   );
+    // }
   };
 
   showMoreComment = () => {
     // I think i need access to the state
+
     this.setState({ commentNumber: this.state.commentNumber + 3 });
   };
 
@@ -148,7 +161,7 @@ class PostItem extends React.Component {
             </span>
             {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
             <span className="post-item-footer-number-comment">
-              Number of comments: {this.state.commentsCount}
+              Number of comments: {this.props.commentsCount}
             </span>
           </div>
 
@@ -158,8 +171,8 @@ class PostItem extends React.Component {
               variant="primary"
               onClick={() =>
                 this.props.giveLike({
-                  postid: this.state.postid,
-                  position: this.state.position,
+                  postid: this.props.postid,
+                  position: this.props.position,
                 })
               }
             >
@@ -179,7 +192,7 @@ class PostItem extends React.Component {
           </div>
           <div className="post-item-footer-comment">
             <this.CommentSection
-              message={this.props.message}
+              message={this.props.comment}
             ></this.CommentSection>
           </div>
           <div className="post-item-footer-comment-box">

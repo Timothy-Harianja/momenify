@@ -36,8 +36,6 @@ router.get("/getMoment", (req, res) => {
       }
     }
 
-    console.log("commentList: ", commentList);
-
     // random the moment order
     for (let j = 0; j < moments.length; j++) {
       let pos1 = getRandomInt(momentsList.length);
@@ -68,9 +66,6 @@ router.get("/getMoment", (req, res) => {
       commentList[pos2] = temp6;
     }
 
-    // console.log("all moments: ", momentsList);
-    // console.log("all username: ", usernameList);
-
     return res.json({
       allMoments: momentsList,
       allUsername: usernameList,
@@ -84,7 +79,6 @@ router.get("/getMoment", (req, res) => {
 });
 
 router.post("/postComment", (req, res) => {
-  console.log("req.body: ", req.body);
   if (!req.session.userId) {
     return res.json({
       success: false,
@@ -96,9 +90,7 @@ router.post("/postComment", (req, res) => {
     if (err) {
       return res.json({ success: false, message: "error finding the post" });
     }
-    console.log("result: ", result);
     let messageWithName = req.session.username + ":  " + req.body.postComment;
-    console.log("comment meg: ", messageWithName);
     result.commentList.push(messageWithName);
     result.save((err) => {
       if (err) {
@@ -109,7 +101,7 @@ router.post("/postComment", (req, res) => {
       }
       return res.json({
         success: true,
-        message: "success",
+        message: messageWithName,
       });
     });
   });
@@ -124,8 +116,6 @@ router.post("/giveLike", (req, res) => {
       // console.log(err);
       return res.json({ success: false, message: "error finding the post" });
     }
-
-    console.log("result from givelike: ", result);
 
     if (result.likeList.includes(req.session.userId)) {
       return res.json({
