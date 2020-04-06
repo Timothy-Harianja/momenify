@@ -24,7 +24,7 @@ class Body extends Component {
     super(props);
     this.state = {
       userId: null,
-      posts: 3,
+      posts: 0,
       moments: [],
       usernameList: [],
       postidList: [],
@@ -54,6 +54,12 @@ class Body extends Component {
       .get("/api/getRoute/getMoment")
       .then((res) => {
         this.setState({
+          loadingFeedback:
+            res.data.allMoments.length > 3
+              ? "Loading Posts..."
+              : "No More New Posts, Come Back Later :)",
+          posts:
+            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
           moments: res.data.allMoments,
           usernameList: res.data.allUsername,
           postidList: res.data.allPostid,
@@ -172,7 +178,9 @@ class Body extends Component {
         this.setState({ posts: this.state.posts + newPost });
       }, 200);
     } else {
-      this.setState({ loadingFeedback: "You have reached the end..." });
+      this.setState({
+        loadingFeedback: "No More New Posts, Come Back Later :)",
+      });
     }
   };
 
