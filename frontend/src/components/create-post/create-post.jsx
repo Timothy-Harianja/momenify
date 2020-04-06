@@ -15,7 +15,8 @@ class CreatePost extends Component {
     postmessage: null,
     message: null,
     userLogo: null,
-    fileName: "",
+    fileName: null,
+    imageFile: null,
   };
 
   componentDidMount() {
@@ -32,6 +33,11 @@ class CreatePost extends Component {
     // console.log("this.json:", json);
     // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
+      // if (this.state.fileName != null) {
+      //   var fd = new FormData();
+      //   fd.append("image", this.state.imageFile, this.state.imageFile.name);
+      // }
+
       axios.post("/api/postRoute/postMoment", json).then((res) => {
         if (res.data.success) {
           this.setState({ message: res.data.message });
@@ -56,16 +62,18 @@ class CreatePost extends Component {
     e.preventDefault();
   };
 
-  onChange = (e) => {
-    switch (e.target.name) {
+  fileSelectedHandler = (event) => {
+    switch (event.target.name) {
       case "selectedFile":
-        if (e.target.files.length > 0) {
-          this.setState({ fileName: e.target.files[0].name });
+        if (event.target.files.length > 0) {
+          this.setState({ fileName: event.target.files[0].name });
         }
         break;
       default:
-        this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [event.target.name]: event.target.value });
     }
+    this.setState({ imageFile: event.target.files[0] });
+    console.log(event.target.files[0]);
   };
 
   render() {
@@ -101,11 +109,10 @@ class CreatePost extends Component {
                 <input
                   id="file"
                   type="file"
-                  name="file"
+                  accept="image/*"
                   name="selectedFile"
-                  onChange={(event) => this.onChange(event)}
+                  onChange={this.fileSelectedHandler}
                 />
-                {/* <input type="file" name="file" id="uploadfile" /> */}
               </div>
 
               <button

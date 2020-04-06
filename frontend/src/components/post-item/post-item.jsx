@@ -3,61 +3,6 @@ import "./post-item.css";
 import Button from "react-bootstrap/Button";
 import PostDropdown2 from "../post-dropdown/post-dropdown2";
 
-// const PostItem = ({
-//   imageUrl,
-//   profileUrl,
-//   text,
-//   username,
-//   postid,
-//   giveLike,
-//   likeStatus,
-//   numofLike,
-//   position,
-//   message
-// }) => (
-//   <div className="post-item-container">
-//     <div className="post-item-header">
-//       <img className="post-item-header-profile" src={profileUrl} />
-//       <span className="post-item-header-name">{username}</span>
-//       <span className="post-item-header-buttons">
-//         <CustomButton color="base">Follow</CustomButton>
-//         <CustomButton color="base">Message</CustomButton>
-//         <CustomButton color="red">Report</CustomButton>
-//       </span>
-//     </div>
-//     <div className="post-item-description">{text}</div>
-
-//     <img className="post-item-main-image" src={imageUrl} alt="post" />
-//     <div className="post-item-footer">
-//       <div className="post-item-footer-stats">
-//         <span className="post-item-footer-number-like">Number of likes: {numofLike}512</span>
-//         {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
-//         <span className="post-item-footer-number-comment">Number of comments: 5</span>
-//       </div>
-//       <div className="post-item-footer-buttons">
-//         <Button
-//           onClick={() => giveLike({ postid, position })}
-//           className="post-item-footer-like"
-//           variant="primary"
-//         >
-//           Like
-//         </Button>
-
-//         <Button
-//           className="post-item-footer-comment"
-//           onClick={}
-//           variant="primary"
-//         >
-//           Comment
-//         </Button>
-//         <div>{message}123123213</div>
-//       </div>
-//     </div>
-//   </div>
-// );
-
-// export default PostItem;
-
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
@@ -77,21 +22,22 @@ class PostItem extends React.Component {
         {props.message.map((message, index) =>
           index < this.state.commentNumber ? <div>{message}</div> : ""
         )}
-        {props.message.length > 3 && this.state.commentNumber < props.message.length ?
+        {props.message.length > 3 &&
+        this.state.commentNumber < props.message.length ? (
           <div
             className="show-more-footer-comment"
             onClick={this.showMoreComment}
           >
-            View more comment
+            View rest comments
           </div>
-          : null
-        }
+        ) : null}
       </div>
     );
   };
 
   showMoreComment = () => {
-    this.setState({ commentNumber: this.state.commentNumber + 3 });
+    let restComment = this.props.comment.length - this.state.commentNumber;
+    this.setState({ commentNumber: this.state.commentNumber + restComment });
   };
 
   showCommentInputBox = () => {
@@ -120,11 +66,11 @@ class PostItem extends React.Component {
           </span>
         </div>
         <div className="post-item-description">{this.props.text}</div>
-        <img
+        {/* <img
           className="post-item-main-image"
           src={this.props.imageUrl}
           alt="post"
-        />
+        /> */}
         <div className="post-item-footer">
           <div className="post-item-footer-stats">
             <span className="post-item-footer-number-like">
@@ -181,6 +127,9 @@ class PostItem extends React.Component {
                 type="reset"
                 value="POST"
                 onClick={() => {
+                  this.setState({
+                    commentNumber: this.state.commentNumber + 1,
+                  });
                   this.props.giveComment({
                     postid: this.state.postid,
                     position: this.state.position,
