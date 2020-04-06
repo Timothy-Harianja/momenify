@@ -5,6 +5,7 @@ import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
 
+
 function makeTime() {
   return new Date().getTime();
 }
@@ -15,7 +16,8 @@ class CreatePost extends Component {
     postmessage: null,
     message: null,
     userLogo: null,
-    fileName: ''
+    fileName: '',
+    hashtag:""
   };
 
   componentDidMount() {
@@ -70,12 +72,18 @@ class CreatePost extends Component {
      }
   };
 
+ 
+
+
 
   render() {
     const { fileName } = this.state;
+    const {hashtag} = this.state;
     let file = null;
-
+    let hashtaginputs="";
+    
    file = fileName?(<span>You have selected: {fileName}</span>):(<span></span>)
+
     return (
       <div className="create-post">
         <form onSubmit={this.submitHandler} id="submitform">
@@ -85,23 +93,56 @@ class CreatePost extends Component {
             placeholder="You can say something here."
             onChange={e => this.setState({ postmessage: e.target.value })}
           ></textarea>
-
+              
+              <div class="hashtagpp" id="hashtagid">
+              <form id = "hashtagform">
+              <span class="close" onClick={()=>{
+                const closeBtn = document.querySelector(".close")
+                closeBtn.addEventListener("click", () => {
+                document.getElementById("hashtagid").style.display = "none";
+                document.getElementById("cover").style.display = "none";
+                })
+              }}
+              >&times;</span>
+              <h4>Enter Your Hashtag</h4>
+              <input type="text" id="hashtaginput" name="hashtaginput" value={this.state.hashtag} onChange={e=>{
+                this.setState({hashtag:e.target.value});
+              }
+              } />
+              <button id="hashtagsubmit" type="submit" className="btn btn-primary" onClick={e=>{
+                  if(this.state.hashtag){
+                  document.getElementById("hashtaglabel").innerHTML="Hashtag: "+hashtag;
+                  }
+                  document.getElementById("hashtaginput").value='';
+                  document.getElementById("hashtagid").style.display = "none";
+                  document.getElementById("cover").style.display = "none";
+                  e.preventDefault();
+              }}>Submit</button>
+              </form>
+               </div>
+               <div id="cover" ></div>
           <div className="buttons-container">
             {this.state.message}
 
             <div className="div-container">
-              <button type="tag" className="btn btn-light" id="tag">
-                <img src={hash} alt="pic" id="pic" />
+            
+              <button type="tag" className="btn btn-light" id="tag" onClick={()=>{
+                document.getElementById("hashtagid").style.display = "block";
+                document.getElementById("cover").style.display = "block";
+              }}>
+              <img src={hash} alt="pic" id="pic"/>
                 Hashtag
               </button>
+            
+
+              
+
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />
                 Photo
               <input id ="file" type="file" name="file" name="selectedFile" onChange = {(event)=>this.onChange(event)}/>
               
-              
-<!--                 <input type="file" name="file" id="uploadfile" />
- -->
+
               </div>
 
               <button
@@ -123,12 +164,16 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
+            
             <label id="imagelabel" htmlFor="file">{file}</label>
+            <label id="hashtaglabel" htmlFor="hashtaginput">{hashtaginputs}</label>
           </div>
           
         </form>
         
       </div>
+
+      
     );
   }
 }
