@@ -14,24 +14,31 @@ class CreatePost extends Component {
     username: null,
     postmessage: null,
     message: null,
-    userLogo: null
+    userLogo: null,
+    fileName: null,
+    imageFile: null,
   };
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
+    axios.get("/api/loginRoute/session").then((res) => {
       this.setState({
         userId: res.data.userId,
         username: res.data.username,
-        userLogo: res.data.logoNumber
+        userLogo: res.data.logoNumber,
       });
     });
   }
 
-  putMoment = json => {
+  putMoment = (json) => {
     // console.log("this.json:", json);
     // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      axios.post("/api/postRoute/postMoment", json).then(res => {
+      // if (this.state.fileName != null) {
+      //   var fd = new FormData();
+      //   fd.append("image", this.state.imageFile, this.state.imageFile.name);
+      // }
+
+      axios.post("/api/postRoute/postMoment", json).then((res) => {
         if (res.data.success) {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
@@ -39,7 +46,7 @@ class CreatePost extends Component {
             username: this.state.username,
             postmessage: this.state.postmessage,
             postId: res.data.postId,
-            logoNumber: this.state.userLogo
+            logoNumber: this.state.userLogo,
           });
           this.setState({ postmessage: null });
         } else {
@@ -51,11 +58,33 @@ class CreatePost extends Component {
     }
   };
 
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
   };
 
+  fileSelectedHandler = (event) => {
+    switch (event.target.name) {
+      case "selectedFile":
+        if (event.target.files.length > 0) {
+          this.setState({ fileName: event.target.files[0].name });
+        }
+        break;
+      default:
+        this.setState({ [event.target.name]: event.target.value });
+    }
+    this.setState({ imageFile: event.target.files[0] });
+    console.log(event.target.files[0]);
+  };
+
   render() {
+    const { fileName } = this.state;
+    let file = null;
+
+    file = fileName ? (
+      <span>You have selected: {fileName}</span>
+    ) : (
+      <span></span>
+    );
     return (
       <div className="create-post">
         <form onSubmit={this.submitHandler} id="submitform">
@@ -63,7 +92,7 @@ class CreatePost extends Component {
             id="message"
             type="text"
             placeholder="You can say something here."
-            onChange={e => this.setState({ postmessage: e.target.value })}
+            onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
           <div className="buttons-container">
@@ -77,7 +106,13 @@ class CreatePost extends Component {
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />
                 Photo
-                <input type="file" name="file" id="uploadfile" />
+                <input
+                  id="file"
+                  type="file"
+                  accept="image/*"
+                  name="selectedFile"
+                  onChange={this.fileSelectedHandler}
+                />
               </div>
 
               <button
@@ -91,7 +126,7 @@ class CreatePost extends Component {
                     userId: this.state.userId,
                     nickname: this.state.username,
                     currentDate: makeTime(),
-                    userLogo: this.state.userLogo
+                    userLogo: this.state.userLogo,
                   });
                 }}
               >
@@ -99,6 +134,9 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
+            <label id="imagelabel" htmlFor="file">
+              {file}
+            </label>
           </div>
         </form>
       </div>
