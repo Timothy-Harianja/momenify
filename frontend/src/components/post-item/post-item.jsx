@@ -73,39 +73,52 @@ class PostItem extends React.Component {
   }
 
   CommentSection = (props) => {
-    console.log("comment: ", props.message);
-    console.log("comment length: ", props.message[0].length);
-    if (props.message[0].length < 3) {
-      return (
-        <div>
-          <div>
-            {props.message[0].map((message, index) =>
-              index < 3 ? <div>{message}</div> : ""
-            )}
-          </div>
-        </div>
-      );
-    } else if (props.message[0].length > 3) {
-      return (
-        <div>
-          <div>
-            {props.message[0].map((message, index) =>
-              index < this.state.commentNumber ? <div>{message}</div> : ""
-            )}
-          </div>
-          <div
-            className="show-more-footer-comment"
-            onClick={this.showMoreComment}
-          >
-            View more comment
-          </div>
-        </div>
-      );
-    }
+    // console.log("comment: ", props.message);
+    // console.log("comment length: ", props.message[0].length);
+    // console.log("current comment list: ", props.message[0]);
+    // console.log("comment list type: ", typeof props.message);
+
+    // props.message => [[]];
+    return (
+      <div>
+        {props.message.map((message, index) =>
+          index < props.message.length ? <div>{message}</div> : ""
+        )}
+      </div>
+    );
+
+    // if (props.message.length < 3) {
+    //   return (
+    //     <div>
+    //       <div>
+    //         {props.message.map((message, index) =>
+    //           index < 3 ? <div>{message}</div> : ""
+    //         )}
+    //       </div>
+    //     </div>
+    //   );
+    // } else if (props.message.length > 3) {
+    //   return (
+    //     <div>
+    //       <div>
+    //         {props.message.map((message, index) =>
+    //           index < this.state.commentNumber ? <div>{message}</div> : ""
+    //         )}
+    //       </div>
+    //       <div
+    //         className="show-more-footer-comment"
+    //         onClick={this.showMoreComment}
+    //       >
+    //         View more comment
+    //       </div>
+    //     </div>
+    //   );
+    // }
   };
 
   showMoreComment = () => {
     // I think i need access to the state
+
     this.setState({ commentNumber: this.state.commentNumber + 3 });
   };
 
@@ -179,7 +192,7 @@ class PostItem extends React.Component {
           </div>
           <div className="post-item-footer-comment">
             <this.CommentSection
-              message={this.props.message}
+              message={this.props.comment}
             ></this.CommentSection>
           </div>
           <div className="post-item-footer-comment-box">
