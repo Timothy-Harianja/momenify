@@ -1,6 +1,6 @@
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
-import "./post-dropdown2.css";
+import "./post-dropdown.css";
 
 const PostDropdown = () => {
   return (

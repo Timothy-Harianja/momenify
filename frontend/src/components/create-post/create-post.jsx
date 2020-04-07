@@ -117,6 +117,7 @@ class CreatePost extends Component {
                   this.setState({ hashtag: e.target.value });
                 }}
               />
+              <div>
               <button
                 id="hashtagsubmit"
                 type="submit"
@@ -135,6 +136,7 @@ class CreatePost extends Component {
                 Submit
               </button>
               <button className="clear-btn btn btn-primary">Clear</button>
+              </div>
             </form>
           </div>
           <div

@@ -1,7 +1,7 @@
 import React from "react";
 import "./post-item.css";
 import Button from "react-bootstrap/Button";
-import PostDropdown2 from "../post-dropdown/post-dropdown2";
+import PostDropdown from "../post-dropdown/post-dropdown";
 
 class PostItem extends React.Component {
   constructor(props) {
@@ -61,10 +61,10 @@ class PostItem extends React.Component {
             src={this.props.profileUrl}
           />
           <span className="post-item-header-name">{this.props.username}</span>
-          <span className="post-item-header-date">{this.props.postDate}</span>
-          <span className="post-item-header-buttons">
-            <PostDropdown2></PostDropdown2>
+          <span className="post-item-header-dropdown">
+            <PostDropdown></PostDropdown>
           </span>
+          <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
         <div className="post-item-description">{this.props.text}</div>
         {/* <img
