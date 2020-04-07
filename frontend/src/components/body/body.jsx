@@ -144,7 +144,6 @@ class Body extends Component {
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
-        console.log("post date list: ", this.state.postDateList[i]);
         posts.push(
           <div key={i} className="post">
             <PostItem
