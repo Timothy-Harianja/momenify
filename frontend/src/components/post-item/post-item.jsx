@@ -72,7 +72,13 @@ class PostItem extends React.Component {
           src={this.props.imageUrl}
           alt="post"
         /> */}
+
         <div className="post-item-footer">
+          <span className="post-item-footer-stats">
+            {this.props.hashtags.map((message) => (
+              <a href={"/hashtag/" + message}>{"#" + message}</a>
+            ))}
+          </span>
           <div className="post-item-footer-stats">
             <span className="post-item-footer-number-like">
               Number of likes: {this.props.numofLike}
