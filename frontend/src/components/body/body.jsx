@@ -79,20 +79,24 @@ class Body extends Component {
   }
 
   giveComment = (comment) => {
-    axios
-      .post("./api/getRoute/postComment", comment)
-      .then((res) => {
-        if (res.data.success == false) {
-          alert("Please login to make a comment!");
-        } else {
-          let newCommentList = this.state.commentList;
-          newCommentList[comment.position].push(res.data.message);
-          this.setState({ commentList: newCommentList });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (comment.postComment != null && comment.postComment.trim() != "") {
+      axios
+        .post("./api/getRoute/postComment", comment)
+        .then((res) => {
+          if (res.data.success == false) {
+            alert("Please login to make a comment!");
+          } else {
+            let newCommentList = this.state.commentList;
+            newCommentList[comment.position].push(res.data.message);
+            this.setState({ commentList: newCommentList });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("Comment cannot be empty!");
+    }
   };
 
   giveLike = (post) => {
