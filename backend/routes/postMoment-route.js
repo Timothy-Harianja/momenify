@@ -21,7 +21,10 @@ router.post("/postMoment", (req, res) => {
   postMoment.postTime = req.body.postTime;
   postMoment.likeList = [];
   postMoment.commentList = [];
+  postMoment.hashtagList =
+    req.body.hashtagList != null ? req.body.hashtagList : [];
   postMoment.userLogo = req.body.userLogo;
+
   if (req.session.userId) {
     postMoment.save((err, newPost) => {
       if (err) {

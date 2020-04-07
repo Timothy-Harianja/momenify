@@ -40,11 +40,15 @@ class CreatePost extends Component {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
           this.props.addNewPost({
+            hashtagList: this.state.hashtagList,
             username: this.state.username,
             postmessage: this.state.postmessage,
             postId: res.data.postId,
             logoNumber: this.state.userLogo,
           });
+          this.state.hashtagList = [];
+          this.state.hashtag = null;
+          document.getElementById("hashtaglabel").innerHTML = "";
           this.setState({ postmessage: null });
         } else {
           this.setState({ message: res.data.message });
@@ -125,7 +129,7 @@ class CreatePost extends Component {
                   className="btn btn-primary"
                   onClick={(e) => {
                     if (hashtag != null && hashtag.trim() != "") {
-                      this.state.hashtagList.push("#" + hashtag);
+                      this.state.hashtagList.push(hashtag);
                       this.state.hashtag = null;
                       document.getElementById("hashtaglabel").innerHTML =
                         "Hashtag(s): " + this.state.hashtagList;
@@ -209,6 +213,7 @@ class CreatePost extends Component {
                     nickname: this.state.username,
                     currentDate: makeTime(),
                     userLogo: this.state.userLogo,
+                    hashtagList: this.state.hashtagList,
                   });
                 }}
               >
