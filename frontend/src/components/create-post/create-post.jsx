@@ -5,9 +5,17 @@ import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
 
-
 function makeTime() {
   return new Date().getTime();
+}
+
+function currentTime() {
+  let ts = Date.now();
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+  return month + "-" + date + "-" + year;
 }
 class CreatePost extends Component {
   state = {
@@ -16,26 +24,32 @@ class CreatePost extends Component {
     postmessage: null,
     message: null,
     userLogo: null,
+
     fileName: '',
     hashtag:"",
     overlayState: false
   };
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
+    axios.get("/api/loginRoute/session").then((res) => {
       this.setState({
         userId: res.data.userId,
         username: res.data.username,
-        userLogo: res.data.logoNumber
+        userLogo: res.data.logoNumber,
       });
     });
   }
 
-  putMoment = json => {
+  putMoment = (json) => {
     // console.log("this.json:", json);
     // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      axios.post("/api/postRoute/postMoment", json).then(res => {
+      // if (this.state.fileName != null) {
+      //   var fd = new FormData();
+      //   fd.append("image", this.state.imageFile, this.state.imageFile.name);
+      // }
+
+      axios.post("/api/postRoute/postMoment", json).then((res) => {
         if (res.data.success) {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
@@ -43,7 +57,8 @@ class CreatePost extends Component {
             username: this.state.username,
             postmessage: this.state.postmessage,
             postId: res.data.postId,
-            logoNumber: this.state.userLogo
+            logoNumber: this.state.userLogo,
+            postDate: currentTime(),
           });
           this.setState({ postmessage: null });
         } else {
@@ -55,35 +70,35 @@ class CreatePost extends Component {
     }
   };
 
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
   };
- 
-  
-  onChange = e => {
-    switch(e.target.name){
-    case 'selectedFile':
-    if (e.target.files.length>0) {
 
-        this.setState({ fileName: e.target.files[0].name });
-    }
-    break;
+  fileSelectedHandler = (event) => {
+    switch (event.target.name) {
+      case "selectedFile":
+        if (event.target.files.length > 0) {
+          this.setState({ fileName: event.target.files[0].name });
+        }
+        break;
       default:
-        this.setState({ [e.target.name]: e.target.value });
-     }
+        this.setState({ [event.target.name]: event.target.value });
+    }
+    this.setState({ imageFile: event.target.files[0] });
+    console.log(event.target.files[0]);
   };
-
- 
-
-
 
   render() {
     const { fileName } = this.state;
-    const {hashtag} = this.state;
+
     let file = null;
-    let hashtaginputs="";
-    
-   file = fileName?(<span>You have selected: {fileName}</span>):(<span></span>)
+    let hashtaginputs = "";
+
+    file = fileName ? (
+      <span>You have selected: {fileName}</span>
+    ) : (
+      <span></span>
+    );
 
     return (
       <div className="create-post">
@@ -92,8 +107,9 @@ class CreatePost extends Component {
             id="message"
             type="text"
             placeholder="You can say something here."
-            onChange={e => this.setState({ postmessage: e.target.value })}
+            onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
+
               
               <div class="hashtagpp" id="hashtagid">
                 <form id = "hashtagform">
@@ -138,7 +154,7 @@ class CreatePost extends Component {
             {this.state.message}
 
             <div className="div-container">
-            
+
               <button type="tag" className="btn btn-light" id="tag" onClick={()=>{
                 document.getElementById("hashtagid").style.display = "block";
                 document.getElementById("overlay").style.display = "block";
@@ -151,9 +167,13 @@ class CreatePost extends Component {
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />
                 Photo
-              <input id ="file" type="file" name="file" name="selectedFile" onChange = {(event)=>this.onChange(event)}/>
-              
-
+                <input
+                  id="file"
+                  type="file"
+                  name="file"
+                  name="selectedFile"
+                  onChange={(event) => this.fileSelectedHandler(event)}
+                />
               </div>
 
               <button
@@ -167,7 +187,8 @@ class CreatePost extends Component {
                     userId: this.state.userId,
                     nickname: this.state.username,
                     currentDate: makeTime(),
-                    userLogo: this.state.userLogo
+                    userLogo: this.state.userLogo,
+                    postTime: currentTime(),
                   });
                 }}
               >
@@ -175,16 +196,17 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
-            
-            <label id="imagelabel" htmlFor="file">{file}</label>
-            <label id="hashtaglabel" htmlFor="hashtaginput">{hashtaginputs}</label>
-          </div>
-          
-        </form>
-        
-      </div>
 
-      
+            <label id="imagelabel" htmlFor="file">
+              {file}
+            </label>
+            <br></br>
+            <label id="hashtaglabel" htmlFor="hashtaginput">
+              {hashtaginputs}
+            </label>
+          </div>
+        </form>
+      </div>
     );
   }
 }
