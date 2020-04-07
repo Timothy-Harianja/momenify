@@ -19,6 +19,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.postmessage = req.body.postmessage;
   postMoment.postDate = req.body.currentDate;
   postMoment.likeList = [];
+  postMoment.commentList = [];
   postMoment.userLogo = req.body.userLogo;
   if (req.session.userId) {
     postMoment.save((err, newPost) => {
@@ -29,7 +30,7 @@ router.post("/postMoment", (req, res) => {
         return res.json({
           success: true,
           message: "Post moment success!",
-          postId: newPost._id
+          postId: newPost._id,
         });
       }
     });
@@ -37,7 +38,7 @@ router.post("/postMoment", (req, res) => {
     return res.json({
       success: false,
       message:
-        "You have reached the max number of posts per day as anonymous, please login to post more!"
+        "You have reached the max number of posts per day as anonymous, please login to post more!",
     });
   } else {
     req.session.postLeft--;
@@ -52,7 +53,7 @@ router.post("/postMoment", (req, res) => {
             "Post moment success! You have " +
             req.session.postLeft +
             " left for today!",
-          postId: newPost._id
+          postId: newPost._id,
         });
       }
     });

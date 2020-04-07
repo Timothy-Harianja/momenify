@@ -19,13 +19,12 @@ import logo7 from "../images/logo7.png";
 import logo8 from "../images/logo1.png";
 import logo9 from "../images/logo9.png";
 
-
 class Body extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userId: null,
-      posts: 3,
+      posts: 0,
       moments: [],
       usernameList: [],
       postidList: [],
@@ -33,35 +32,72 @@ class Body extends Component {
       likeStatus: [],
       numofLike: [],
       message: [],
-      userLogo: []
+      userLogo: [],
+      commentList: [],
+      loadStatus: false,
     };
   }
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
-      this.setState({
-        userId: res.data.userId,
-        logoNumber: res.data.logoNumber
+    axios
+      .get("/api/loginRoute/session")
+      .then((res) => {
+        this.setState({
+          userId: res.data.userId,
+          logoNumber: res.data.logoNumber,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
-    axios.get("/api/getRoute/getMoment").then(res => {
-      this.setState({
-        moments: res.data.allMoments,
-        usernameList: res.data.allUsername,
-        postidList: res.data.allPostid,
-        likeStatus: Array(res.data.momentLength).fill(false),
-        numofLike: res.data.numofLike,
-        message: Array(res.data.momentLength).fill(""),
-        userLogo: res.data.logoList
+    axios
+      .get("/api/getRoute/getMoment")
+      .then((res) => {
+        this.setState({
+          loadingFeedback:
+            res.data.allMoments.length > 3
+              ? "Loading Posts..."
+              : "No More New Posts, Come Back Later :)",
+          posts:
+            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+          moments: res.data.allMoments,
+          usernameList: res.data.allUsername,
+          postidList: res.data.allPostid,
+          likeStatus: Array(res.data.momentLength).fill(false),
+          numofLike: res.data.numofLike,
+          message: Array(res.data.momentLength).fill(""),
+          userLogo: res.data.logoList,
+          commentList: res.data.commentList,
+          loadStatus: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
   }
 
-  giveLike = post => {
+  giveComment = (comment) => {
+    axios
+      .post("./api/getRoute/postComment", comment)
+      .then((res) => {
+        if (res.data.success == false) {
+          alert("Please login to make a comment!");
+        } else {
+          let newCommentList = this.state.commentList;
+          newCommentList[comment.position].push(res.data.message);
+          this.setState({ commentList: newCommentList });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  giveLike = (post) => {
     let postId = post.postid;
     axios
       .post("/api/getRoute/giveLike", { postId: postId })
-      .then(res => {
+      .then((res) => {
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;
           newlikeStatus[post.position] = true;
@@ -74,58 +110,61 @@ class Body extends Component {
           if (res.data.message == "you already liked this post") {
             let newMessage = this.state.message;
             newMessage[post.position] = "you already liked this post";
+            alert("you already liked this post");
             this.setState({ message: newMessage });
           }
           if (res.data.message == "please login to like a post") {
             let newMessage = this.state.message;
             newMessage[post.position] = "please login to like a post";
+            alert("please login to like a post");
             this.setState({ message: newMessage });
           }
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
-  getLogo = num => {
+  getLogo = (num) => {
     let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
     return list[parseInt(num) - 1];
   };
   showPosts = () => {
     // get all the posts from the
     var posts = [];
-    // console.log("showed post here");
-    // console.log("length of moment list: ", this.state.moments.length);
-    for (let i = 0; i < this.state.posts; i++) {
-      // console.log("i: " + i + " ", this.state.moments[i]);
-      // console.log("i: " + i + " ", this.state.usernameList[i]);
 
-      posts.push(
-        <div key={i} className="post">
-          <PostItem
-            username={
-              this.state.usernameList[i] == undefined
-                ? " Anonymous"
-                : this.state.usernameList[i]
-            }
-            text={this.state.moments[i]}
-            imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
-            profileUrl={
-              this.state.usernameList[i] == undefined
-                ? anonymous
-                : this.getLogo(this.state.userLogo[i])
-            }
-            postid={this.state.postidList[i]}
-            giveLike={e => this.giveLike(e)}
-            likeStatus={this.state.likeStatus[i]}
-            numofLike={this.state.numofLike[i]}
-            position={i}
-            message={["What a cool pic!", "Nice picture!", "Awesomeeee", "Interesting", "Random Text Random Text", "qksdlbmntisd", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum", "Lorem ipsum"]} // i change it so we can get the whole list
-            
-          />
-        </div>
-      );
+    if (this.state.loadStatus) {
+      for (let i = 0; i < this.state.posts; i++) {
+        let currentCommentList = this.state.commentList[i];
+        posts.push(
+          <div key={i} className="post">
+            <PostItem
+              username={
+                this.state.usernameList[i] == undefined
+                  ? " Anonymous"
+                  : this.state.usernameList[i]
+              }
+              text={this.state.moments[i]}
+              likeStatus={this.state.message[i]}
+              imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
+              profileUrl={
+                this.state.usernameList[i] == undefined
+                  ? anonymous
+                  : this.getLogo(this.state.userLogo[i])
+              }
+              postid={this.state.postidList[i]}
+              position={i}
+              commentsCount={this.state.commentList[i].length}
+              giveLike={(e) => this.giveLike(e)}
+              giveComment={(e) => this.giveComment(e)}
+              likeStatus={this.state.likeStatus[i]}
+              numofLike={this.state.numofLike[i]}
+              comment={currentCommentList}
+            />
+          </div>
+        );
+      }
     }
     return posts;
   };
@@ -139,11 +178,13 @@ class Body extends Component {
         this.setState({ posts: this.state.posts + newPost });
       }, 200);
     } else {
-      this.setState({ loadingFeedback: "You have reached the end..." });
+      this.setState({
+        loadingFeedback: "No More New Posts, Come Back Later :)",
+      });
     }
   };
 
-  addNewPost = newPost => {
+  addNewPost = (newPost) => {
     let newMoments = [newPost.postmessage, ...this.state.moments];
     let newPostidList = [newPost.postId, ...this.state.postidList];
     let newUsernameList = [newPost.username, ...this.state.usernameList];
@@ -151,6 +192,7 @@ class Body extends Component {
     let newNumofLike = [0, ...this.state.numofLike];
     let newMessage = ["", ...this.state.message];
     let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
+    let newCommentlist = [[], ...this.state.commentList];
     this.setState({
       moments: newMoments,
       postidList: newPostidList,
@@ -159,7 +201,8 @@ class Body extends Component {
       numofLike: newNumofLike,
       Message: newMessage,
       userLogo: newLogoList,
-      posts: this.state.posts + 1
+      commentList: newCommentlist,
+      posts: this.state.posts + 1,
     });
   };
 
@@ -168,7 +211,7 @@ class Body extends Component {
       <div className="body">
         <div className="create-post-container">
           <div className="create-post-div">
-            <CreatePost addNewPost={newPost => this.addNewPost(newPost)} />
+            <CreatePost addNewPost={(newPost) => this.addNewPost(newPost)} />
           </div>
         </div>
 
@@ -179,7 +222,7 @@ class Body extends Component {
               resetPostContent={() => this.resetNewPost()}
               loadMorePosts={() => this.loadMorePosts()}
               showPosts={() => this.showPosts()}
-              giveLike={post => this.giveLike(post)}
+              giveLike={(post) => this.giveLike(post)}
               state={this.state}
             />
           </div>

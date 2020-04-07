@@ -13,7 +13,7 @@ function getRandomInt(max) {
 router.get("/getMoment", (req, res) => {
   let day = 1000 * 60 * 60 * 24 * 7;
 
-  Post.find({ postDate: { $gte: makeTime() - day } }, function(err, moments) {
+  Post.find({ postDate: { $gte: makeTime() - day } }, function (err, moments) {
     if (err) {
       // console.log(err);
     }
@@ -21,14 +21,14 @@ router.get("/getMoment", (req, res) => {
     let usernameList = [];
     let postidList = [];
     let numofLike = [];
-
     let logoList = [];
-
+    let commentList = [];
     for (let i = 0; i < moments.length; i++) {
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
       postidList.push(moments[i]._id);
       numofLike.push(moments[i].likeList.length);
+      commentList.push(moments[i].commentList);
       if (moments[i].nickname == null) {
         logoList.push("0");
       } else {
@@ -60,10 +60,11 @@ router.get("/getMoment", (req, res) => {
       let temp5 = logoList[pos1];
       logoList[pos1] = logoList[pos2];
       logoList[pos2] = temp5;
-    }
 
-    // console.log("all moments: ", momentsList);
-    // console.log("all username: ", usernameList);
+      let temp6 = commentList[pos1];
+      commentList[pos1] = commentList[pos2];
+      commentList[pos2] = temp6;
+    }
 
     return res.json({
       allMoments: momentsList,
@@ -71,7 +72,37 @@ router.get("/getMoment", (req, res) => {
       allPostid: postidList,
       numofLike: numofLike,
       momentLength: moments.length,
-      logoList: logoList
+      logoList: logoList,
+      commentList: commentList,
+    });
+  });
+});
+
+router.post("/postComment", (req, res) => {
+  if (!req.session.userId) {
+    return res.json({
+      success: false,
+      message: "please login to comment a post",
+    });
+  }
+
+  Post.findOne({ _id: req.body.postid }, (err, result) => {
+    if (err) {
+      return res.json({ success: false, message: "error finding the post" });
+    }
+    let messageWithName = req.session.username + ":  " + req.body.postComment;
+    result.commentList.push(messageWithName);
+    result.save((err) => {
+      if (err) {
+        return res.json({
+          success: false,
+          message: "error save you like to database",
+        });
+      }
+      return res.json({
+        success: true,
+        message: messageWithName,
+      });
     });
   });
 });
@@ -89,21 +120,21 @@ router.post("/giveLike", (req, res) => {
     if (result.likeList.includes(req.session.userId)) {
       return res.json({
         success: false,
-        message: "you already liked this post"
+        message: "you already liked this post",
       });
     }
     result.likeList.push(req.session.userId);
-    result.save(err => {
+    result.save((err) => {
       if (err) {
         return res.json({
           success: false,
-          message: "error save you like to database"
+          message: "error save you like to database",
         });
       }
       return res.json({
         success: true,
         message: "success",
-        numofLike: result.likeList.length
+        numofLike: result.likeList.length,
       });
     });
   });
