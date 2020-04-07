@@ -16,7 +16,8 @@ class CreatePost extends Component {
     message: null,
     userLogo: null,
     fileName: "",
-    hashtag: "",
+    hashtag: null,
+    hashtagList: [],
     overlayState: false,
   };
 
@@ -112,30 +113,47 @@ class CreatePost extends Component {
                 type="text"
                 id="hashtaginput"
                 name="hashtaginput"
-                value={this.state.hashtag}
+                placeholder="enter your hashtag"
                 onChange={(e) => {
                   this.setState({ hashtag: e.target.value });
                 }}
               />
               <div>
-              <button
-                id="hashtagsubmit"
-                type="submit"
-                className="btn btn-primary"
-                onClick={(e) => {
-                  if (this.state.hashtag) {
-                    document.getElementById("hashtaglabel").innerHTML =
-                      "Hashtag: " + hashtag;
-                  }
-                  document.getElementById("hashtaginput").value = "";
-                  document.getElementById("hashtagid").style.display = "none";
-                  document.getElementById("overlay").style.display = "none";
-                  e.preventDefault();
-                }}
-              >
-                Submit
-              </button>
-              <button className="clear-btn btn btn-primary">Clear</button>
+                <button
+                  id="hashtagsubmit"
+                  type="submit"
+                  className="btn btn-primary"
+                  onClick={(e) => {
+                    if (hashtag != null && hashtag.trim() != "") {
+                      this.state.hashtagList.push("#" + hashtag);
+                      this.state.hashtag = null;
+                      document.getElementById("hashtaglabel").innerHTML =
+                        "Hashtag(s): " + this.state.hashtagList;
+                    } else {
+                      alert("Hashtag cannot be empty!");
+                    }
+                    document.getElementById("hashtaginput").value = "";
+                    document.getElementById("hashtagid").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                    e.preventDefault();
+                  }}
+                >
+                  Submit
+                </button>
+                <button
+                  className="clear-btn btn btn-primary"
+                  onClick={(e) => {
+                    this.state.hashtagList = [];
+                    this.state.hashtag = null;
+                    document.getElementById("hashtaglabel").innerHTML = "";
+                    document.getElementById("hashtaginput").value = "";
+                    document.getElementById("hashtagid").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                    e.preventDefault();
+                  }}
+                >
+                  Clear
+                </button>
               </div>
             </form>
           </div>
