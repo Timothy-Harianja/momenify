@@ -196,6 +196,7 @@ class Body extends Component {
     let newMessage = ["", ...this.state.message];
     let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
     let newCommentlist = [[], ...this.state.commentList];
+    let newPostDateList = [newPost.postDate, ...this.state.postDateList];
     this.setState({
       moments: newMoments,
       postidList: newPostidList,
@@ -205,6 +206,7 @@ class Body extends Component {
       Message: newMessage,
       userLogo: newLogoList,
       commentList: newCommentlist,
+      postDateList: newPostDateList,
       posts: this.state.posts + 1,
     });
   };

@@ -57,6 +57,7 @@ class CreatePost extends Component {
             postmessage: this.state.postmessage,
             postId: res.data.postId,
             logoNumber: this.state.userLogo,
+            postDate: currentTime(),
           });
           this.setState({ postmessage: null });
         } else {
