@@ -8,6 +8,15 @@ import axios from "axios";
 function makeTime() {
   return new Date().getTime();
 }
+
+function currentTime() {
+  let ts = Date.now();
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+  return month + "-" + date + "-" + year;
+}
 class CreatePost extends Component {
   state = {
     userId: null,
@@ -40,6 +49,7 @@ class CreatePost extends Component {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
           this.props.addNewPost({
+            postDate: currentTime(),
             hashtagList: this.state.hashtagList,
             username: this.state.username,
             postmessage: this.state.postmessage,
@@ -212,6 +222,7 @@ class CreatePost extends Component {
                     userId: this.state.userId,
                     nickname: this.state.username,
                     currentDate: makeTime(),
+                    postTime: currentTime(),
                     userLogo: this.state.userLogo,
                     hashtagList: this.state.hashtagList,
                   });
