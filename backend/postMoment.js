@@ -9,6 +9,7 @@ const PostSchema = new Schema({
   likeList: [],
   commentList: [],
   userLogo: String,
+  postTime: String,
 });
 
 module.exports = mongoose.model("Moment", PostSchema);

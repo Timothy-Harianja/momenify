@@ -8,21 +8,20 @@ class Login extends Component {
   state = {
     email: null,
     password: null,
-    message: null
+    message: null,
   };
 
-  tryLogin = obj => {
-    console.log("obj", obj);
-    console.log("props: ", this.props);
+  tryLogin = (obj) => {
     axios
       .post("/api/loginRoute/login", obj)
-      .then(res => {
+      .then((res) => {
         if (res.data.success == true) {
           // this.props.history.push("/");
           window.location = "/";
         } else {
           this.setState({
-            message: "Password is incorrect or the account is not activated yet"
+            message:
+              "Password is incorrect or the account is not activated yet",
           });
           // console.log("password not correct:v", res.data.emailStatus);
           // this.setState({
@@ -33,12 +32,12 @@ class Login extends Component {
           // );
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("error of catch:", err);
       });
   };
 
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
   };
 
@@ -53,14 +52,14 @@ class Login extends Component {
               autoFocus
               type="email"
               //   value=""
-              onChange={e => this.setState({ email: e.target.value })}
+              onChange={(e) => this.setState({ email: e.target.value })}
             />
           </FormGroup>
           <FormGroup controlId="password" bsSize="large">
             <FormLabel>Password </FormLabel>
             <FormControl
               //   value={password}
-              onChange={e => this.setState({ password: e.target.value })}
+              onChange={(e) => this.setState({ password: e.target.value })}
               type="password"
             />
           </FormGroup>
@@ -70,7 +69,7 @@ class Login extends Component {
             onClick={() =>
               this.tryLogin({
                 email: this.state.email,
-                password: this.state.password
+                password: this.state.password,
               })
             }
           >

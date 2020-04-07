@@ -61,6 +61,7 @@ class PostItem extends React.Component {
             src={this.props.profileUrl}
           />
           <span className="post-item-header-name">{this.props.username}</span>
+          <span className="post-item-header-date">{this.props.postDate}</span>
           <span className="post-item-header-buttons">
             <PostDropdown2></PostDropdown2>
           </span>

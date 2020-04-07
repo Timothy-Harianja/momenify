@@ -34,6 +34,7 @@ class Body extends Component {
       message: [],
       userLogo: [],
       commentList: [],
+      postDateList: [],
       loadStatus: false,
     };
   }
@@ -68,6 +69,7 @@ class Body extends Component {
           message: Array(res.data.momentLength).fill(""),
           userLogo: res.data.logoList,
           commentList: res.data.commentList,
+          postDateList: res.data.postDateList,
           loadStatus: true,
         });
       })
@@ -145,6 +147,7 @@ class Body extends Component {
                   ? " Anonymous"
                   : this.state.usernameList[i]
               }
+              postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
               imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
@@ -193,6 +196,7 @@ class Body extends Component {
     let newMessage = ["", ...this.state.message];
     let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
     let newCommentlist = [[], ...this.state.commentList];
+    let newPostDateList = [newPost.postDate, ...this.state.postDateList];
     this.setState({
       moments: newMoments,
       postidList: newPostidList,
@@ -202,6 +206,7 @@ class Body extends Component {
       Message: newMessage,
       userLogo: newLogoList,
       commentList: newCommentlist,
+      postDateList: newPostDateList,
       posts: this.state.posts + 1,
     });
   };

@@ -8,6 +8,15 @@ import axios from "axios";
 function makeTime() {
   return new Date().getTime();
 }
+
+function currentTime() {
+  let ts = Date.now();
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+  return month + "-" + date + "-" + year;
+}
 class CreatePost extends Component {
   state = {
     userId: null,
@@ -15,8 +24,9 @@ class CreatePost extends Component {
     postmessage: null,
     message: null,
     userLogo: null,
-    fileName: null,
-    imageFile: null,
+    fileName: "",
+    hashtag: "",
+    tempHashTag: "",
   };
 
   componentDidMount() {
@@ -47,6 +57,7 @@ class CreatePost extends Component {
             postmessage: this.state.postmessage,
             postId: res.data.postId,
             logoNumber: this.state.userLogo,
+            postDate: currentTime(),
           });
           this.setState({ postmessage: null });
         } else {
@@ -78,13 +89,16 @@ class CreatePost extends Component {
 
   render() {
     const { fileName } = this.state;
+
     let file = null;
+    let hashtaginputs = "";
 
     file = fileName ? (
       <span>You have selected: {fileName}</span>
     ) : (
       <span></span>
     );
+
     return (
       <div className="create-post">
         <form onSubmit={this.submitHandler} id="submitform">
@@ -95,23 +109,80 @@ class CreatePost extends Component {
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
+          <div class="hashtagpp" id="hashtagid">
+            <form id="hashtagform">
+              <span
+                class="close"
+                onClick={() => {
+                  const closeBtn = document.querySelector(".close");
+                  closeBtn.addEventListener("click", () => {
+                    document.getElementById("hashtagid").style.display = "none";
+                    document.getElementById("cover").style.display = "none";
+                  });
+                }}
+              >
+                &times;
+              </span>
+              <h4>Enter Your Hashtag</h4>
+              <input
+                type="text"
+                id="hashtaginput"
+                name="hashtaginput"
+                placeholder="enter your hashtag"
+                onChange={(e) => {
+                  this.setState({
+                    tempHashTag: e.target.value,
+                  });
+                }}
+              />
+              <button
+                id="hashtagsubmit"
+                type="submit"
+                className="btn btn-primary"
+                onClick={(e) => {
+                  this.state.hashtag += this.state.tempHashTag + ",";
+                  this.state.tempHashTag = null;
+
+                  document.getElementById("hashtaglabel").innerHTML =
+                    "Hashtag: " + this.state.hashtag;
+
+                  document.getElementById("hashtaginput").value = "";
+                  document.getElementById("hashtagid").style.display = "none";
+                  document.getElementById("cover").style.display = "none";
+                  e.preventDefault();
+                }}
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+          <div id="cover"></div>
           <div className="buttons-container">
             {this.state.message}
 
             <div className="div-container">
-              <button type="tag" className="btn btn-light" id="tag">
+              <button
+                type="tag"
+                className="btn btn-light"
+                id="tag"
+                onClick={() => {
+                  document.getElementById("hashtagid").style.display = "block";
+                  document.getElementById("cover").style.display = "block";
+                }}
+              >
                 <img src={hash} alt="pic" id="pic" />
                 Hashtag
               </button>
+
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />
                 Photo
                 <input
                   id="file"
                   type="file"
-                  accept="image/*"
+                  name="file"
                   name="selectedFile"
-                  onChange={this.fileSelectedHandler}
+                  onChange={(event) => this.fileSelectedHandler(event)}
                 />
               </div>
 
@@ -127,6 +198,7 @@ class CreatePost extends Component {
                     nickname: this.state.username,
                     currentDate: makeTime(),
                     userLogo: this.state.userLogo,
+                    postTime: currentTime(),
                   });
                 }}
               >
@@ -134,8 +206,13 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
+
             <label id="imagelabel" htmlFor="file">
               {file}
+            </label>
+            <br></br>
+            <label id="hashtaglabel" htmlFor="hashtaginput">
+              {hashtaginputs}
             </label>
           </div>
         </form>
