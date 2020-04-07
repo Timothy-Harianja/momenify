@@ -8,15 +8,6 @@ import axios from "axios";
 function makeTime() {
   return new Date().getTime();
 }
-
-function currentTime() {
-  let ts = Date.now();
-  let date_ob = new Date(ts);
-  let date = date_ob.getDate();
-  let month = date_ob.getMonth() + 1;
-  let year = date_ob.getFullYear();
-  return month + "-" + date + "-" + year;
-}
 class CreatePost extends Component {
   state = {
     userId: null,
@@ -25,8 +16,9 @@ class CreatePost extends Component {
     message: null,
     userLogo: null,
     fileName: "",
-    hashtag: "",
-    tempHashTag: "",
+    hashtag: null,
+    hashtagList: [],
+    overlayState: false,
   };
 
   componentDidMount() {
@@ -43,22 +35,20 @@ class CreatePost extends Component {
     // console.log("this.json:", json);
     // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      // if (this.state.fileName != null) {
-      //   var fd = new FormData();
-      //   fd.append("image", this.state.imageFile, this.state.imageFile.name);
-      // }
-
       axios.post("/api/postRoute/postMoment", json).then((res) => {
         if (res.data.success) {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
           this.props.addNewPost({
+            hashtagList: this.state.hashtagList,
             username: this.state.username,
             postmessage: this.state.postmessage,
             postId: res.data.postId,
             logoNumber: this.state.userLogo,
-            postDate: currentTime(),
           });
+          this.state.hashtagList = [];
+          this.state.hashtag = null;
+          document.getElementById("hashtaglabel").innerHTML = "";
           this.setState({ postmessage: null });
         } else {
           this.setState({ message: res.data.message });
@@ -73,23 +63,21 @@ class CreatePost extends Component {
     e.preventDefault();
   };
 
-  fileSelectedHandler = (event) => {
-    switch (event.target.name) {
+  onChange = (e) => {
+    switch (e.target.name) {
       case "selectedFile":
-        if (event.target.files.length > 0) {
-          this.setState({ fileName: event.target.files[0].name });
+        if (e.target.files.length > 0) {
+          this.setState({ fileName: e.target.files[0].name });
         }
         break;
       default:
-        this.setState({ [event.target.name]: event.target.value });
+        this.setState({ [e.target.name]: e.target.value });
     }
-    this.setState({ imageFile: event.target.files[0] });
-    console.log(event.target.files[0]);
   };
 
   render() {
     const { fileName } = this.state;
-
+    const { hashtag } = this.state;
     let file = null;
     let hashtaginputs = "";
 
@@ -117,7 +105,8 @@ class CreatePost extends Component {
                   const closeBtn = document.querySelector(".close");
                   closeBtn.addEventListener("click", () => {
                     document.getElementById("hashtagid").style.display = "none";
-                    document.getElementById("cover").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                    this.setState({ overlayState: false });
                   });
                 }}
               >
@@ -130,33 +119,58 @@ class CreatePost extends Component {
                 name="hashtaginput"
                 placeholder="enter your hashtag"
                 onChange={(e) => {
-                  this.setState({
-                    tempHashTag: e.target.value,
-                  });
+                  this.setState({ hashtag: e.target.value });
                 }}
               />
-              <button
-                id="hashtagsubmit"
-                type="submit"
-                className="btn btn-primary"
-                onClick={(e) => {
-                  this.state.hashtag += this.state.tempHashTag + ",";
-                  this.state.tempHashTag = null;
-
-                  document.getElementById("hashtaglabel").innerHTML =
-                    "Hashtag: " + this.state.hashtag;
-
-                  document.getElementById("hashtaginput").value = "";
-                  document.getElementById("hashtagid").style.display = "none";
-                  document.getElementById("cover").style.display = "none";
-                  e.preventDefault();
-                }}
-              >
-                Submit
-              </button>
+              <div>
+                <button
+                  id="hashtagsubmit"
+                  type="submit"
+                  className="btn btn-primary"
+                  onClick={(e) => {
+                    if (hashtag != null && hashtag.trim() != "") {
+                      this.state.hashtagList.push(hashtag);
+                      this.state.hashtag = null;
+                      document.getElementById("hashtaglabel").innerHTML =
+                        "Hashtag(s): " + this.state.hashtagList;
+                    } else {
+                      alert("Hashtag cannot be empty!");
+                    }
+                    document.getElementById("hashtaginput").value = "";
+                    document.getElementById("hashtagid").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                    e.preventDefault();
+                  }}
+                >
+                  Submit
+                </button>
+                <button
+                  className="clear-btn btn btn-primary"
+                  onClick={(e) => {
+                    this.state.hashtagList = [];
+                    this.state.hashtag = null;
+                    document.getElementById("hashtaglabel").innerHTML = "";
+                    document.getElementById("hashtaginput").value = "";
+                    document.getElementById("hashtagid").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                    e.preventDefault();
+                  }}
+                >
+                  Clear
+                </button>
+              </div>
             </form>
           </div>
-          <div id="cover"></div>
+          <div
+            id="overlay"
+            onClick={() => {
+              if (this.state.overlayState == true) {
+                this.setState({ overlayState: false });
+                document.getElementById("hashtagid").style.display = "none";
+                document.getElementById("overlay").style.display = "none";
+              }
+            }}
+          ></div>
           <div className="buttons-container">
             {this.state.message}
 
@@ -167,7 +181,8 @@ class CreatePost extends Component {
                 id="tag"
                 onClick={() => {
                   document.getElementById("hashtagid").style.display = "block";
-                  document.getElementById("cover").style.display = "block";
+                  document.getElementById("overlay").style.display = "block";
+                  this.setState({ overlayState: true });
                 }}
               >
                 <img src={hash} alt="pic" id="pic" />
@@ -182,7 +197,7 @@ class CreatePost extends Component {
                   type="file"
                   name="file"
                   name="selectedFile"
-                  onChange={(event) => this.fileSelectedHandler(event)}
+                  onChange={(event) => this.onChange(event)}
                 />
               </div>
 
@@ -198,7 +213,7 @@ class CreatePost extends Component {
                     nickname: this.state.username,
                     currentDate: makeTime(),
                     userLogo: this.state.userLogo,
-                    postTime: currentTime(),
+                    hashtagList: this.state.hashtagList,
                   });
                 }}
               >
@@ -210,7 +225,6 @@ class CreatePost extends Component {
             <label id="imagelabel" htmlFor="file">
               {file}
             </label>
-            <br></br>
             <label id="hashtaglabel" htmlFor="hashtaginput">
               {hashtaginputs}
             </label>

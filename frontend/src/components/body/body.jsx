@@ -35,6 +35,7 @@ class Body extends Component {
       userLogo: [],
       commentList: [],
       postDateList: [],
+      hashtagList: [],
       loadStatus: false,
     };
   }
@@ -70,6 +71,7 @@ class Body extends Component {
           userLogo: res.data.logoList,
           commentList: res.data.commentList,
           postDateList: res.data.postDateList,
+          hashtagList: res.data.hashtagList,
           loadStatus: true,
         });
       })
@@ -142,7 +144,6 @@ class Body extends Component {
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
-        let currentCommentList = this.state.commentList[i];
         posts.push(
           <div key={i} className="post">
             <PostItem
@@ -167,7 +168,8 @@ class Body extends Component {
               giveComment={(e) => this.giveComment(e)}
               likeStatus={this.state.likeStatus[i]}
               numofLike={this.state.numofLike[i]}
-              comment={currentCommentList}
+              hashtags={this.state.hashtagList[i]}
+              comment={this.state.commentList[i]}
             />
           </div>
         );
@@ -201,6 +203,7 @@ class Body extends Component {
     let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
     let newCommentlist = [[], ...this.state.commentList];
     let newPostDateList = [newPost.postDate, ...this.state.postDateList];
+    let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
     this.setState({
       moments: newMoments,
       postidList: newPostidList,
@@ -211,6 +214,7 @@ class Body extends Component {
       userLogo: newLogoList,
       commentList: newCommentlist,
       postDateList: newPostDateList,
+      hashtagList: newHashtagList,
       posts: this.state.posts + 1,
     });
   };
