@@ -17,7 +17,8 @@ class CreatePost extends Component {
     message: null,
     userLogo: null,
     fileName: '',
-    hashtag:""
+    hashtag:"",
+    overlayState: false
   };
 
   componentDidMount() {
@@ -95,32 +96,44 @@ class CreatePost extends Component {
           ></textarea>
               
               <div class="hashtagpp" id="hashtagid">
-              <form id = "hashtagform">
-              <span class="close" onClick={()=>{
-                const closeBtn = document.querySelector(".close")
-                closeBtn.addEventListener("click", () => {
-                document.getElementById("hashtagid").style.display = "none";
-                document.getElementById("cover").style.display = "none";
-                })
-              }}
-              >&times;</span>
-              <h4>Enter Your Hashtag</h4>
-              <input type="text" id="hashtaginput" name="hashtaginput" value={this.state.hashtag} onChange={e=>{
-                this.setState({hashtag:e.target.value});
-              }
-              } />
-              <button id="hashtagsubmit" type="submit" className="btn btn-primary" onClick={e=>{
-                  if(this.state.hashtag){
-                  document.getElementById("hashtaglabel").innerHTML="Hashtag: "+hashtag;
+                <form id = "hashtagform">
+                  <span class="close" onClick={()=>{
+                    const closeBtn = document.querySelector(".close")
+                    closeBtn.addEventListener("click", () => {
+                    document.getElementById("hashtagid").style.display = "none";
+                    document.getElementById("overlay").style.display = "none";
+                    this.setState({overlayState: false})
+                    })
+                  }}
+                  >&times;</span>
+                  <h4>Enter Your Hashtag</h4>
+                  <input type="text" id="hashtaginput" name="hashtaginput" value={this.state.hashtag} onChange={e=>{
+                    this.setState({hashtag:e.target.value});
                   }
-                  document.getElementById("hashtaginput").value='';
-                  document.getElementById("hashtagid").style.display = "none";
-                  document.getElementById("cover").style.display = "none";
-                  e.preventDefault();
-              }}>Submit</button>
-              </form>
-               </div>
-               <div id="cover" ></div>
+                  } />
+                  <button id="hashtagsubmit" type="submit" className="btn btn-primary" onClick={e=>{
+                      if(this.state.hashtag){
+                      document.getElementById("hashtaglabel").innerHTML="Hashtag: "+hashtag;
+                      }
+                      document.getElementById("hashtaginput").value='';
+                      document.getElementById("hashtagid").style.display = "none";
+                      document.getElementById("overlay").style.display = "none";
+                      e.preventDefault();
+                  }}>Submit</button>
+                  <button className = "clear-btn btn btn-primary">Clear</button>
+                </form>
+              </div>
+              <div id="overlay" onClick={() => {
+                    if (this.state.overlayState == true) {
+                      this.setState({overlayState: false})
+                      document.getElementById("hashtagid").style.display = "none";
+                      document.getElementById("overlay").style.display = "none";
+                    }
+
+                  }
+                }
+              >
+              </div>
           <div className="buttons-container">
             {this.state.message}
 
@@ -128,14 +141,12 @@ class CreatePost extends Component {
             
               <button type="tag" className="btn btn-light" id="tag" onClick={()=>{
                 document.getElementById("hashtagid").style.display = "block";
-                document.getElementById("cover").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+                this.setState({overlayState: true})
               }}>
               <img src={hash} alt="pic" id="pic"/>
                 Hashtag
               </button>
-            
-
-              
 
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />

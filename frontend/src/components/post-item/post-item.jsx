@@ -131,9 +131,6 @@ class PostItem extends React.Component {
               <img className="post-item-header-profile" src={this.props.profileUrl} />
               <span className="post-item-header-name">{this.props.username}</span>
               <span className="post-item-header-buttons">
-                {/* <CustomButton color="base">Follow</CustomButton>
-                <CustomButton color="base">Message</CustomButton>
-                <CustomButton color="red">Report</CustomButton>     */}
                 <PostDropdown2></PostDropdown2>
               </span>
              
