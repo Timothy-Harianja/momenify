@@ -48,6 +48,7 @@ class CreatePost extends Component {
           });
           this.state.hashtagList = [];
           this.state.hashtag = null;
+          document.getElementById("hashtaglabel").innerHTML = "";
           this.setState({ postmessage: null });
         } else {
           this.setState({ message: res.data.message });
@@ -214,8 +215,6 @@ class CreatePost extends Component {
                     userLogo: this.state.userLogo,
                     hashtagList: this.state.hashtagList,
                   });
-
-                  document.getElementById("hashtaglabel").innerHTML = "";
                 }}
               >
                 <img src={posticon} alt="pic" id="pic" />
