@@ -8,15 +8,6 @@ import axios from "axios";
 function makeTime() {
   return new Date().getTime();
 }
-
-function currentTime() {
-  let ts = Date.now();
-  let date_ob = new Date(ts);
-  let date = date_ob.getDate();
-  let month = date_ob.getMonth() + 1;
-  let year = date_ob.getFullYear();
-  return month + "-" + date + "-" + year;
-}
 class CreatePost extends Component {
   state = {
     userId: null,
@@ -24,10 +15,9 @@ class CreatePost extends Component {
     postmessage: null,
     message: null,
     userLogo: null,
-
-    fileName: '',
-    hashtag:"",
-    overlayState: false
+    fileName: "",
+    hashtag: "",
+    overlayState: false,
   };
 
   componentDidMount() {
@@ -44,11 +34,6 @@ class CreatePost extends Component {
     // console.log("this.json:", json);
     // console.log(this.state.postmessage);
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      // if (this.state.fileName != null) {
-      //   var fd = new FormData();
-      //   fd.append("image", this.state.imageFile, this.state.imageFile.name);
-      // }
-
       axios.post("/api/postRoute/postMoment", json).then((res) => {
         if (res.data.success) {
           this.setState({ message: res.data.message });
@@ -58,7 +43,6 @@ class CreatePost extends Component {
             postmessage: this.state.postmessage,
             postId: res.data.postId,
             logoNumber: this.state.userLogo,
-            postDate: currentTime(),
           });
           this.setState({ postmessage: null });
         } else {
@@ -74,23 +58,21 @@ class CreatePost extends Component {
     e.preventDefault();
   };
 
-  fileSelectedHandler = (event) => {
-    switch (event.target.name) {
+  onChange = (e) => {
+    switch (e.target.name) {
       case "selectedFile":
-        if (event.target.files.length > 0) {
-          this.setState({ fileName: event.target.files[0].name });
+        if (e.target.files.length > 0) {
+          this.setState({ fileName: e.target.files[0].name });
         }
         break;
       default:
-        this.setState({ [event.target.name]: event.target.value });
+        this.setState({ [e.target.name]: e.target.value });
     }
-    this.setState({ imageFile: event.target.files[0] });
-    console.log(event.target.files[0]);
   };
 
   render() {
     const { fileName } = this.state;
-
+    const { hashtag } = this.state;
     let file = null;
     let hashtaginputs = "";
 
@@ -110,57 +92,76 @@ class CreatePost extends Component {
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
-              
-              <div class="hashtagpp" id="hashtagid">
-                <form id = "hashtagform">
-                  <span class="close" onClick={()=>{
-                    const closeBtn = document.querySelector(".close")
-                    closeBtn.addEventListener("click", () => {
+          <div class="hashtagpp" id="hashtagid">
+            <form id="hashtagform">
+              <span
+                class="close"
+                onClick={() => {
+                  const closeBtn = document.querySelector(".close");
+                  closeBtn.addEventListener("click", () => {
                     document.getElementById("hashtagid").style.display = "none";
                     document.getElementById("overlay").style.display = "none";
-                    this.setState({overlayState: false})
-                    })
-                  }}
-                  >&times;</span>
-                  <h4>Enter Your Hashtag</h4>
-                  <input type="text" id="hashtaginput" name="hashtaginput" value={this.state.hashtag} onChange={e=>{
-                    this.setState({hashtag:e.target.value});
-                  }
-                  } />
-                  <button id="hashtagsubmit" type="submit" className="btn btn-primary" onClick={e=>{
-                      if(this.state.hashtag){
-                      document.getElementById("hashtaglabel").innerHTML="Hashtag: "+hashtag;
-                      }
-                      document.getElementById("hashtaginput").value='';
-                      document.getElementById("hashtagid").style.display = "none";
-                      document.getElementById("overlay").style.display = "none";
-                      e.preventDefault();
-                  }}>Submit</button>
-                  <button className = "clear-btn btn btn-primary">Clear</button>
-                </form>
-              </div>
-              <div id="overlay" onClick={() => {
-                    if (this.state.overlayState == true) {
-                      this.setState({overlayState: false})
-                      document.getElementById("hashtagid").style.display = "none";
-                      document.getElementById("overlay").style.display = "none";
-                    }
-
-                  }
-                }
+                    this.setState({ overlayState: false });
+                  });
+                }}
               >
-              </div>
+                &times;
+              </span>
+              <h4>Enter Your Hashtag</h4>
+              <input
+                type="text"
+                id="hashtaginput"
+                name="hashtaginput"
+                value={this.state.hashtag}
+                onChange={(e) => {
+                  this.setState({ hashtag: e.target.value });
+                }}
+              />
+              <button
+                id="hashtagsubmit"
+                type="submit"
+                className="btn btn-primary"
+                onClick={(e) => {
+                  if (this.state.hashtag) {
+                    document.getElementById("hashtaglabel").innerHTML =
+                      "Hashtag: " + hashtag;
+                  }
+                  document.getElementById("hashtaginput").value = "";
+                  document.getElementById("hashtagid").style.display = "none";
+                  document.getElementById("overlay").style.display = "none";
+                  e.preventDefault();
+                }}
+              >
+                Submit
+              </button>
+              <button className="clear-btn btn btn-primary">Clear</button>
+            </form>
+          </div>
+          <div
+            id="overlay"
+            onClick={() => {
+              if (this.state.overlayState == true) {
+                this.setState({ overlayState: false });
+                document.getElementById("hashtagid").style.display = "none";
+                document.getElementById("overlay").style.display = "none";
+              }
+            }}
+          ></div>
           <div className="buttons-container">
             {this.state.message}
 
             <div className="div-container">
-
-              <button type="tag" className="btn btn-light" id="tag" onClick={()=>{
-                document.getElementById("hashtagid").style.display = "block";
-                document.getElementById("overlay").style.display = "block";
-                this.setState({overlayState: true})
-              }}>
-              <img src={hash} alt="pic" id="pic"/>
+              <button
+                type="tag"
+                className="btn btn-light"
+                id="tag"
+                onClick={() => {
+                  document.getElementById("hashtagid").style.display = "block";
+                  document.getElementById("overlay").style.display = "block";
+                  this.setState({ overlayState: true });
+                }}
+              >
+                <img src={hash} alt="pic" id="pic" />
                 Hashtag
               </button>
 
@@ -172,7 +173,7 @@ class CreatePost extends Component {
                   type="file"
                   name="file"
                   name="selectedFile"
-                  onChange={(event) => this.fileSelectedHandler(event)}
+                  onChange={(event) => this.onChange(event)}
                 />
               </div>
 
@@ -188,7 +189,6 @@ class CreatePost extends Component {
                     nickname: this.state.username,
                     currentDate: makeTime(),
                     userLogo: this.state.userLogo,
-                    postTime: currentTime(),
                   });
                 }}
               >
@@ -200,7 +200,6 @@ class CreatePost extends Component {
             <label id="imagelabel" htmlFor="file">
               {file}
             </label>
-            <br></br>
             <label id="hashtaglabel" htmlFor="hashtaginput">
               {hashtaginputs}
             </label>
