@@ -52,6 +52,18 @@
   width: 45px;
 }
 
+.post-item-header-date {
+  font-size: 1em;
+  /* font-weight: bold; */
+  color: grey;
+  position: relative;
+  top: 8px;
+  margin-left: 55%;
+  border-radius: 50%;
+  height: 45px;
+  width: 45px;
+}
+
 .post-item-main-image {
   display: block;
   width: 100%;
@@ -168,6 +180,17 @@
 }
 
 @media only screen and (max-width: 732px) {
+  .post-item-header-date {
+    font-size: 1em;
+    /* font-weight: bold; */
+    color: grey;
+    position: relative;
+    top: 8px;
+    margin-left: 10%;
+    border-radius: 50%;
+    height: 45px;
+    width: 45px;
+  }
   .comment-box {
     width: 80%;
   }

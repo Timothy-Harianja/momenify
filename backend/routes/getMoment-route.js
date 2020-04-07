@@ -23,12 +23,14 @@ router.get("/getMoment", (req, res) => {
     let numofLike = [];
     let logoList = [];
     let commentList = [];
+    let postDateList = [];
     for (let i = 0; i < moments.length; i++) {
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
       postidList.push(moments[i]._id);
       numofLike.push(moments[i].likeList.length);
       commentList.push(moments[i].commentList);
+      postDateList.push(moments[i].postTime);
       if (moments[i].nickname == null) {
         logoList.push("0");
       } else {
@@ -64,6 +66,10 @@ router.get("/getMoment", (req, res) => {
       let temp6 = commentList[pos1];
       commentList[pos1] = commentList[pos2];
       commentList[pos2] = temp6;
+
+      let temp7 = postDateList[pos1];
+      postDateList[pos1] = postDateList[pos2];
+      postDateList[pos2] = temp7;
     }
 
     return res.json({
@@ -74,6 +80,7 @@ router.get("/getMoment", (req, res) => {
       momentLength: moments.length,
       logoList: logoList,
       commentList: commentList,
+      postDateList: postDateList,
     });
   });
 });

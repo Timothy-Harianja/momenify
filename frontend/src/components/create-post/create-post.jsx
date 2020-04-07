@@ -8,6 +8,15 @@ import axios from "axios";
 function makeTime() {
   return new Date().getTime();
 }
+
+function currentTime() {
+  let ts = Date.now();
+  let date_ob = new Date(ts);
+  let date = date_ob.getDate();
+  let month = date_ob.getMonth() + 1;
+  let year = date_ob.getFullYear();
+  return month + "-" + date + "-" + year;
+}
 class CreatePost extends Component {
   state = {
     userId: null,
@@ -188,6 +197,7 @@ class CreatePost extends Component {
                     nickname: this.state.username,
                     currentDate: makeTime(),
                     userLogo: this.state.userLogo,
+                    postTime: currentTime(),
                   });
                 }}
               >

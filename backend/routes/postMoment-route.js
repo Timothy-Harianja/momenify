@@ -18,6 +18,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.userId = req.body.userId;
   postMoment.postmessage = req.body.postmessage;
   postMoment.postDate = req.body.currentDate;
+  postMoment.postTime = req.body.postTime;
   postMoment.likeList = [];
   postMoment.commentList = [];
   postMoment.userLogo = req.body.userLogo;
@@ -52,7 +53,7 @@ router.post("/postMoment", (req, res) => {
           message:
             "Post moment success! You have " +
             req.session.postLeft +
-            " left for today!",
+            " left for today! Login to make unlimited post per day!",
           postId: newPost._id,
         });
       }
