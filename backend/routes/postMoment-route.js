@@ -1,6 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../postMoment");
+const Hashtag = require("../hashtag");
+router.post("/postHashtag", (req, res) => {
+  for (let i = 0; i < req.body.hashtagList.length; i++) {
+    Hashtag.findOne({ hashtag: req.body.hashtagList[i] }, (err, result) => {
+      let hashtag = new Hashtag();
+      if (err) {
+        console.log(err);
+        return res.json({
+          success: false,
+          message: "error posting the hashtag",
+        });
+      }
+      if (result == null) {
+        hashtag.count = 1;
+        hashtag.hashtag = req.body.hashtagList[i];
+        hashtag.hashtagTime = req.body.currentTime;
+        hashtag.save((err, newHashtag) => {
+          if (err) {
+            console.log(err);
+            return res.json({ success: false, message: "Post hashtag failed" });
+          }
+        });
+      } else {
+        let newCount = result.count + 1;
+        let id = result._id;
+
+        Hashtag.findOneAndUpdate({ _id: id }, { count: newCount }, (err) => {
+          if (err) console.log(err);
+        });
+      }
+    });
+  }
+});
 
 router.post("/postMoment", (req, res) => {
   let postMoment = new Post();
