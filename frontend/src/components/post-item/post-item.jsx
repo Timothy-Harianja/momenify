@@ -142,6 +142,7 @@ class PostItem extends React.Component {
                     position: this.state.position,
                     postComment: this.state.commentText,
                   });
+                  this.state.commentText = null;
                 }}
               ></input>
             </form>

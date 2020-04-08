@@ -294,26 +294,6 @@ class Body extends Component {
                         </li>
                       </a>
                     ))}
-                    {/* <li>
-                      <img src={kun} alt="kun" className="trend-img" />
-                      <h3>1:</h3>
-                    </li>
-                    <li>
-                      <img src={kun} alt="kun" className="trend-img" />
-                      <h3>2:</h3>
-                    </li>
-                    <li>
-                      <img src={kun} alt="kun" className="trend-img" />
-                      <h3>3:</h3>
-                    </li>
-                    <li>
-                      <img src={kun} alt="kun" className="trend-img" />
-                      <h3>4:</h3>
-                    </li>
-                    <li>
-                      <img src={kun} alt="kun" className="trend-img" />
-                      <h3>5:</h3>
-                    </li> */}
                   </ul>
                 </div>
               </div>
