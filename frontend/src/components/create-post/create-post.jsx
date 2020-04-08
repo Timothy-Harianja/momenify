@@ -48,6 +48,16 @@ class CreatePost extends Component {
         if (res.data.success) {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
+          if (this.state.hashtagList.length > 0) {
+            axios
+              .post("/api/postRoute/postHashtag", {
+                hashtagList: this.state.hashtagList,
+                currentTime: makeTime(),
+              })
+              .then((res) => {
+                console.log(res);
+              });
+          }
           this.props.addNewPost({
             postDate: currentTime(),
             hashtagList: this.state.hashtagList,

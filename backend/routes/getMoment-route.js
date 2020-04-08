@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../postMoment");
-
+const Hashtag = require("../hashtag");
 function makeTime() {
   return new Date().getTime();
 }
@@ -10,12 +10,39 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+router.get("/getHashtag", (req, res) => {
+  let days = 1000 * 60 * 60 * 24 * 10;
+  Hashtag.find({ hashtagTime: { $gte: makeTime() - days } }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "error posting the hashtag",
+      });
+    }
+    let hashtagList = [];
+    for (let i = result.length - 1; i >= 0; i--) {
+      hashtagList.push(result[i].hashtag);
+      if (hashtagList.length == 5) break;
+    }
+    return res.json({
+      success: true,
+      message: "retrived hashtag completed!",
+      hashtagList: hashtagList,
+    });
+  }).sort("count");
+});
+
 router.get("/getMoment", (req, res) => {
   let day = 1000 * 60 * 60 * 24 * 7;
 
   Post.find({ postDate: { $gte: makeTime() - day } }, function (err, moments) {
     if (err) {
-      // console.log(err);
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "error posting the hashtag",
+      });
     }
     let momentsList = [];
     let usernameList = [];
