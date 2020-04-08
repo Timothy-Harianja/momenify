@@ -18,7 +18,12 @@ import logo6 from "../images/logo6.png";
 import logo7 from "../images/logo7.png";
 import logo8 from "../images/logo1.png";
 import logo9 from "../images/logo9.png";
-
+import one from "../images/one.png";
+import two from "../images/two.png";
+import three from "../images/three.png";
+import four from "../images/four.png";
+import five from "../images/five.png";
+import trend from "../images/trend.png";
 class Body extends Component {
   constructor(props) {
     super(props);
@@ -36,11 +41,18 @@ class Body extends Component {
       commentList: [],
       postDateList: [],
       hashtagList: [],
+      topTrendList: [],
       loadStatus: false,
     };
   }
 
   componentDidMount() {
+    axios.get("/api/getRoute/getHashtag").then((res) => {
+      if (res.data.success) {
+        this.setState({ topTrendList: res.data.hashtagList });
+      }
+    });
+
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
@@ -137,6 +149,11 @@ class Body extends Component {
   getLogo = (num) => {
     let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
     return list[parseInt(num) - 1];
+  };
+
+  getNumberLogo = (num) => {
+    let list = [one, two, three, four, five];
+    return list[parseInt(num)];
   };
   showPosts = () => {
     // get all the posts from the
@@ -258,30 +275,45 @@ class Body extends Component {
                 <TopRightContainer />
               </div>
               <div className="box middle">
-                <div id="trending-hashtag">Trending Hastags #</div>
+                <div id="trending-hashtag">
+                  <img src={trend} alt="kun" className="trend-img" />
+                  &nbsp;&nbsp;&nbsp;Trending:
+                </div>
                 <span class="line-fade"></span>
                 <div id="trend-list">
                   <ul>
-                    <li>
+                    {this.state.topTrendList.map((tag, index) => (
+                      <a href={"/hashtag/" + tag}>
+                        <li>
+                          <img
+                            src={this.getNumberLogo(index)}
+                            alt="kun"
+                            className="trend-img"
+                          />
+                          <h3>{tag}</h3>
+                        </li>
+                      </a>
+                    ))}
+                    {/* <li>
                       <img src={kun} alt="kun" className="trend-img" />
-                      <h3>#Trending Hashtag 1</h3>
+                      <h3>1:</h3>
                     </li>
                     <li>
                       <img src={kun} alt="kun" className="trend-img" />
-                      <h3>#Trending Hashtag 2</h3>
+                      <h3>2:</h3>
                     </li>
                     <li>
                       <img src={kun} alt="kun" className="trend-img" />
-                      <h3>#Trending Hashtag 3</h3>
+                      <h3>3:</h3>
                     </li>
                     <li>
                       <img src={kun} alt="kun" className="trend-img" />
-                      <h3>#Trending Hashtag 4</h3>
+                      <h3>4:</h3>
                     </li>
                     <li>
                       <img src={kun} alt="kun" className="trend-img" />
-                      <h3>#Trending Hashtag 5</h3>
-                    </li>
+                      <h3>5:</h3>
+                    </li> */}
                   </ul>
                 </div>
               </div>
