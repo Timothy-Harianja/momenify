@@ -32,9 +32,7 @@ class Signup extends Component {
     activation: false,
     activeToken: null,
     activeTokenExpire: null,
-    lastLogin: null,
-    content:
-      "An confirmation link has been sent to your email, please activate in 24 hours!"
+    lastLogin: null
   };
 
   submitHandler = e => {
@@ -43,7 +41,7 @@ class Signup extends Component {
 
   putDataToUsers = json => {
     var checkAll = true;
-    if (this.state.nickname == null) {
+    if (this.state.nickname == null || this.state.nickname.trim() == "") {
       checkAll = false;
       this.setState({ message: "Nichname cannot be empty" });
     }

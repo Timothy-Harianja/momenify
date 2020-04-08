@@ -1,62 +1,49 @@
 import React, { Component } from "react";
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import "./accountpage.css";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
-
-class resetPassword extends Component {
+import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import "./resetPassword.css";
+class EmailLogin extends Component {
   state = {
-    oldPassword: null,
+    body: null,
+    message: null,
     newPassword: null,
-    confirmPassword: null,
-    message: null
+    confirmPassword: null
   };
-
-  submitHandler = e => {
-    e.preventDefault();
-  };
-
-  tryReset = obj => {
+  confirm = json => {
     var confirmNewP = this.state.newPassword == this.state.confirmPassword;
     if (confirmNewP) {
       axios
-        .post("/api/resetPasswordRoute/resetPassword", obj)
+        .post("/api/forgetPasswordRoute/newPassword", json)
         .then(res => {
-          if (res.data.success == true) {
-            // this.props.history.push("/");
-            window.location = "/";
+          console.log("res success status: ", res.data.success);
+          if (res.data.success) {
+            this.props.history.push("/login");
+            this.setState({
+              message: "confirm success!"
+            });
           } else {
             this.setState({
-              message: "Password incorrect"
+              message: "The link is expired!"
             });
           }
         })
         .catch(err => {
-          console.log("error of catch:", err);
+          console.log(err);
+          this.setState({ message: "Error, confirmation not exists." });
         });
     } else {
-      this.setState({ message: "new password doesn't match" });
+      this.setState({ message: "New password doesn't match!" });
     }
   };
-
   submitHandler = e => {
     e.preventDefault();
   };
-
   render() {
     return (
-      <div className="reset-password">
+      <div id="active-body" className="reset">
         <form onSubmit={this.submitHandler}>
           <h1>Change password</h1>
 
-          <FormGroup controlId="old-password" bsSize="large">
-            <FormLabel>old password </FormLabel>
-            <FormControl
-              //   value={password}
-              onChange={e => this.setState({ oldPassword: e.target.value })}
-              type="password"
-            />
-          </FormGroup>
           <FormGroup controlId="new-password" bsSize="large">
             <FormLabel>New Password </FormLabel>
             <FormControl
@@ -77,19 +64,21 @@ class resetPassword extends Component {
             className="btn btn-primary btn-block"
             type="submit"
             onClick={() =>
-              this.tryReset({
-                oldPassword: this.state.oldPassword,
-                password: this.state.newPassword
+              this.confirm({
+                newPassword: this.state.newPassword,
+                confirmPassword: this.state.confirmPassword
               })
             }
           >
             submit
           </Button>
-          <div id="reset-password-message">{this.state.message}</div>
+          <div id="emailLogin-message" style={{ color: "red" }}>
+            {this.state.message}
+          </div>
         </form>
       </div>
     );
   }
 }
 
-export default resetPassword;
+export default EmailLogin;

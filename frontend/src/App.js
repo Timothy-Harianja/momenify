@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./components/header/header.jsx";
 import Body from "./components/body/body.jsx";
 import Active from "./components/active/active.jsx";
-import emailLogin from "./components/active/emailLogin.jsx";
+import newPassword from "./components/active/newPassword.jsx";
 import axios from "axios";
 import { NavLink } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -14,21 +14,16 @@ import forgetPassword from "./components/login/forgetPassword.jsx";
 import Signup from "./components/signup/signup.jsx";
 import { NoMatch } from "./components/404/404.jsx";
 import { Confirmation } from "./components/active/confirmation.jsx";
+import { ResetConfirmation } from "./components/active/resetConfirmation.jsx";
 import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
+import Career from "./components/career/career.jsx";
 import AccountPage from "./components/accountPage/accountpage.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
-import resetPassword from "./components/accountPage/resetPassword.jsx";
 class App extends Component {
   state = {
-    body: <Body />,
-    api: "http://localhost:5000",
-    ConfirmationContent: "nothing"
-  };
-
-  setConfirmationContent = content => {
-    this.setState({ ConfirmationContent: content });
+    userId: null
   };
 
   setBody = obj => {
@@ -36,12 +31,8 @@ class App extends Component {
     this.setState({ body: obj });
   };
 
-  state = {
-    userId: null
-  };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then(res => {
-      console.log(res.data);
       this.setState({ userId: res.data.userId });
     });
   }
@@ -55,13 +46,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
-            <Route
-              path="/forgetPassword"
-              component={forgetPassword}
-              setBody={e => {
-                this.setBody(e);
-              }}
-            />
+            <Route path="/forgetPassword" component={forgetPassword} />
 
             <Route
               path="/signup"
@@ -75,17 +60,16 @@ class App extends Component {
               //   />
               // )}
             />
+            <Route path="/confirmation" component={Confirmation} />
             <Route path="/active" component={Active} />
-            <Route path="/emailLogin" component={emailLogin} />
-            <Route
-              path="/confirmation"
-              component={Confirmation}
-              // render={props => (
-              //   <Confirmation {...props} ConfirmationContent={"hot"} />
-              // )}
-            />
+
+            <Route path="/newpassword" component={newPassword} />
+            {/* <Route path="/confirmation" component={Confirmation} /> */}
+            <Route path="/resetconfirmation" component={ResetConfirmation} />
+
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
+            <Route path="/careers" component={Career}/>
             <Route
               path="/message"
               component={this.state.userId != undefined ? Message : Login}
@@ -94,7 +78,6 @@ class App extends Component {
               path="/accountpage"
               component={this.state.userId != undefined ? AccountPage : Login}
             />
-            <Route path="/resetPassword" component={resetPassword} />
 
             <Route component={NoMatch} />
           </Switch>

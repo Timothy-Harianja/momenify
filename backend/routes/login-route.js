@@ -8,12 +8,13 @@ router.get("/session", (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
+  res.clearCookie();
+
   req.session.destroy(err => {
     if (err) {
       console.log(err);
     }
   });
-  res.clearCookie();
 });
 router.post("/login", (req, res) => {
   User.findOne({ email: req.body.email }, function(err, result2) {
@@ -27,13 +28,12 @@ router.post("/login", (req, res) => {
         err,
         result
       ) {
-        console.log("result: ", result2.activation);
         if (result == true && result2.activation) {
-          console.log("password  matches");
           req.session.userId = result2._id;
           req.session.username = result2.nickname;
           req.session.email = result2.email;
-          console.log("req session in login:", req.session);
+          req.session.logoNumber = result2.logo;
+          // console.log("req session in login:", req.session);
 
           return res.json({
             success: true,

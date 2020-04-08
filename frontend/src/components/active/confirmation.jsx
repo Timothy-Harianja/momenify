@@ -1,15 +1,20 @@
-import React from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 const Wrapper = styled.div`
-  margin-top: 1em;
-  margin-left: 6em;
-  margin-right: 6em;
+position: absolute;
+left: 0;
+top: 40%;
+width: 100%;
+text-align: center;
+font-size: 18px;
+
 `;
 export const Confirmation = () => (
   <Wrapper>
-    <h2>
+    <h1>Thanks for Sign Up!</h1>
+    <h3 id="confirm">
       An confirmation link has been sent to your email, the link will expire in
       24 hours!
-    </h2>
+    </h3>
   </Wrapper>
 );
