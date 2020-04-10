@@ -137,7 +137,7 @@ class CreatePost extends Component {
                 type="text"
                 id="hashtaginput"
                 name="hashtaginput"
-                placeholder="  enter your hashtag..."
+                placeholder="enter your hashtag"
                 onChange={(e) => {
                   this.setState({ hashtag: e.target.value });
                 }}
