@@ -5,4 +5,4 @@ Creating a social meadia online platform for everyone to meet new people directl
 
 Scrum Board Links: https://trello.com/b/q75HnJc1/cse-312
 
-Project website: http://www.momenify.com/
+Project website: https://www.momenify.com
