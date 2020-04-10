@@ -76,7 +76,7 @@ class PostItem extends React.Component {
         <div className="post-item-footer">
           <span className="post-item-footer-stats">
             {this.props.hashtags.map((message) => (
-              <a href={"/hashtag?hashtag=" + message}>{"#" + message}</a>
+              <a href={"/hashtag/" + message}>{"#" + message}</a>
             ))}
           </span>
           <div className="post-item-footer-stats">
