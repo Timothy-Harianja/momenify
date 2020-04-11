@@ -50,7 +50,7 @@ class App extends Component {
             <Route path="/login" component={Login} />
             <Route path="/forgetPassword" component={forgetPassword} />
             <Route path="/profile" component={ProfilePage}/>
-            <Route exact path="/hashtag" component={HastagPage}/>
+            <Route path="/hashtag" component={HastagPage}/>
 
             <Route
               path="/signup"
