@@ -18,7 +18,7 @@ import two from "../images/two.png";
 import three from "../images/three.png";
 import four from "../images/four.png";
 import five from "../images/five.png";
-import "./hashtag-page.styles.css";
+import "./hashtag-page.css";
 
 class HashtagPage extends Component {
   constructor(props) {
@@ -209,7 +209,6 @@ class HashtagPage extends Component {
   render() {
     return (
       <div className="hashtag-body">
-
         <div className="hashtag-home-page">
           <div className="hashtag-main-posts-container">
             <PostsContainer

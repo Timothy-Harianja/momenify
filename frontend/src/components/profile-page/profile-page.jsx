@@ -18,7 +18,7 @@ import two from "../images/two.png";
 import three from "../images/three.png";
 import four from "../images/four.png";
 import five from "../images/five.png";
-import "./profile.page.styles.css";
+import "./profile-page.css";
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -209,8 +209,6 @@ class ProfilePage extends Component {
   render() {
     return (
       <div className="profile-body">
-
-
         <div className="profile-home-page">
           <div className="profile-main-posts-container">
             <PostsContainer
