@@ -3,6 +3,8 @@ import logo from "./logo.svg";
 import "./App.css";
 import Header from "./components/header/header.jsx";
 import Body from "./components/body/body.jsx";
+import ProfilePage from "./components/profile-page/profile.page.component"
+import HastagPage from "./components/hashtag-page/hashtag-page.component"
 import Active from "./components/active/active.jsx";
 import newPassword from "./components/active/newPassword.jsx";
 import axios from "axios";
@@ -47,6 +49,8 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/forgetPassword" component={forgetPassword} />
+            <Route path="/profile" component={ProfilePage}/>
+            <Route exact path="/hashtag" component={HastagPage}/>
 
             <Route
               path="/signup"
