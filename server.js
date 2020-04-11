@@ -24,7 +24,11 @@ const dbRoute =
 
 // connects our back end code with the database
 
-mongoose.connect(dbRoute, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(dbRoute, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
 let db = mongoose.connection;
 db.once("open", () => console.log("connected to the database"));
 // checks if connection with the database is successful
@@ -46,8 +50,8 @@ app.use(
     secret: "quit it",
     cookie: {
       maxAge: halfDay,
-      sameSite: true
-    }
+      sameSite: true,
+    },
   })
 );
 

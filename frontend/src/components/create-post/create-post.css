@@ -108,7 +108,7 @@
   left: 15%;
   right: 25%;
   top: 25%;
-  border: 1px solid black;
+  border: 1px solid rgb(77, 77, 77);
   background: white;
   font-family: sans-serif;
   font-weight: bold;
@@ -126,8 +126,8 @@
   margin-bottom: 5px;
   width: 350px;
   height: 100px;
-  font-size: 35px;
-  border: 1px solid black;
+  font-size: 25px;
+  border: 1px solid rgb(83, 83, 83);
 }
 
 #hashtagsubmit {

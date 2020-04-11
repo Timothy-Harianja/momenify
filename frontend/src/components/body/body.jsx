@@ -283,7 +283,7 @@ class Body extends Component {
                 <div id="trend-list">
                   <ul>
                     {this.state.topTrendList.map((tag, index) => (
-                      <a href={"/hashtag/" + tag}>
+                      <a href={"/hashtag/" + tag.substring(1)}>
                         <li>
                           <img
                             src={this.getNumberLogo(index)}

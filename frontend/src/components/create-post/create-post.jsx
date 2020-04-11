@@ -25,7 +25,7 @@ class CreatePost extends Component {
     message: null,
     userLogo: null,
     fileName: "",
-    hashtag: null,
+    hashtag: "",
     hashtagList: [],
     overlayState: false,
   };
@@ -48,11 +48,13 @@ class CreatePost extends Component {
         if (res.data.success) {
           this.setState({ message: res.data.message });
           //past post information to body , then pass to post container
+          console.log("res: ", res.data.postId);
           if (this.state.hashtagList.length > 0) {
             axios
               .post("/api/postRoute/postHashtag", {
                 hashtagList: this.state.hashtagList,
                 currentTime: makeTime(),
+                postID: res.data.postId,
               })
               .then((res) => {
                 console.log(res);
@@ -67,7 +69,7 @@ class CreatePost extends Component {
             logoNumber: this.state.userLogo,
           });
           this.state.hashtagList = [];
-          this.state.hashtag = null;
+          this.state.hashtag = "";
           document.getElementById("hashtaglabel").innerHTML = "";
           this.setState({ postmessage: null });
         } else {
@@ -137,28 +139,33 @@ class CreatePost extends Component {
                 type="text"
                 id="hashtaginput"
                 name="hashtaginput"
-                placeholder="enter your hashtag"
+                placeholder="Enter Your Hashtag"
                 onChange={(e) => {
                   this.setState({ hashtag: e.target.value });
                 }}
               />
+              No space and special character.
               <div>
                 <button
                   id="hashtagsubmit"
                   type="submit"
                   className="btn btn-primary"
                   onClick={(e) => {
-                    if (hashtag != null && hashtag.trim() != "") {
-                      this.state.hashtagList.push(hashtag);
-                      this.state.hashtag = null;
+                    if (hashtag == null || hashtag == "") {
+                      alert("Hashtag cannot be empty!");
+                    } else if (!hashtag.match("^[A-Za-z0-9]+$")) {
+                      alert("Hashtag can only contains letter or digit!");
+                    } else {
+                      this.state.hashtagList.push("#" + hashtag);
+                      this.state.hashtag = "";
                       document.getElementById("hashtaglabel").innerHTML =
                         "Hashtag(s): " + this.state.hashtagList;
-                    } else {
-                      alert("Hashtag cannot be empty!");
+                      document.getElementById("hashtaginput").value = "";
+                      document.getElementById("hashtagid").style.display =
+                        "none";
+                      document.getElementById("overlay").style.display = "none";
                     }
-                    document.getElementById("hashtaginput").value = "";
-                    document.getElementById("hashtagid").style.display = "none";
-                    document.getElementById("overlay").style.display = "none";
+
                     e.preventDefault();
                   }}
                 >
@@ -168,7 +175,7 @@ class CreatePost extends Component {
                   className="clear-btn btn btn-primary"
                   onClick={(e) => {
                     this.state.hashtagList = [];
-                    this.state.hashtag = null;
+                    this.state.hashtag = "";
                     document.getElementById("hashtaglabel").innerHTML = "";
                     document.getElementById("hashtaginput").value = "";
                     document.getElementById("hashtagid").style.display = "none";
