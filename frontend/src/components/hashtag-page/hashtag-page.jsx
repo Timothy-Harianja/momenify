@@ -61,8 +61,9 @@ class HashtagPage extends Component {
         console.log(err);
       });
     axios
-      .get("/api/getRoute/getMoment")
+      .get("/api/getRoute/hashtagPage")
       .then((res) => {
+        console.log("res from hashtag: ", res);
         this.setState({
           loadingFeedback:
             res.data.allMoments.length > 3
