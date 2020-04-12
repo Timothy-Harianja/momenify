@@ -30,6 +30,7 @@ class Body extends Component {
     this.state = {
       userId: null,
       posts: 0,
+      idList: [],
       moments: [],
       usernameList: [],
       postidList: [],
@@ -74,6 +75,7 @@ class Body extends Component {
               : "No More New Posts, Come Back Later :)",
           posts:
             res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+          idList: res.data.idList,
           moments: res.data.allMoments,
           usernameList: res.data.allUsername,
           postidList: res.data.allPostid,
@@ -166,9 +168,10 @@ class Body extends Component {
             <PostItem
               username={
                 this.state.usernameList[i] == undefined
-                  ? " Anonymous"
+                  ? "Anonymous"
                   : this.state.usernameList[i]
               }
+              id={this.state.idList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
@@ -221,7 +224,9 @@ class Body extends Component {
     let newCommentlist = [[], ...this.state.commentList];
     let newPostDateList = [newPost.postDate, ...this.state.postDateList];
     let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
+    let newIDList = [newPost.userID, ...this.state.idList];
     this.setState({
+      idList: newIDList,
       moments: newMoments,
       postidList: newPostidList,
       usernameList: newUsernameList,

@@ -27,6 +27,7 @@ class HashtagPage extends Component {
       userId: null,
       posts: 0,
       hashtagName: null,
+      idList: [],
       moments: [],
       usernameList: [],
       postidList: [],
@@ -56,6 +57,7 @@ class HashtagPage extends Component {
         loadingFeedback:
           res.data.allMoments.length > 3 ? "Loading Posts..." : "",
         posts: res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+        idList: res.data.idList,
         moments: res.data.allMoments,
         usernameList: res.data.allUsername,
         postidList: res.data.allPostid,
@@ -146,9 +148,10 @@ class HashtagPage extends Component {
             <PostItem
               username={
                 this.state.usernameList[i] == undefined
-                  ? " Anonymous"
+                  ? "Anonymous"
                   : this.state.usernameList[i]
               }
+              id={this.state.idList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}

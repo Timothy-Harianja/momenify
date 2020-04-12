@@ -61,7 +61,17 @@ class PostItem extends React.Component {
             className="post-item-header-profile"
             src={this.props.profileUrl}
           />
-          <span className="post-item-header-name">{this.props.username}</span>
+          {this.props.username == "Anonymous" ? (
+            <span className="post-item-header-name">{this.props.username}</span>
+          ) : (
+            <a
+              href={"/profile/" + this.props.id}
+              className="post-item-header-name"
+            >
+              {this.props.username}
+            </a>
+          )}
+
           <span className="post-item-header-dropdown">
             <PostDropdown></PostDropdown>
           </span>
