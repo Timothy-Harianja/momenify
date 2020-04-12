@@ -30,7 +30,7 @@ class HashtagPage extends Component {
       moments: [],
       usernameList: [],
       postidList: [],
-      loadingFeedback: "Loading More...",
+      loadingFeedback: "",
       likeStatus: [],
       numofLike: [],
       message: [],
@@ -54,9 +54,7 @@ class HashtagPage extends Component {
     axios.get("/api/getRoute/hashtagPage").then((res) => {
       this.setState({
         loadingFeedback:
-          res.data.allMoments.length > 3
-            ? "Loading Posts..."
-            : "No More New Posts, Come Back Later :)",
+          res.data.allMoments.length > 3 ? "Loading Posts..." : "",
         posts: res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
         moments: res.data.allMoments,
         usernameList: res.data.allUsername,
@@ -187,7 +185,7 @@ class HashtagPage extends Component {
       }, 200);
     } else {
       this.setState({
-        loadingFeedback: "No More New Posts, Come Back Later :)",
+        loadingFeedback: "",
       });
     }
   };
@@ -198,7 +196,11 @@ class HashtagPage extends Component {
         <br></br>
         <div className="tagName">
           <h2>{this.state.hashtagName}</h2>
-          <h3>{this.state.posts} &nbsp;moments</h3>
+          {this.state.posts > 0 ? (
+            <h3>{this.state.posts} &nbsp;moments</h3>
+          ) : (
+            <h3>No hashtags found</h3>
+          )}
         </div>
         <div className="hashtag-home-page">
           <div className="hashtag-main-posts-container">

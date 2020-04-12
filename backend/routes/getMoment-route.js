@@ -65,70 +65,84 @@ router.get("/hashtagPage", (req, res) => {
     let commentList = [];
     let postDateList = [];
     let hashtagList = [];
-
-    getAllTag(hashtags).then((result) => {
-      for (let i = 0; i < result.length; i++) {
-        momentsList.push(result[i].postmessage);
-        usernameList.push(
-          result[i].nickname == null ? null : result[i].nickname
-        );
-        postidList.push(result[i]._id);
-        numofLike.push(result[i].likeList.length);
-        logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
-        commentList.push(result[i].commentList);
-        postDateList.push(result[i].postTime);
-        hashtagList.push(result[i].hashtagList);
-      }
-      // random the moment order
-      for (let j = 0; j < hashtags[0].postList.length; j++) {
-        let pos1 = getRandomInt(momentsList.length);
-        let pos2 = getRandomInt(momentsList.length);
-
-        let temp = momentsList[pos1];
-        momentsList[pos1] = momentsList[pos2];
-        momentsList[pos2] = temp;
-
-        let temp2 = usernameList[pos1];
-        usernameList[pos1] = usernameList[pos2];
-        usernameList[pos2] = temp2;
-
-        let temp3 = postidList[pos1];
-        postidList[pos1] = postidList[pos2];
-        postidList[pos2] = temp3;
-
-        let temp4 = numofLike[pos1];
-        numofLike[pos1] = numofLike[pos2];
-        numofLike[pos2] = temp4;
-
-        let temp5 = logoList[pos1];
-        logoList[pos1] = logoList[pos2];
-        logoList[pos2] = temp5;
-
-        let temp6 = commentList[pos1];
-        commentList[pos1] = commentList[pos2];
-        commentList[pos2] = temp6;
-
-        let temp7 = postDateList[pos1];
-        postDateList[pos1] = postDateList[pos2];
-        postDateList[pos2] = temp7;
-
-        let temp8 = hashtagList[pos1];
-        hashtagList[pos1] = hashtagList[pos2];
-        hashtagList[pos2] = temp8;
-      }
+    if (hashtags == null || hashtags.length == 0) {
       return res.json({
         hashtagName: "#" + token.toLowerCase(),
         allMoments: momentsList,
         allUsername: usernameList,
         allPostid: postidList,
         numofLike: numofLike,
-        momentLength: hashtags[0].postList.length,
+        momentLength: 0,
         logoList: logoList,
         commentList: commentList,
         postDateList: postDateList,
         hashtagList: hashtagList,
       });
-    });
+    } else {
+      getAllTag(hashtags).then((result) => {
+        for (let i = 0; i < result.length; i++) {
+          momentsList.push(result[i].postmessage);
+          usernameList.push(
+            result[i].nickname == null ? null : result[i].nickname
+          );
+          postidList.push(result[i]._id);
+          numofLike.push(result[i].likeList.length);
+          logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
+          commentList.push(result[i].commentList);
+          postDateList.push(result[i].postTime);
+          hashtagList.push(result[i].hashtagList);
+        }
+        // random the moment order
+        for (let j = 0; j < hashtags[0].postList.length; j++) {
+          let pos1 = getRandomInt(momentsList.length);
+          let pos2 = getRandomInt(momentsList.length);
+
+          let temp = momentsList[pos1];
+          momentsList[pos1] = momentsList[pos2];
+          momentsList[pos2] = temp;
+
+          let temp2 = usernameList[pos1];
+          usernameList[pos1] = usernameList[pos2];
+          usernameList[pos2] = temp2;
+
+          let temp3 = postidList[pos1];
+          postidList[pos1] = postidList[pos2];
+          postidList[pos2] = temp3;
+
+          let temp4 = numofLike[pos1];
+          numofLike[pos1] = numofLike[pos2];
+          numofLike[pos2] = temp4;
+
+          let temp5 = logoList[pos1];
+          logoList[pos1] = logoList[pos2];
+          logoList[pos2] = temp5;
+
+          let temp6 = commentList[pos1];
+          commentList[pos1] = commentList[pos2];
+          commentList[pos2] = temp6;
+
+          let temp7 = postDateList[pos1];
+          postDateList[pos1] = postDateList[pos2];
+          postDateList[pos2] = temp7;
+
+          let temp8 = hashtagList[pos1];
+          hashtagList[pos1] = hashtagList[pos2];
+          hashtagList[pos2] = temp8;
+        }
+        return res.json({
+          hashtagName: "#" + token.toLowerCase(),
+          allMoments: momentsList,
+          allUsername: usernameList,
+          allPostid: postidList,
+          numofLike: numofLike,
+          momentLength: hashtags[0].postList.length,
+          logoList: logoList,
+          commentList: commentList,
+          postDateList: postDateList,
+          hashtagList: hashtagList,
+        });
+      });
+    }
   });
 });
 
