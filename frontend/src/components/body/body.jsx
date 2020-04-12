@@ -95,7 +95,7 @@ class Body extends Component {
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
       axios
-        .post("/api/getRoute/postComment", comment)
+        .post("/api/postRoute/postComment", comment)
         .then((res) => {
           if (res.data.success == false) {
             alert("Please login to make a comment!");
@@ -116,7 +116,7 @@ class Body extends Component {
   giveLike = (post) => {
     let postId = post.postid;
     axios
-      .post("/api/getRoute/giveLike", { postId: postId })
+      .post("/api/postRoute/giveLike", { postId: postId })
       .then((res) => {
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;

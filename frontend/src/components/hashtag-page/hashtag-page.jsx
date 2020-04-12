@@ -26,6 +26,7 @@ class HashtagPage extends Component {
     this.state = {
       userId: null,
       posts: 0,
+      hashtagName: null,
       moments: [],
       usernameList: [],
       postidList: [],
@@ -43,56 +44,40 @@ class HashtagPage extends Component {
   }
 
   componentDidMount() {
-    axios.get("/api/getRoute/getHashtag").then((res) => {
-      if (res.data.success) {
-        this.setState({ topTrendList: res.data.hashtagList });
-      }
+    axios.get("/api/loginRoute/session").then((res) => {
+      this.setState({
+        userId: res.data.userId,
+        logoNumber: res.data.logoNumber,
+      });
     });
 
-    axios
-      .get("/api/loginRoute/session")
-      .then((res) => {
-        this.setState({
-          userId: res.data.userId,
-          logoNumber: res.data.logoNumber,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+    axios.get("/api/getRoute/hashtagPage").then((res) => {
+      this.setState({
+        loadingFeedback:
+          res.data.allMoments.length > 3
+            ? "Loading Posts..."
+            : "No More New Posts, Come Back Later :)",
+        posts: res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+        moments: res.data.allMoments,
+        usernameList: res.data.allUsername,
+        postidList: res.data.allPostid,
+        likeStatus: Array(res.data.momentLength).fill(false),
+        numofLike: res.data.numofLike,
+        message: Array(res.data.momentLength).fill(""),
+        userLogo: res.data.logoList,
+        commentList: res.data.commentList,
+        postDateList: res.data.postDateList,
+        hashtagList: res.data.hashtagList,
+        hashtagName: res.data.hashtagName,
+        loadStatus: true,
       });
-    axios
-      .get("/api/getRoute/hashtagPage")
-      .then((res) => {
-        console.log("res from hashtag: ", res);
-        this.setState({
-          loadingFeedback:
-            res.data.allMoments.length > 3
-              ? "Loading Posts..."
-              : "No More New Posts, Come Back Later :)",
-          posts:
-            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-          moments: res.data.allMoments,
-          usernameList: res.data.allUsername,
-          postidList: res.data.allPostid,
-          likeStatus: Array(res.data.momentLength).fill(false),
-          numofLike: res.data.numofLike,
-          message: Array(res.data.momentLength).fill(""),
-          userLogo: res.data.logoList,
-          commentList: res.data.commentList,
-          postDateList: res.data.postDateList,
-          hashtagList: res.data.hashtagList,
-          loadStatus: true,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    });
   }
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
       axios
-        .post("/api/getRoute/postComment", comment)
+        .post("/api/postRoute/postComment", comment)
         .then((res) => {
           if (res.data.success == false) {
             alert("Please login to make a comment!");
@@ -113,7 +98,7 @@ class HashtagPage extends Component {
   giveLike = (post) => {
     let postId = post.postid;
     axios
-      .post("/api/getRoute/giveLike", { postId: postId })
+      .post("/api/postRoute/giveLike", { postId: postId })
       .then((res) => {
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;
@@ -210,6 +195,11 @@ class HashtagPage extends Component {
   render() {
     return (
       <div className="hashtag-body">
+        <br></br>
+        <div className="tagName">
+          <h2>{this.state.hashtagName}</h2>
+          <h3>{this.state.posts} &nbsp;moments</h3>
+        </div>
         <div className="hashtag-home-page">
           <div className="hashtag-main-posts-container">
             <PostsContainer

@@ -46,7 +46,10 @@ router.get("/hashtagPage", (req, res) => {
   let tokenLink = req.headers.referer;
   token = getToken(tokenLink);
 
-  Hashtag.find({ hashtag: "#" + token }, function (err, hashtags) {
+  Hashtag.find({ hashtag: "#" + token.toLowerCase() }, function (
+    err,
+    hashtags
+  ) {
     if (err) {
       console.log(err);
       return res.json({
@@ -114,6 +117,7 @@ router.get("/hashtagPage", (req, res) => {
         hashtagList[pos2] = temp8;
       }
       return res.json({
+        hashtagName: "#" + token.toLowerCase(),
         allMoments: momentsList,
         allUsername: usernameList,
         allPostid: postidList,
@@ -233,68 +237,6 @@ router.get("/getMoment", (req, res) => {
       commentList: commentList,
       postDateList: postDateList,
       hashtagList: hashtagList,
-    });
-  });
-});
-
-router.post("/postComment", (req, res) => {
-  if (!req.session.userId) {
-    return res.json({
-      success: false,
-      message: "please login to comment a post",
-    });
-  }
-
-  Post.findOne({ _id: req.body.postid }, (err, result) => {
-    if (err) {
-      return res.json({ success: false, message: "error finding the post" });
-    }
-    let messageWithName = req.session.username + ":  " + req.body.postComment;
-    result.commentList.push(messageWithName);
-    result.save((err) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: "error save you like to database",
-        });
-      }
-      return res.json({
-        success: true,
-        message: messageWithName,
-      });
-    });
-  });
-});
-
-router.post("/giveLike", (req, res) => {
-  if (!req.session.userId) {
-    return res.json({ success: false, message: "please login to like a post" });
-  }
-  Post.findOne({ _id: req.body.postId }, (err, result) => {
-    if (err) {
-      // console.log(err);
-      return res.json({ success: false, message: "error finding the post" });
-    }
-
-    if (result.likeList.includes(req.session.userId)) {
-      return res.json({
-        success: false,
-        message: "you already liked this post",
-      });
-    }
-    result.likeList.push(req.session.userId);
-    result.save((err) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: "error save you like to database",
-        });
-      }
-      return res.json({
-        success: true,
-        message: "success",
-        numofLike: result.likeList.length,
-      });
     });
   });
 });
