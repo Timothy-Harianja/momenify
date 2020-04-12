@@ -42,6 +42,67 @@ let getAllTag = (hashtags) => {
   return Promise.all(res);
 };
 
+router.get("/profilePage", (req, res) => {
+  let tokenLink = req.headers.referer;
+  token = getToken(tokenLink);
+  let idList = [];
+  let momentsList = [];
+  let usernameList = [];
+  let postidList = [];
+  let numofLike = [];
+  let logoList = [];
+  let commentList = [];
+  let postDateList = [];
+  let hashtagList = [];
+  Post.find({ userId: token }, (err, posts) => {
+    if (err) {
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "error posting the hashtag",
+      });
+    }
+    if (posts == null || posts.length == 0) {
+      return res.json({
+        idList: idList,
+        allMoments: momentsList,
+        allUsername: usernameList,
+        allPostid: postidList,
+        numofLike: numofLike,
+        momentLength: 0,
+        logoList: logoList,
+        commentList: commentList,
+        postDateList: postDateList,
+        hashtagList: hashtagList,
+      });
+    } else {
+      for (let i = 0; i < posts.length; i++) {
+        momentsList.push(posts[i].postmessage);
+        usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
+        idList.push(posts[i].userId);
+        postidList.push(posts[i]._id);
+        numofLike.push(posts[i].likeList.length);
+        logoList.push(posts[i].nickname == null ? 0 : posts[i].userLogo);
+        commentList.push(posts[i].commentList);
+        postDateList.push(posts[i].postTime);
+        hashtagList.push(posts[i].hashtagList);
+      }
+      return res.json({
+        idList: idList,
+        allMoments: momentsList,
+        allUsername: usernameList,
+        allPostid: postidList,
+        numofLike: numofLike,
+        momentLength: posts.length,
+        logoList: logoList,
+        commentList: commentList,
+        postDateList: postDateList,
+        hashtagList: hashtagList,
+      });
+    }
+  }).sort({ postDate: -1 });
+});
+
 router.get("/hashtagPage", (req, res) => {
   let tokenLink = req.headers.referer;
   token = getToken(tokenLink);
@@ -57,6 +118,7 @@ router.get("/hashtagPage", (req, res) => {
         message: "error posting the hashtag",
       });
     }
+    let idList = [];
     let momentsList = [];
     let usernameList = [];
     let postidList = [];
@@ -65,70 +127,91 @@ router.get("/hashtagPage", (req, res) => {
     let commentList = [];
     let postDateList = [];
     let hashtagList = [];
-
-    getAllTag(hashtags).then((result) => {
-      for (let i = 0; i < result.length; i++) {
-        momentsList.push(result[i].postmessage);
-        usernameList.push(
-          result[i].nickname == null ? null : result[i].nickname
-        );
-        postidList.push(result[i]._id);
-        numofLike.push(result[i].likeList.length);
-        logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
-        commentList.push(result[i].commentList);
-        postDateList.push(result[i].postTime);
-        hashtagList.push(result[i].hashtagList);
-      }
-      // random the moment order
-      for (let j = 0; j < hashtags[0].postList.length; j++) {
-        let pos1 = getRandomInt(momentsList.length);
-        let pos2 = getRandomInt(momentsList.length);
-
-        let temp = momentsList[pos1];
-        momentsList[pos1] = momentsList[pos2];
-        momentsList[pos2] = temp;
-
-        let temp2 = usernameList[pos1];
-        usernameList[pos1] = usernameList[pos2];
-        usernameList[pos2] = temp2;
-
-        let temp3 = postidList[pos1];
-        postidList[pos1] = postidList[pos2];
-        postidList[pos2] = temp3;
-
-        let temp4 = numofLike[pos1];
-        numofLike[pos1] = numofLike[pos2];
-        numofLike[pos2] = temp4;
-
-        let temp5 = logoList[pos1];
-        logoList[pos1] = logoList[pos2];
-        logoList[pos2] = temp5;
-
-        let temp6 = commentList[pos1];
-        commentList[pos1] = commentList[pos2];
-        commentList[pos2] = temp6;
-
-        let temp7 = postDateList[pos1];
-        postDateList[pos1] = postDateList[pos2];
-        postDateList[pos2] = temp7;
-
-        let temp8 = hashtagList[pos1];
-        hashtagList[pos1] = hashtagList[pos2];
-        hashtagList[pos2] = temp8;
-      }
+    if (hashtags == null || hashtags.length == 0) {
       return res.json({
         hashtagName: "#" + token.toLowerCase(),
+        idList: idList,
         allMoments: momentsList,
         allUsername: usernameList,
         allPostid: postidList,
         numofLike: numofLike,
-        momentLength: hashtags[0].postList.length,
+        momentLength: 0,
         logoList: logoList,
         commentList: commentList,
         postDateList: postDateList,
         hashtagList: hashtagList,
       });
-    });
+    } else {
+      getAllTag(hashtags).then((result) => {
+        for (let i = 0; i < result.length; i++) {
+          momentsList.push(result[i].postmessage);
+          usernameList.push(
+            result[i].nickname == null ? null : result[i].nickname
+          );
+          idList.push(result[i].userId);
+          postidList.push(result[i]._id);
+          numofLike.push(result[i].likeList.length);
+          logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
+          commentList.push(result[i].commentList);
+          postDateList.push(result[i].postTime);
+          hashtagList.push(result[i].hashtagList);
+        }
+        // random the moment order
+        for (let j = 0; j < hashtags[0].postList.length; j++) {
+          let pos1 = getRandomInt(momentsList.length);
+          let pos2 = getRandomInt(momentsList.length);
+
+          let temp = momentsList[pos1];
+          momentsList[pos1] = momentsList[pos2];
+          momentsList[pos2] = temp;
+
+          let temp2 = usernameList[pos1];
+          usernameList[pos1] = usernameList[pos2];
+          usernameList[pos2] = temp2;
+
+          let temp3 = postidList[pos1];
+          postidList[pos1] = postidList[pos2];
+          postidList[pos2] = temp3;
+
+          let temp4 = numofLike[pos1];
+          numofLike[pos1] = numofLike[pos2];
+          numofLike[pos2] = temp4;
+
+          let temp5 = logoList[pos1];
+          logoList[pos1] = logoList[pos2];
+          logoList[pos2] = temp5;
+
+          let temp6 = commentList[pos1];
+          commentList[pos1] = commentList[pos2];
+          commentList[pos2] = temp6;
+
+          let temp7 = postDateList[pos1];
+          postDateList[pos1] = postDateList[pos2];
+          postDateList[pos2] = temp7;
+
+          let temp8 = hashtagList[pos1];
+          hashtagList[pos1] = hashtagList[pos2];
+          hashtagList[pos2] = temp8;
+
+          let temp9 = idList[pos1];
+          idList[pos1] = idList[pos2];
+          idList[pos2] = temp9;
+        }
+        return res.json({
+          hashtagName: "#" + token.toLowerCase(),
+          idList: idList,
+          allMoments: momentsList,
+          allUsername: usernameList,
+          allPostid: postidList,
+          numofLike: numofLike,
+          momentLength: hashtags[0].postList.length,
+          logoList: logoList,
+          commentList: commentList,
+          postDateList: postDateList,
+          hashtagList: hashtagList,
+        });
+      });
+    }
   });
 });
 
@@ -166,6 +249,7 @@ router.get("/getMoment", (req, res) => {
         message: "error posting the hashtag",
       });
     }
+    let idList = [];
     let momentsList = [];
     let usernameList = [];
     let postidList = [];
@@ -175,6 +259,7 @@ router.get("/getMoment", (req, res) => {
     let postDateList = [];
     let hashtagList = [];
     for (let i = 0; i < moments.length; i++) {
+      idList.push(moments[i].userId);
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
       postidList.push(moments[i]._id);
@@ -225,9 +310,14 @@ router.get("/getMoment", (req, res) => {
       let temp8 = hashtagList[pos1];
       hashtagList[pos1] = hashtagList[pos2];
       hashtagList[pos2] = temp8;
+
+      let temp9 = idList[pos1];
+      idList[pos1] = idList[pos2];
+      idList[pos2] = temp9;
     }
 
     return res.json({
+      idList: idList,
       allMoments: momentsList,
       allUsername: usernameList,
       allPostid: postidList,

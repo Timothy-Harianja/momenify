@@ -26,10 +26,11 @@ class ProfilePage extends Component {
     this.state = {
       userId: null,
       posts: 0,
+      idList: [],
       moments: [],
       usernameList: [],
       postidList: [],
-      loadingFeedback: "Loading More...",
+      loadingFeedback: "",
       likeStatus: [],
       numofLike: [],
       message: [],
@@ -43,12 +44,6 @@ class ProfilePage extends Component {
   }
 
   componentDidMount() {
-    axios.get("/api/getRoute/getHashtag").then((res) => {
-      if (res.data.success) {
-        this.setState({ topTrendList: res.data.hashtagList });
-      }
-    });
-
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
@@ -61,15 +56,15 @@ class ProfilePage extends Component {
         console.log(err);
       });
     axios
-      .get("/api/getRoute/getMoment")
+      .get("/api/getRoute/profilePage")
       .then((res) => {
+        console.log("res: ", res);
         this.setState({
           loadingFeedback:
-            res.data.allMoments.length > 3
-              ? "Loading Posts..."
-              : "No More New Posts, Come Back Later :)",
+            res.data.allMoments.length > 3 ? "Loading Posts..." : "",
           posts:
             res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+          idList: res.data.idList,
           moments: res.data.allMoments,
           usernameList: res.data.allUsername,
           postidList: res.data.allPostid,
@@ -91,7 +86,7 @@ class ProfilePage extends Component {
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
       axios
-        .post("./api/getRoute/postComment", comment)
+        .post("/api/postRoute/postComment", comment)
         .then((res) => {
           if (res.data.success == false) {
             alert("Please login to make a comment!");
@@ -112,7 +107,7 @@ class ProfilePage extends Component {
   giveLike = (post) => {
     let postId = post.postid;
     axios
-      .post("/api/getRoute/giveLike", { postId: postId })
+      .post("/api/postRoute/giveLike", { postId: postId })
       .then((res) => {
         if (res.data.success) {
           let newlikeStatus = this.state.likeStatus;
@@ -165,6 +160,7 @@ class ProfilePage extends Component {
                   ? " Anonymous"
                   : this.state.usernameList[i]
               }
+              id={this.state.idList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
@@ -201,7 +197,7 @@ class ProfilePage extends Component {
       }, 200);
     } else {
       this.setState({
-        loadingFeedback: "No More New Posts, Come Back Later :)",
+        loadingFeedback: "",
       });
     }
   };

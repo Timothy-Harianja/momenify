@@ -66,6 +66,7 @@ class CreatePost extends Component {
             username: this.state.username,
             postmessage: this.state.postmessage,
             postId: res.data.postId,
+            userID: this.state.userId,
             logoNumber: this.state.userLogo,
           });
           this.state.hashtagList = [];
