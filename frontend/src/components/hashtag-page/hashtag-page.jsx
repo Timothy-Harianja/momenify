@@ -92,7 +92,7 @@ class HashtagPage extends Component {
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
       axios
-        .post("./api/getRoute/postComment", comment)
+        .post("/api/getRoute/postComment", comment)
         .then((res) => {
           if (res.data.success == false) {
             alert("Please login to make a comment!");

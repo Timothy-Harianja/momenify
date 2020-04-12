@@ -28,7 +28,8 @@ class PostItem extends React.Component {
             className="show-more-footer-comment"
             onClick={this.showMoreComment}
           >
-            View rest comments
+            View rest {this.props.comment.length - this.state.commentNumber}
+            &nbsp;comments
           </div>
         ) : null}
       </div>
