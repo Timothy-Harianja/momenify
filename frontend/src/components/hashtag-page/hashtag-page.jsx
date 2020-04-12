@@ -200,7 +200,7 @@ class HashtagPage extends Component {
         <div className="tagName">
           <h2>{this.state.hashtagName}</h2>
           {this.state.posts > 0 ? (
-            <h3>{this.state.posts} &nbsp;moments</h3>
+            <h3>{this.state.moments.length} &nbsp;moments</h3>
           ) : (
             <h3>No hashtags found</h3>
           )}
