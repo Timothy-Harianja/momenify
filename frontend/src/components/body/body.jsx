@@ -208,7 +208,7 @@ class Body extends Component {
       }, 200);
     } else {
       this.setState({
-        loadingFeedback: "No More New Posts, Come Back Later :)",
+        loadingFeedback: "No More Posts, Come Back Later :)",
       });
     }
   };

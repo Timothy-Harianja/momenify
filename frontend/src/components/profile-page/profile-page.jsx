@@ -44,12 +44,6 @@ class ProfilePage extends Component {
   }
 
   componentDidMount() {
-    axios.get("/api/getRoute/getHashtag").then((res) => {
-      if (res.data.success) {
-        this.setState({ topTrendList: res.data.hashtagList });
-      }
-    });
-
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
@@ -203,7 +197,7 @@ class ProfilePage extends Component {
       }, 200);
     } else {
       this.setState({
-        loadingFeedback: "No More New Posts, Come Back Later :)",
+        loadingFeedback: "",
       });
     }
   };
