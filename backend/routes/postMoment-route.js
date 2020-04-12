@@ -4,7 +4,8 @@ const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
 router.post("/postHashtag", (req, res) => {
   for (let i = 0; i < req.body.hashtagList.length; i++) {
-    Hashtag.findOne({ hashtag: req.body.hashtagList[i] }, (err, result) => {
+    let hashtag = req.body.hashtagList[i].toLowerCase();
+    Hashtag.findOne({ hashtag: hashtag }, (err, result) => {
       let hashtag = new Hashtag();
       if (err) {
         console.log(err);
@@ -15,7 +16,7 @@ router.post("/postHashtag", (req, res) => {
       }
       if (result == null) {
         hashtag.count = 1;
-        hashtag.hashtag = req.body.hashtagList[i];
+        hashtag.hashtag = req.body.hashtagList[i].toLowerCase();
         hashtag.hashtagTime = req.body.currentTime;
         hashtag.postList = [req.body.postID];
         hashtag.save((err, newHashtag) => {
@@ -40,6 +41,67 @@ router.post("/postHashtag", (req, res) => {
       }
     });
   }
+});
+router.post("/postComment", (req, res) => {
+  if (!req.session.userId) {
+    return res.json({
+      success: false,
+      message: "please login to comment a post",
+    });
+  }
+
+  Post.findOne({ _id: req.body.postid }, (err, result) => {
+    if (err) {
+      return res.json({ success: false, message: "error finding the post" });
+    }
+    let messageWithName = req.session.username + ":  " + req.body.postComment;
+    result.commentList.push(messageWithName);
+    result.save((err) => {
+      if (err) {
+        return res.json({
+          success: false,
+          message: "error save you like to database",
+        });
+      }
+      return res.json({
+        success: true,
+        message: messageWithName,
+      });
+    });
+  });
+});
+
+router.post("/giveLike", (req, res) => {
+  if (!req.session.userId) {
+    return res.json({ success: false, message: "please login to like a post" });
+  }
+  Post.findOne({ _id: req.body.postId }, (err, result) => {
+    if (err) {
+      // console.log(err);
+      return res.json({ success: false, message: "error finding the post" });
+    }
+
+    if (result.likeList.includes(req.session.userId)) {
+      return res.json({
+        success: false,
+        message: "you already liked this post",
+      });
+    }
+    result.likeList.push(req.session.userId);
+    result.save((err) => {
+      if (err) {
+        return res.json({
+          success: false,
+          message: "error save you like to database",
+        });
+      }
+      return res.json({
+        success: true,
+        message: "success",
+        numofLike: result.likeList.length,
+      });
+    });
+  });
 });
 
 router.post("/postMoment", (req, res) => {
