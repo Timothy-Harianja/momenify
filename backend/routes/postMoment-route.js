@@ -17,6 +17,7 @@ router.post("/postHashtag", (req, res) => {
         hashtag.count = 1;
         hashtag.hashtag = req.body.hashtagList[i];
         hashtag.hashtagTime = req.body.currentTime;
+        hashtag.postList = [req.body.postID];
         hashtag.save((err, newHashtag) => {
           if (err) {
             console.log(err);
@@ -26,10 +27,16 @@ router.post("/postHashtag", (req, res) => {
       } else {
         let newCount = result.count + 1;
         let id = result._id;
+        let newPostList = result.postList;
+        newPostList.push(req.body.postID);
 
-        Hashtag.findOneAndUpdate({ _id: id }, { count: newCount }, (err) => {
-          if (err) console.log(err);
-        });
+        Hashtag.findOneAndUpdate(
+          { _id: id },
+          { count: newCount, postList: newPostList },
+          (err) => {
+            if (err) console.log(err);
+          }
+        );
       }
     });
   }

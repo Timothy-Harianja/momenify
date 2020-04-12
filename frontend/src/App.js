@@ -3,6 +3,8 @@ import logo from "./logo.svg";
 import "./App.css";
 import Header from "./components/header/header.jsx";
 import Body from "./components/body/body.jsx";
+import ProfilePage from "./components/profile-page/profile-page";
+import HastagPage from "./components/hashtag-page/hashtag-page";
 import Active from "./components/active/active.jsx";
 import newPassword from "./components/active/newPassword.jsx";
 import axios from "axios";
@@ -23,16 +25,16 @@ import AccountPage from "./components/accountPage/accountpage.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 class App extends Component {
   state = {
-    userId: null
+    userId: null,
   };
 
-  setBody = obj => {
+  setBody = (obj) => {
     console.log("clicked");
     this.setState({ body: obj });
   };
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
+    axios.get("/api/loginRoute/session").then((res) => {
       this.setState({ userId: res.data.userId });
     });
   }
@@ -47,6 +49,8 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/forgetPassword" component={forgetPassword} />
+            <Route path="/profile" component={ProfilePage} />
+            <Route path="/hashtag" component={HastagPage} />
 
             <Route
               path="/signup"
@@ -69,7 +73,7 @@ class App extends Component {
 
             <Route path="/about-us" component={AboutUs} />
             <Route path="/term-of-use" component={TermOfUse} />
-            <Route path="/careers" component={Career}/>
+            <Route path="/careers" component={Career} />
             <Route
               path="/message"
               component={this.state.userId != undefined ? Message : Login}

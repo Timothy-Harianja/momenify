@@ -1,0 +1,39 @@
+.profile-body {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+}
+
+.profile-home-page {
+  display: flex;
+  flex-direction: row;
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+}
+
+.profile-main-posts-container {
+  width: 67%;
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+ @media only screen and (max-width: 1100px) {
+  .profile-main-posts-container {
+    width: 732px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .profile-home-page {
+    width: 100%;
+  }
+  
+} 
+
+@media only screen and (max-width: 732px) {
+  .profile-main-posts-container {
+    width: 100%;
+    
+  }
+}

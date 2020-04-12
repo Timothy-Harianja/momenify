@@ -28,7 +28,8 @@ class PostItem extends React.Component {
             className="show-more-footer-comment"
             onClick={this.showMoreComment}
           >
-            View rest comments
+            View rest {this.props.comment.length - this.state.commentNumber}
+            &nbsp;comments
           </div>
         ) : null}
       </div>
@@ -76,7 +77,7 @@ class PostItem extends React.Component {
         <div className="post-item-footer">
           <span className="post-item-footer-stats">
             {this.props.hashtags.map((message) => (
-              <a href={"/hashtag/" + message}>{"#" + message}</a>
+              <a href={"/hashtag/" + message.substring(1)}>{message} &nbsp;</a>
             ))}
           </span>
           <div className="post-item-footer-stats">

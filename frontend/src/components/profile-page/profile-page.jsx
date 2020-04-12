@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
-import "./body.css";
-import TopRightContainer from "../posts-container/top-right-container";
-import TrendContainer from "../posts-container/trend-container";
-import kun from "./kun.png";
 import anonymous from "../posts-container/anonymous.png";
-import CreatePost from "../create-post/create-post";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
 import logo1 from "../images/logo1.png";
@@ -23,8 +18,9 @@ import two from "../images/two.png";
 import three from "../images/three.png";
 import four from "../images/four.png";
 import five from "../images/five.png";
-import trend from "../images/trend.png";
-class Body extends Component {
+import "./profile-page.css";
+
+class ProfilePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -95,7 +91,7 @@ class Body extends Component {
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
       axios
-        .post("/api/getRoute/postComment", comment)
+        .post("./api/getRoute/postComment", comment)
         .then((res) => {
           if (res.data.success == false) {
             alert("Please login to make a comment!");
@@ -210,43 +206,11 @@ class Body extends Component {
     }
   };
 
-  addNewPost = (newPost) => {
-    let newMoments = [newPost.postmessage, ...this.state.moments];
-    let newPostidList = [newPost.postId, ...this.state.postidList];
-    let newUsernameList = [newPost.username, ...this.state.usernameList];
-    let newLikeStatus = [false, ...this.state.likeStatus];
-    let newNumofLike = [0, ...this.state.numofLike];
-    let newMessage = ["", ...this.state.message];
-    let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
-    let newCommentlist = [[], ...this.state.commentList];
-    let newPostDateList = [newPost.postDate, ...this.state.postDateList];
-    let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
-    this.setState({
-      moments: newMoments,
-      postidList: newPostidList,
-      usernameList: newUsernameList,
-      likeStatus: newLikeStatus,
-      numofLike: newNumofLike,
-      Message: newMessage,
-      userLogo: newLogoList,
-      commentList: newCommentlist,
-      postDateList: newPostDateList,
-      hashtagList: newHashtagList,
-      posts: this.state.posts + 1,
-    });
-  };
-
   render() {
     return (
-      <div className="body">
-        <div className="create-post-container">
-          <div className="create-post-div">
-            <CreatePost addNewPost={(newPost) => this.addNewPost(newPost)} />
-          </div>
-        </div>
-
-        <div className="home-page">
-          <div className="main-posts-container">
+      <div className="profile-body">
+        <div className="profile-home-page">
+          <div className="profile-main-posts-container">
             <PostsContainer
               postContent={this.state.postContent}
               resetPostContent={() => this.resetNewPost()}
@@ -256,64 +220,11 @@ class Body extends Component {
               state={this.state}
             />
           </div>
-          <div className="side-posts-container">
-            <div className="wrapper">
-              <div className="box top">
-                <div>
-                  <img
-                    src={
-                      this.state.userId == null
-                        ? anonymous
-                        : this.getLogo(this.state.logoNumber)
-                    }
-                    alt="kun"
-                    id="side-profile"
-                  />
-                  <button id="follower">Followers</button>
-                  <button id="following">Following</button>
-                </div>
-                <TopRightContainer />
-              </div>
-              <div className="box middle">
-                <div id="trending-hashtag">
-                  <img src={trend} alt="kun" className="trend-img" />
-                  &nbsp;&nbsp;&nbsp;Trending:
-                </div>
-                <span class="line-fade"></span>
-                <div id="trend-list">
-                  <ul>
-                    {this.state.topTrendList.map((tag, index) => (
-                      <a href={"/hashtag/" + tag.substring(1)}>
-                        <li>
-                          <img
-                            src={this.getNumberLogo(index)}
-                            alt="kun"
-                            className="trend-img"
-                          />
-                          <h3>{tag}</h3>
-                        </li>
-                      </a>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="box-bottom box">
-                <a href="/about-us">About</a>
-                <a href="/privacy">Privacy</a>
-                <a href="/term-of-use">Terms of Use</a>
-                <a href="/careers">Careers</a>
-              </div>
-              <p style={{ color: "grey" }}> Momenify © 2020</p>
-            </div>
-          </div>
         </div>
-        {/* <div className='side-posts-container'>
-          <PostsContainer/>
-        </div> */}
         <ScrollUpButton />
       </div>
     );
   }
 }
 
-export default Body;
+export default ProfilePage;
