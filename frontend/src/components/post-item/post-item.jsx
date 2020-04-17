@@ -77,7 +77,17 @@ class PostItem extends React.Component {
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
-        <div className="post-item-description">{this.props.text}</div>
+        <div className="post-item-description">
+          {this.props.text
+            .replace(/ /g, "\u00a0")
+            .split("\n")
+            .map((message) => {
+              if (message.length == 0) {
+                return <div> &nbsp;</div>;
+              }
+              return <div>{message}</div>;
+            })}
+        </div>
         {/* <img
           className="post-item-main-image"
           src={this.props.imageUrl}
