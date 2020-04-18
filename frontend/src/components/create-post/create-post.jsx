@@ -28,6 +28,7 @@ class CreatePost extends Component {
     hashtag: "",
     hashtagList: [],
     overlayState: false,
+    files: null,
   };
 
   componentDidMount() {
@@ -41,41 +42,58 @@ class CreatePost extends Component {
   }
 
   putMoment = (json) => {
-    // console.log("this.json:", json);
-    // console.log(this.state.postmessage);
+    // put image to local
+    console.log("this.state.files put momment: ", this.state.files);
+    const formData = new FormData();
+    formData.append("myFiles", this.state.files);
+
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      axios.post("/api/postRoute/postMoment", json).then((res) => {
-        if (res.data.success) {
-          this.setState({ message: res.data.message });
-          //past post information to body , then pass to post container
-          console.log("res: ", res.data.postId);
-          if (this.state.hashtagList.length > 0) {
-            axios
-              .post("/api/postRoute/postHashtag", {
-                hashtagList: this.state.hashtagList,
-                currentTime: makeTime(),
-                postID: res.data.postId,
-              })
-              .then((res) => {
-                console.log(res);
-              });
+      //   const config = {
+      //     headers: {
+      //         'content-type': 'multipart/form-data'
+      //     }
+      // };
+
+      // console.log("upload before", this.state.files);
+      // let request = { files: json, formData: formData };
+      axios.post("/api/postRoute/upload", formData).then((res) => {
+        console.log("upload:");
+        console.log(res.data);
+        json.files = res.data.files;
+        axios.post("/api/postRoute/postMoment", json).then((res) => {
+          if (res.data.success) {
+            this.setState({ message: res.data.message });
+            //past post information to body , then pass to post container
+            console.log("res: ", res.data.postId);
+            if (this.state.hashtagList.length > 0) {
+              axios
+                .post("/api/postRoute/postHashtag", {
+                  hashtagList: this.state.hashtagList,
+                  currentTime: makeTime(),
+                  postID: res.data.postId,
+                })
+                .then((res) => {
+                  console.log(res);
+                });
+            }
+            this.props.addNewPost({
+              postDate: currentTime(),
+              hashtagList: this.state.hashtagList,
+              username: this.state.username,
+              postmessage: this.state.postmessage,
+              postId: res.data.postId,
+              userID: this.state.userId,
+              logoNumber: this.state.userLogo,
+              files: this.state.files,
+            });
+            this.state.hashtagList = [];
+            this.state.hashtag = "";
+            document.getElementById("hashtaglabel").innerHTML = "";
+            this.setState({ postmessage: null });
+          } else {
+            this.setState({ message: res.data.message });
           }
-          this.props.addNewPost({
-            postDate: currentTime(),
-            hashtagList: this.state.hashtagList,
-            username: this.state.username,
-            postmessage: this.state.postmessage,
-            postId: res.data.postId,
-            userID: this.state.userId,
-            logoNumber: this.state.userLogo,
-          });
-          this.state.hashtagList = [];
-          this.state.hashtag = "";
-          document.getElementById("hashtaglabel").innerHTML = "";
-          this.setState({ postmessage: null });
-        } else {
-          this.setState({ message: res.data.message });
-        }
+        });
       });
     } else {
       alert("Input cannot be empty");
@@ -90,8 +108,16 @@ class CreatePost extends Component {
     switch (e.target.name) {
       case "selectedFile":
         if (e.target.files.length > 0) {
-          this.setState({ fileName: e.target.files[0].name });
+          console.log("input files:", e.target.files[0]);
+
+          this.setState({
+            fileName: e.target.files[0].name,
+            files: e.target.files[0],
+          });
+          // this.setState({ files: formData });
         }
+        console.log("files,", this.state.files);
+
         break;
       default:
         this.setState({ [e.target.name]: e.target.value });
@@ -119,6 +145,10 @@ class CreatePost extends Component {
             placeholder="You can say something here."
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
+          <div>
+            image field
+            <img height="50 px" width="50px" src={this.state.files} />
+          </div>
 
           <div class="hashtagpp" id="hashtagid">
             <form id="hashtagform">
@@ -223,7 +253,7 @@ class CreatePost extends Component {
                 <input
                   id="file"
                   type="file"
-                  name="file"
+                  // name="file"
                   name="selectedFile"
                   onChange={(event) => this.onChange(event)}
                 />
@@ -243,6 +273,7 @@ class CreatePost extends Component {
                     postTime: currentTime(),
                     userLogo: this.state.userLogo,
                     hashtagList: this.state.hashtagList,
+                    files: this.state.files,
                   });
                 }}
               >
