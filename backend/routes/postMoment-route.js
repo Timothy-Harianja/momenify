@@ -2,6 +2,46 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
+
+// store image locally
+const path = require("path");
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: "./frontend/src/components/uploadImages",
+  filename: function (req, file, cb) {
+    cb(null, "FILE-" + Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({
+  storage: storage,
+}).single("myFiles");
+
+let post = {
+  postmessage: null,
+  userId: null,
+  nickname: null,
+  currentDate: null,
+  postTime: null,
+  userLogo: null,
+  hashtagList: [],
+  files: null,
+};
+router.post("/upload", (req, res) => {
+  console.log("before ", req);
+  // console.log("before upload,body", req.file);
+  // console.log("params", req.params);
+  upload(req, res, (err) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    } else {
+      console.log("req.file", req.file);
+
+      return res.json({ success: true, files: req.file });
+    }
+  });
+});
+
 router.post("/postHashtag", (req, res) => {
   for (let i = 0; i < req.body.hashtagList.length; i++) {
     let hashtag = req.body.hashtagList[i].toLowerCase();
@@ -126,6 +166,9 @@ router.post("/postMoment", (req, res) => {
   postMoment.hashtagList =
     req.body.hashtagList != null ? req.body.hashtagList : [];
   postMoment.userLogo = req.body.userLogo;
+  // photo
+  console.log("Post moment: ", req.body.files);
+  postMoment.files = req.body.files;
 
   if (req.session.userId) {
     postMoment.save((err, newPost) => {
