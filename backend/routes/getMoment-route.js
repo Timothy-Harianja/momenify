@@ -228,7 +228,7 @@ router.get("/getMoment", (req, res) => {
       commentList.push(moments[i].commentList);
       postDateList.push(moments[i].postTime);
       hashtagList.push(moments[i].hashtagList);
-      filesList.push(moments[i].files);
+      filesList.push(moments[i].files.filename);
       if (moments[i].nickname == null) {
         logoList.push("0");
       } else {

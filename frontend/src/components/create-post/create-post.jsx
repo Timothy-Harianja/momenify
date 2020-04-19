@@ -145,10 +145,6 @@ class CreatePost extends Component {
             placeholder="You can say something here."
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
-          <div>
-            image field
-            <img height="50 px" width="50px" src={this.state.files} />
-          </div>
 
           <div class="hashtagpp" id="hashtagid">
             <form id="hashtagform">
@@ -253,7 +249,7 @@ class CreatePost extends Component {
                 <input
                   id="file"
                   type="file"
-                  // name="file"
+                  accept="image/*"
                   name="selectedFile"
                   onChange={(event) => this.onChange(event)}
                 />

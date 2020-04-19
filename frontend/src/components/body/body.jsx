@@ -192,7 +192,7 @@ class Body extends Component {
               numofLike={this.state.numofLike[i]}
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
-              files={this.state.filesList[i]}
+              file={this.state.filesList[i]}
             />
           </div>
         );

@@ -7,7 +7,7 @@ const Hashtag = require("../hashtag");
 const path = require("path");
 const multer = require("multer");
 const storage = multer.diskStorage({
-  destination: "./frontend/src/components/uploadImages",
+  destination: "./frontend/src/components/uploadImages/",
   filename: function (req, file, cb) {
     cb(null, "FILE-" + Date.now() + path.extname(file.originalname));
   },
@@ -35,8 +35,7 @@ router.post("/upload", (req, res) => {
       console.log(err);
       return res.json({ success: false });
     } else {
-      console.log("req.file", req.file);
-
+      // console.log("req.file", req.file);
       return res.json({ success: true, files: req.file });
     }
   });
