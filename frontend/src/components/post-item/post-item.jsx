@@ -55,7 +55,7 @@ class PostItem extends React.Component {
   };
 
   render() {
-    console.log("filename: ", this.props.file);
+    //console.log("filename: ", this.props.file);
     return (
       <div className="post-item-container">
         <div className="post-item-header">
@@ -94,7 +94,7 @@ class PostItem extends React.Component {
         {this.props.file != null ? (
           <img
             className="post-item-main-image"
-            src={require("../uploadImages/" + this.state.file)}
+            src={require("../uploadImages/" + this.props.file)}
             alt=""
           />
         ) : (

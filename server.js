@@ -64,6 +64,7 @@ app.use("/api/postRoute", postMomentRoute);
 app.use("/api/getRoute", getMomentRoute);
 // if (process.env.NODE_ENV == "production") {
 app.use(express.static("frontend/build"));
+
 //serve that index.html file ('*' means anything aside from these api routes above)
 app.get("*", (req, res) => {
   //load the index.html file

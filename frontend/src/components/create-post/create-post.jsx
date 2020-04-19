@@ -43,7 +43,7 @@ class CreatePost extends Component {
 
   putMoment = (json) => {
     // put image to local
-    console.log("this.state.files put momment: ", this.state.files);
+    // console.log("this.state.files put momment: ", this.state.files);
     const formData = new FormData();
     formData.append("myFiles", this.state.files);
 
@@ -56,15 +56,14 @@ class CreatePost extends Component {
 
       // console.log("upload before", this.state.files);
       // let request = { files: json, formData: formData };
-      axios.post("/api/postRoute/upload", formData).then((res) => {
-        console.log("upload:");
-        console.log(res.data);
-        json.files = res.data.files;
+      axios.post("/api/postRoute/upload", formData).then((uploadResult) => {
+        // console.log("uploadResult.data", uploadResult.data);
+        json.files = uploadResult.data.files;
         axios.post("/api/postRoute/postMoment", json).then((res) => {
           if (res.data.success) {
             this.setState({ message: res.data.message });
             //past post information to body , then pass to post container
-            console.log("res: ", res.data.postId);
+            //     console.log("res: ", res.data.postId);
             if (this.state.hashtagList.length > 0) {
               axios
                 .post("/api/postRoute/postHashtag", {
@@ -76,6 +75,8 @@ class CreatePost extends Component {
                   console.log(res);
                 });
             }
+            //   console.log("uploadResult.data", uploadResult.data);
+
             this.props.addNewPost({
               postDate: currentTime(),
               hashtagList: this.state.hashtagList,
@@ -84,7 +85,10 @@ class CreatePost extends Component {
               postId: res.data.postId,
               userID: this.state.userId,
               logoNumber: this.state.userLogo,
-              files: this.state.files,
+              file:
+                uploadResult.data.files == null
+                  ? null
+                  : uploadResult.data.files.filename,
             });
             this.state.hashtagList = [];
             this.state.hashtag = "";
@@ -108,7 +112,7 @@ class CreatePost extends Component {
     switch (e.target.name) {
       case "selectedFile":
         if (e.target.files.length > 0) {
-          console.log("input files:", e.target.files[0]);
+          //   console.log("input files:", e.target.files[0]);
 
           this.setState({
             fileName: e.target.files[0].name,
@@ -116,7 +120,7 @@ class CreatePost extends Component {
           });
           // this.setState({ files: formData });
         }
-        console.log("files,", this.state.files);
+        // console.log("files,", this.state.files);
 
         break;
       default:
@@ -193,7 +197,7 @@ class CreatePost extends Component {
                       document.getElementById("overlay").style.display = "none";
                     }
 
-                    e.preventDefault();
+                    return false;
                   }}
                 >
                   Submit

@@ -27,15 +27,13 @@ let post = {
   files: null,
 };
 router.post("/upload", (req, res) => {
-  console.log("before ", req);
-  // console.log("before upload,body", req.file);
   // console.log("params", req.params);
   upload(req, res, (err) => {
     if (err) {
       console.log(err);
       return res.json({ success: false });
     } else {
-      // console.log("req.file", req.file);
+      console.log("req.file", req.file);
       return res.json({ success: true, files: req.file });
     }
   });
