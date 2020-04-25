@@ -30,6 +30,8 @@ class CreatePost extends Component {
     overlayState: false,
     files: null,
     progress: null,
+    error: "",
+    whiteSpace: "   ",
   };
 
   componentDidMount() {
@@ -69,50 +71,56 @@ class CreatePost extends Component {
           },
         })
         .then((uploadResult) => {
-          // console.log("uploadResult.data", uploadResult.data);
+          console.log("uploadResult.", uploadResult.data);
+          if (
+            !uploadResult.data.success &&
+            uploadResult.data.message == "file too large"
+          ) {
+            console.log("error: ", uploadResult.data.message);
+            this.setState({ error: uploadResult.data.message });
+          } else {
+            json.fileLocation = uploadResult.data.imageLocation;
+            axios.post("/api/postRoute/postMoment", json).then((res) => {
+              if (res.data.success) {
+                this.setState({ message: res.data.message });
+                //past post information to body , then pass to post container
+                //     console.log("res: ", res.data.postId);
+                if (this.state.hashtagList.length > 0) {
+                  axios
+                    .post("/api/postRoute/postHashtag", {
+                      hashtagList: this.state.hashtagList,
+                      currentTime: makeTime(),
+                      postID: res.data.postId,
+                    })
+                    .then((res) => {
+                      console.log(res);
+                    });
+                }
+                //   console.log("uploadResult.data", uploadResult.data);
 
-          json.fileLocation = uploadResult.data.imageLocation;
-
-          axios.post("/api/postRoute/postMoment", json).then((res) => {
-            if (res.data.success) {
-              this.setState({ message: res.data.message });
-              //past post information to body , then pass to post container
-              //     console.log("res: ", res.data.postId);
-              if (this.state.hashtagList.length > 0) {
-                axios
-                  .post("/api/postRoute/postHashtag", {
-                    hashtagList: this.state.hashtagList,
-                    currentTime: makeTime(),
-                    postID: res.data.postId,
-                  })
-                  .then((res) => {
-                    console.log(res);
-                  });
+                this.props.addNewPost({
+                  postDate: currentTime(),
+                  hashtagList: this.state.hashtagList,
+                  username: this.state.username,
+                  postmessage: this.state.postmessage,
+                  postId: res.data.postId,
+                  userID: this.state.userId,
+                  logoNumber: this.state.userLogo,
+                  file:
+                    uploadResult.data.imageLocation == null
+                      ? null
+                      : uploadResult.data.imageLocation,
+                });
+                this.state.hashtagList = [];
+                this.state.hashtag = "";
+                document.getElementById("hashtaglabel").innerHTML = "";
+                this.setState({ postmessage: null });
+                this.setState({ fileName: null });
+              } else {
+                this.setState({ message: res.data.message });
               }
-              //   console.log("uploadResult.data", uploadResult.data);
-
-              this.props.addNewPost({
-                postDate: currentTime(),
-                hashtagList: this.state.hashtagList,
-                username: this.state.username,
-                postmessage: this.state.postmessage,
-                postId: res.data.postId,
-                userID: this.state.userId,
-                logoNumber: this.state.userLogo,
-                file:
-                  uploadResult.data.imageLocation == null
-                    ? null
-                    : uploadResult.data.imageLocation,
-              });
-              this.state.hashtagList = [];
-              this.state.hashtag = "";
-              document.getElementById("hashtaglabel").innerHTML = "";
-              this.setState({ postmessage: null });
-              this.setState({ fileName: null });
-            } else {
-              this.setState({ message: res.data.message });
-            }
-          });
+            });
+          }
         });
     } else {
       alert("Input cannot be empty");
@@ -257,11 +265,11 @@ class CreatePost extends Component {
 
               <div class="file btn btn-lg btn-light" id="uploadbutton">
                 <img src={pic} alt="pic" id="pic" />
-                Photo
+                Media
                 <input
                   id="file"
                   type="file"
-                  accept="image/*"
+                  accept="video/*,image/*"
                   name="selectedFile"
                   onChange={(event) => this.onChange(event)}
                 />
@@ -293,6 +301,9 @@ class CreatePost extends Component {
             <label id="imagelabel" htmlFor="file">
               {this.state.fileName}
             </label>
+            <span style={{ color: "red" }}>
+              {this.state.whiteSpace + this.state.error}
+            </span>
             <br></br>
             <label id="hashtaglabel" htmlFor="hashtaginput">
               {hashtaginputs}
