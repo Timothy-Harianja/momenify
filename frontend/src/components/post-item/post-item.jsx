@@ -28,7 +28,8 @@ class PostItem extends React.Component {
             className="show-more-footer-comment"
             onClick={this.showMoreComment}
           >
-            View rest comments
+            View rest {this.props.comment.length - this.state.commentNumber}
+            &nbsp;comments
           </div>
         ) : null}
       </div>
@@ -53,6 +54,7 @@ class PostItem extends React.Component {
   };
 
   render() {
+    //console.log("filename: ", this.props.file);
     return (
       <div className="post-item-container">
         <div className="post-item-header">
@@ -60,23 +62,44 @@ class PostItem extends React.Component {
             className="post-item-header-profile"
             src={this.props.profileUrl}
           />
-          <span className="post-item-header-name">{this.props.username}</span>
+          {this.props.username == "Anonymous" ? (
+            <span className="post-item-header-name">{this.props.username}</span>
+          ) : (
+            <a
+              href={"/profile/" + this.props.id}
+              className="post-item-header-name"
+            >
+              {this.props.username}
+            </a>
+          )}
+
           <span className="post-item-header-dropdown">
             <PostDropdown></PostDropdown>
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
-        <div className="post-item-description">{this.props.text}</div>
-        {/* <img
-          className="post-item-main-image"
-          src={this.props.imageUrl}
-          alt="post"
-        /> */}
+        <div className="post-item-description">
+          {this.props.text
+            .replace(/ /g, "\u00a0")
+            .split("\n")
+            .map((message) => {
+              if (message.length == 0) {
+                return <div> &nbsp;</div>;
+              }
+              return <div>{message}</div>;
+            })}
+        </div>
+
+        {this.props.file != null ? (
+          <img className="post-item-main-image" src={this.props.file} alt="" />
+        ) : (
+          <span></span>
+        )}
 
         <div className="post-item-footer">
           <span className="post-item-footer-stats">
             {this.props.hashtags.map((message) => (
-              <a href={"/hashtag/" + message}>{"#" + message}</a>
+              <a href={"/hashtag/" + message.substring(1)}>{message} &nbsp;</a>
             ))}
           </span>
           <div className="post-item-footer-stats">

@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
-import "./body.css";
-import TopRightContainer from "../posts-container/top-right-container";
-import TrendContainer from "../posts-container/trend-container";
-import kun from "./kun.png";
 import anonymous from "../posts-container/anonymous.png";
-import CreatePost from "../create-post/create-post";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
 import logo1 from "../images/logo1.png";
@@ -23,18 +18,20 @@ import two from "../images/two.png";
 import three from "../images/three.png";
 import four from "../images/four.png";
 import five from "../images/five.png";
-import trend from "../images/trend.png";
-class Body extends Component {
+import "./hashtag-page.css";
+
+class HashtagPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userId: null,
       posts: 0,
+      hashtagName: null,
       idList: [],
       moments: [],
       usernameList: [],
       postidList: [],
-      loadingFeedback: "Loading More...",
+      loadingFeedback: "",
       likeStatus: [],
       numofLike: [],
       message: [],
@@ -49,51 +46,34 @@ class Body extends Component {
   }
 
   componentDidMount() {
-    axios.get("/api/getRoute/getHashtag").then((res) => {
-      if (res.data.success) {
-        this.setState({ topTrendList: res.data.hashtagList });
-      }
+    axios.get("/api/loginRoute/session").then((res) => {
+      this.setState({
+        userId: res.data.userId,
+        logoNumber: res.data.logoNumber,
+      });
     });
 
-    axios
-      .get("/api/loginRoute/session")
-      .then((res) => {
-        this.setState({
-          userId: res.data.userId,
-          logoNumber: res.data.logoNumber,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+    axios.get("/api/getRoute/hashtagPage").then((res) => {
+      this.setState({
+        loadingFeedback:
+          res.data.allMoments.length > 3 ? "Loading Posts..." : "",
+        posts: res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+        idList: res.data.idList,
+        moments: res.data.allMoments,
+        usernameList: res.data.allUsername,
+        postidList: res.data.allPostid,
+        likeStatus: Array(res.data.momentLength).fill(false),
+        numofLike: res.data.numofLike,
+        message: Array(res.data.momentLength).fill(""),
+        userLogo: res.data.logoList,
+        commentList: res.data.commentList,
+        postDateList: res.data.postDateList,
+        hashtagList: res.data.hashtagList,
+        hashtagName: res.data.hashtagName,
+        loadStatus: true,
+        filesList: res.data.filesList,
       });
-    axios
-      .get("/api/getRoute/getMoment")
-      .then((res) => {
-        this.setState({
-          loadingFeedback:
-            res.data.allMoments.length > 3
-              ? "Loading Posts..."
-              : "No More New Posts, Come Back Later :)",
-          posts:
-            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-          idList: res.data.idList,
-          moments: res.data.allMoments,
-          usernameList: res.data.allUsername,
-          postidList: res.data.allPostid,
-          likeStatus: Array(res.data.momentLength).fill(false),
-          numofLike: res.data.numofLike,
-          message: Array(res.data.momentLength).fill(""),
-          userLogo: res.data.logoList,
-          commentList: res.data.commentList,
-          postDateList: res.data.postDateList,
-          hashtagList: res.data.hashtagList,
-          loadStatus: true,
-          filesList: res.data.filesList,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    });
   }
 
   giveComment = (comment) => {
@@ -211,53 +191,25 @@ class Body extends Component {
       }, 200);
     } else {
       this.setState({
-        loadingFeedback: "No More Posts, Come Back Later :)",
+        loadingFeedback: "",
       });
     }
   };
 
-  addNewPost = (newPost) => {
-    let newMoments = [newPost.postmessage, ...this.state.moments];
-    let newPostidList = [newPost.postId, ...this.state.postidList];
-    let newUsernameList = [newPost.username, ...this.state.usernameList];
-    let newLikeStatus = [false, ...this.state.likeStatus];
-    let newNumofLike = [0, ...this.state.numofLike];
-    let newMessage = ["", ...this.state.message];
-    let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
-    let newCommentlist = [[], ...this.state.commentList];
-    let newPostDateList = [newPost.postDate, ...this.state.postDateList];
-    let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
-    let newIDList = [newPost.userID, ...this.state.idList];
-    let newFilesList = [newPost.file, ...this.state.filesList];
-
-    this.setState({
-      idList: newIDList,
-      moments: newMoments,
-      postidList: newPostidList,
-      usernameList: newUsernameList,
-      likeStatus: newLikeStatus,
-      numofLike: newNumofLike,
-      Message: newMessage,
-      userLogo: newLogoList,
-      commentList: newCommentlist,
-      postDateList: newPostDateList,
-      hashtagList: newHashtagList,
-      posts: this.state.posts + 1,
-      filesList: newFilesList,
-    });
-  };
-
   render() {
     return (
-      <div className="body">
-        <div className="create-post-container">
-          <div className="create-post-div">
-            <CreatePost addNewPost={(newPost) => this.addNewPost(newPost)} />
-          </div>
+      <div className="hashtag-body">
+        <br></br>
+        <div className="tagName">
+          <h2>{this.state.hashtagName}</h2>
+          {this.state.posts > 0 ? (
+            <h3>{this.state.moments.length} &nbsp;moments</h3>
+          ) : (
+            <h3>No hashtags found</h3>
+          )}
         </div>
-
-        <div className="home-page">
-          <div className="main-posts-container">
+        <div className="hashtag-home-page">
+          <div className="hashtag-main-posts-container">
             <PostsContainer
               postContent={this.state.postContent}
               resetPostContent={() => this.resetNewPost()}
@@ -267,64 +219,11 @@ class Body extends Component {
               state={this.state}
             />
           </div>
-          <div className="side-posts-container">
-            <div className="wrapper">
-              <div className="box top">
-                <div>
-                  <img
-                    src={
-                      this.state.userId == null
-                        ? anonymous
-                        : this.getLogo(this.state.logoNumber)
-                    }
-                    alt="kun"
-                    id="side-profile"
-                  />
-                  <button id="follower">Followers</button>
-                  <button id="following">Following</button>
-                </div>
-                <TopRightContainer />
-              </div>
-              <div className="box middle">
-                <div id="trending-hashtag">
-                  <img src={trend} alt="kun" className="trend-img" />
-                  &nbsp;&nbsp;&nbsp;Trending:
-                </div>
-                <span class="line-fade"></span>
-                <div id="trend-list">
-                  <ul>
-                    {this.state.topTrendList.map((tag, index) => (
-                      <a href={"/hashtag/" + tag.substring(1)}>
-                        <li>
-                          <img
-                            src={this.getNumberLogo(index)}
-                            alt="kun"
-                            className="trend-img"
-                          />
-                          <h3>{tag}</h3>
-                        </li>
-                      </a>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="box-bottom box">
-                <a href="/about-us">About</a>
-                <a href="/privacy">Privacy</a>
-                <a href="/term-of-use">Terms of Use</a>
-                <a href="/careers">Careers</a>
-              </div>
-              <p style={{ color: "grey" }}> Momenify © 2020</p>
-            </div>
-          </div>
         </div>
-        {/* <div className='side-posts-container'>
-          <PostsContainer/>
-        </div> */}
         <ScrollUpButton />
       </div>
     );
   }
 }
 
-export default Body;
+export default HashtagPage;

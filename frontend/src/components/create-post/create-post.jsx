@@ -25,9 +25,11 @@ class CreatePost extends Component {
     message: null,
     userLogo: null,
     fileName: "",
-    hashtag: null,
+    hashtag: "",
     hashtagList: [],
     overlayState: false,
+    files: null,
+    progress: null,
   };
 
   componentDidMount() {
@@ -41,39 +43,77 @@ class CreatePost extends Component {
   }
 
   putMoment = (json) => {
-    // console.log("this.json:", json);
-    // console.log(this.state.postmessage);
+    // put image to local
+    // console.log("this.state.files put momment: ", this.state.files);
+    const formData = new FormData();
+    formData.append("myFiles", this.state.files);
+
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      axios.post("/api/postRoute/postMoment", json).then((res) => {
-        if (res.data.success) {
-          this.setState({ message: res.data.message });
-          //past post information to body , then pass to post container
-          if (this.state.hashtagList.length > 0) {
-            axios
-              .post("/api/postRoute/postHashtag", {
+      //   const config = {
+      //     headers: {
+      //         'content-type': 'multipart/form-data'
+      //     }
+      // };
+
+      // console.log("upload before", this.state.files);
+      // let request = { files: json, formData: formData };
+      axios
+        .post("/api/postRoute/upload", formData, {
+          onUploadProgress: (progressEvent) => {
+            this.setState({
+              message:
+                "Uploading: " +
+                Math.round((progressEvent.loaded / progressEvent.total) * 100) +
+                "%",
+            });
+          },
+        })
+        .then((uploadResult) => {
+          // console.log("uploadResult.data", uploadResult.data);
+
+          json.fileLocation = uploadResult.data.imageLocation;
+
+          axios.post("/api/postRoute/postMoment", json).then((res) => {
+            if (res.data.success) {
+              this.setState({ message: res.data.message });
+              //past post information to body , then pass to post container
+              //     console.log("res: ", res.data.postId);
+              if (this.state.hashtagList.length > 0) {
+                axios
+                  .post("/api/postRoute/postHashtag", {
+                    hashtagList: this.state.hashtagList,
+                    currentTime: makeTime(),
+                    postID: res.data.postId,
+                  })
+                  .then((res) => {
+                    console.log(res);
+                  });
+              }
+              //   console.log("uploadResult.data", uploadResult.data);
+
+              this.props.addNewPost({
+                postDate: currentTime(),
                 hashtagList: this.state.hashtagList,
-                currentTime: makeTime(),
-              })
-              .then((res) => {
-                console.log(res);
+                username: this.state.username,
+                postmessage: this.state.postmessage,
+                postId: res.data.postId,
+                userID: this.state.userId,
+                logoNumber: this.state.userLogo,
+                file:
+                  uploadResult.data.imageLocation == null
+                    ? null
+                    : uploadResult.data.imageLocation,
               });
-          }
-          this.props.addNewPost({
-            postDate: currentTime(),
-            hashtagList: this.state.hashtagList,
-            username: this.state.username,
-            postmessage: this.state.postmessage,
-            postId: res.data.postId,
-            logoNumber: this.state.userLogo,
+              this.state.hashtagList = [];
+              this.state.hashtag = "";
+              document.getElementById("hashtaglabel").innerHTML = "";
+              this.setState({ postmessage: null });
+              this.setState({ fileName: null });
+            } else {
+              this.setState({ message: res.data.message });
+            }
           });
-          this.state.hashtagList = [];
-          this.state.hashtag = null;
-          document.getElementById("hashtaglabel").innerHTML = "";
-          this.setState({ postmessage: null });
-        } else {
-          this.setState({ message: res.data.message });
-        }
-      });
+        });
     } else {
       alert("Input cannot be empty");
     }
@@ -87,8 +127,16 @@ class CreatePost extends Component {
     switch (e.target.name) {
       case "selectedFile":
         if (e.target.files.length > 0) {
-          this.setState({ fileName: e.target.files[0].name });
+          //   console.log("input files:", e.target.files[0]);
+
+          this.setState({
+            fileName: "You have selected: " + e.target.files[0].name,
+            files: e.target.files[0],
+          });
+          // this.setState({ files: formData });
         }
+        // console.log("files,", this.state.files);
+
         break;
       default:
         this.setState({ [e.target.name]: e.target.value });
@@ -96,16 +144,9 @@ class CreatePost extends Component {
   };
 
   render() {
-    const { fileName } = this.state;
     const { hashtag } = this.state;
-    let file = null;
-    let hashtaginputs = "";
 
-    file = fileName ? (
-      <span>You have selected: {fileName}</span>
-    ) : (
-      <span></span>
-    );
+    let hashtaginputs = "";
 
     return (
       <div className="create-post">
@@ -113,7 +154,7 @@ class CreatePost extends Component {
           <textarea
             id="message"
             type="text"
-            placeholder="You can say something here."
+            placeholder="What's on your mind?"
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
@@ -137,29 +178,34 @@ class CreatePost extends Component {
                 type="text"
                 id="hashtaginput"
                 name="hashtaginput"
-                placeholder="enter your hashtag"
+                placeholder="Enter Your Hashtag"
                 onChange={(e) => {
                   this.setState({ hashtag: e.target.value });
                 }}
               />
+              No space and special character.
               <div>
                 <button
                   id="hashtagsubmit"
                   type="submit"
                   className="btn btn-primary"
                   onClick={(e) => {
-                    if (hashtag != null && hashtag.trim() != "") {
-                      this.state.hashtagList.push(hashtag);
-                      this.state.hashtag = null;
+                    if (hashtag == null || hashtag == "") {
+                      alert("Hashtag cannot be empty!");
+                    } else if (!hashtag.match("^[A-Za-z0-9]+$")) {
+                      alert("Hashtag can only contains letter or digit!");
+                    } else {
+                      this.state.hashtagList.push("#" + hashtag);
+                      this.state.hashtag = "";
                       document.getElementById("hashtaglabel").innerHTML =
                         "Hashtag(s): " + this.state.hashtagList;
-                    } else {
-                      alert("Hashtag cannot be empty!");
+                      document.getElementById("hashtaginput").value = "";
+                      document.getElementById("hashtagid").style.display =
+                        "none";
+                      document.getElementById("overlay").style.display = "none";
                     }
-                    document.getElementById("hashtaginput").value = "";
-                    document.getElementById("hashtagid").style.display = "none";
-                    document.getElementById("overlay").style.display = "none";
-                    e.preventDefault();
+
+                    return false;
                   }}
                 >
                   Submit
@@ -168,7 +214,7 @@ class CreatePost extends Component {
                   className="clear-btn btn btn-primary"
                   onClick={(e) => {
                     this.state.hashtagList = [];
-                    this.state.hashtag = null;
+                    this.state.hashtag = "";
                     document.getElementById("hashtaglabel").innerHTML = "";
                     document.getElementById("hashtaginput").value = "";
                     document.getElementById("hashtagid").style.display = "none";
@@ -215,7 +261,7 @@ class CreatePost extends Component {
                 <input
                   id="file"
                   type="file"
-                  name="file"
+                  accept="image/*"
                   name="selectedFile"
                   onChange={(event) => this.onChange(event)}
                 />
@@ -235,6 +281,7 @@ class CreatePost extends Component {
                     postTime: currentTime(),
                     userLogo: this.state.userLogo,
                     hashtagList: this.state.hashtagList,
+                    files: this.state.files,
                   });
                 }}
               >
@@ -244,8 +291,9 @@ class CreatePost extends Component {
             </div>
 
             <label id="imagelabel" htmlFor="file">
-              {file}
+              {this.state.fileName}
             </label>
+            <br></br>
             <label id="hashtaglabel" htmlFor="hashtaginput">
               {hashtaginputs}
             </label>

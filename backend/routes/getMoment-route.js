@@ -10,6 +10,178 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
+function getToken(res) {
+  let s = "";
+  for (let i = res.length; i >= 0; i--) {
+    if (res.charAt(i) != "/") {
+      s = res.charAt(i) + s;
+    } else {
+      return s;
+    }
+  }
+}
+
+let getTag = (hashtag) => {
+  return new Promise((resolve, reject) => {
+    Post.findOne({ _id: hashtag }, (err, moments) => {
+      if (err) reject(err);
+      resolve(moments);
+    });
+  });
+};
+
+let getAllTag = (hashtags) => {
+  let res = new Array(hashtags[0].postList.length);
+  for (let i = 0; i < hashtags[0].postList.length; i++) {
+    res[i] = new Promise((resolve, reject) => {
+      getTag(hashtags[0].postList[i]).then((data) => {
+        resolve(data);
+      });
+    });
+  }
+  return Promise.all(res);
+};
+
+router.get("/profilePage", (req, res) => {
+  let tokenLink = req.headers.referer;
+  token = getToken(tokenLink);
+  let idList = [];
+  let momentsList = [];
+  let usernameList = [];
+  let postidList = [];
+  let numofLike = [];
+  let logoList = [];
+  let commentList = [];
+  let postDateList = [];
+  let hashtagList = [];
+  let filesList = [];
+  Post.find({ userId: token }, (err, posts) => {
+    if (err) {
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "error posting the hashtag",
+      });
+    }
+    if (posts == null || posts.length == 0) {
+      return res.json({
+        idList: idList,
+        allMoments: momentsList,
+        allUsername: usernameList,
+        allPostid: postidList,
+        numofLike: numofLike,
+        momentLength: 0,
+        logoList: logoList,
+        commentList: commentList,
+        postDateList: postDateList,
+        hashtagList: hashtagList,
+        filesList: filesList,
+      });
+    } else {
+      for (let i = 0; i < posts.length; i++) {
+        momentsList.push(posts[i].postmessage);
+        usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
+        idList.push(posts[i].userId);
+        postidList.push(posts[i]._id);
+        numofLike.push(posts[i].likeList.length);
+        logoList.push(posts[i].nickname == null ? 0 : posts[i].userLogo);
+        commentList.push(posts[i].commentList);
+        postDateList.push(posts[i].postTime);
+        hashtagList.push(posts[i].hashtagList);
+        filesList.push(posts[i].fileLocation);
+      }
+      return res.json({
+        idList: idList,
+        allMoments: momentsList,
+        allUsername: usernameList,
+        allPostid: postidList,
+        numofLike: numofLike,
+        momentLength: posts.length,
+        logoList: logoList,
+        commentList: commentList,
+        postDateList: postDateList,
+        hashtagList: hashtagList,
+        filesList: filesList,
+      });
+    }
+  }).sort({ postDate: -1 });
+});
+
+router.get("/hashtagPage", (req, res) => {
+  let tokenLink = req.headers.referer;
+  token = getToken(tokenLink);
+
+  Hashtag.find({ hashtag: "#" + token.toLowerCase() }, function (
+    err,
+    hashtags
+  ) {
+    if (err) {
+      console.log(err);
+      return res.json({
+        success: false,
+        message: "error posting the hashtag",
+      });
+    }
+    let idList = [];
+    let momentsList = [];
+    let usernameList = [];
+    let postidList = [];
+    let numofLike = [];
+    let logoList = [];
+    let commentList = [];
+    let postDateList = [];
+    let hashtagList = [];
+    let filesList = [];
+    if (hashtags == null || hashtags.length == 0) {
+      return res.json({
+        hashtagName: "#" + token.toLowerCase(),
+        idList: idList,
+        allMoments: momentsList,
+        allUsername: usernameList,
+        allPostid: postidList,
+        numofLike: numofLike,
+        momentLength: 0,
+        logoList: logoList,
+        commentList: commentList,
+        postDateList: postDateList,
+        hashtagList: hashtagList,
+      });
+    } else {
+      getAllTag(hashtags).then((result) => {
+        for (let i = 0; i < result.length; i++) {
+          momentsList.push(result[i].postmessage);
+          usernameList.push(
+            result[i].nickname == null ? null : result[i].nickname
+          );
+          idList.push(result[i].userId);
+          postidList.push(result[i]._id);
+          numofLike.push(result[i].likeList.length);
+          logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
+          commentList.push(result[i].commentList);
+          postDateList.push(result[i].postTime);
+          hashtagList.push(result[i].hashtagList);
+          filesList.push(result[i].fileLocation);
+        }
+
+        return res.json({
+          hashtagName: "#" + token.toLowerCase(),
+          idList: idList,
+          allMoments: momentsList,
+          allUsername: usernameList,
+          allPostid: postidList,
+          numofLike: numofLike,
+          momentLength: hashtags[0].postList.length,
+          logoList: logoList,
+          commentList: commentList,
+          postDateList: postDateList,
+          hashtagList: hashtagList,
+          filesList: filesList,
+        });
+      });
+    }
+  });
+});
+
 router.get("/getHashtag", (req, res) => {
   let days = 1000 * 60 * 60 * 24 * 10;
   Hashtag.find({ hashtagTime: { $gte: makeTime() - days } }, (err, result) => {
@@ -44,6 +216,7 @@ router.get("/getMoment", (req, res) => {
         message: "error posting the hashtag",
       });
     }
+    let idList = [];
     let momentsList = [];
     let usernameList = [];
     let postidList = [];
@@ -52,7 +225,9 @@ router.get("/getMoment", (req, res) => {
     let commentList = [];
     let postDateList = [];
     let hashtagList = [];
+    let filesList = [];
     for (let i = 0; i < moments.length; i++) {
+      idList.push(moments[i].userId);
       momentsList.push(moments[i].postmessage);
       usernameList.push(moments[i].nickname);
       postidList.push(moments[i]._id);
@@ -60,6 +235,7 @@ router.get("/getMoment", (req, res) => {
       commentList.push(moments[i].commentList);
       postDateList.push(moments[i].postTime);
       hashtagList.push(moments[i].hashtagList);
+      filesList.push(moments[i].fileLocation);
       if (moments[i].nickname == null) {
         logoList.push("0");
       } else {
@@ -103,9 +279,18 @@ router.get("/getMoment", (req, res) => {
       let temp8 = hashtagList[pos1];
       hashtagList[pos1] = hashtagList[pos2];
       hashtagList[pos2] = temp8;
+
+      let temp9 = idList[pos1];
+      idList[pos1] = idList[pos2];
+      idList[pos2] = temp9;
+
+      let temp10 = filesList[pos1];
+      filesList[pos1] = filesList[pos2];
+      filesList[pos2] = temp10;
     }
 
     return res.json({
+      idList: idList,
       allMoments: momentsList,
       allUsername: usernameList,
       allPostid: postidList,
@@ -115,70 +300,9 @@ router.get("/getMoment", (req, res) => {
       commentList: commentList,
       postDateList: postDateList,
       hashtagList: hashtagList,
+      filesList: filesList,
     });
-  });
-});
-
-router.post("/postComment", (req, res) => {
-  if (!req.session.userId) {
-    return res.json({
-      success: false,
-      message: "please login to comment a post",
-    });
-  }
-
-  Post.findOne({ _id: req.body.postid }, (err, result) => {
-    if (err) {
-      return res.json({ success: false, message: "error finding the post" });
-    }
-    let messageWithName = req.session.username + ":  " + req.body.postComment;
-    result.commentList.push(messageWithName);
-    result.save((err) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: "error save you like to database",
-        });
-      }
-      return res.json({
-        success: true,
-        message: messageWithName,
-      });
-    });
-  });
-});
-
-router.post("/giveLike", (req, res) => {
-  if (!req.session.userId) {
-    return res.json({ success: false, message: "please login to like a post" });
-  }
-  Post.findOne({ _id: req.body.postId }, (err, result) => {
-    if (err) {
-      // console.log(err);
-      return res.json({ success: false, message: "error finding the post" });
-    }
-
-    if (result.likeList.includes(req.session.userId)) {
-      return res.json({
-        success: false,
-        message: "you already liked this post",
-      });
-    }
-    result.likeList.push(req.session.userId);
-    result.save((err) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: "error save you like to database",
-        });
-      }
-      return res.json({
-        success: true,
-        message: "success",
-        numofLike: result.likeList.length,
-      });
-    });
-  });
+  }).sort({ postDate: -1 });
 });
 
 module.exports = router;
