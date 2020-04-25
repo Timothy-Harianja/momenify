@@ -49,7 +49,7 @@ app.use(
     saveUninitialized: false,
     secret: "quit it",
     cookie: {
-      maxAge: halfDay,
+      // maxAge: halfDay,
       sameSite: true,
     },
   })
