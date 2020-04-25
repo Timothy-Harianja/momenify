@@ -38,10 +38,10 @@
 }
 
 .div-container {
-  width: 275px;
-  margin-right: 0px;
-  margin-left: auto;
-  padding: 0px 0px;
+  width: 282px;
+  /* margin-right: 0px;
+  margin-left: auto; */
+  /* padding: 0px 0px; */
 
   border-radius: 8px;
   border-style: solid;

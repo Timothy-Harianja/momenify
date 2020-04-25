@@ -77,7 +77,14 @@ class CreatePost extends Component {
             uploadResult.data.message == "file too large"
           ) {
             console.log("error: ", uploadResult.data.message);
-            this.setState({ error: uploadResult.data.message });
+            this.setState({
+              error:
+                "file is larger than 50MB, please compress it before upload.",
+            });
+            this.state.hashtagList = [];
+            this.state.hashtag = "";
+            document.getElementById("hashtaglabel").innerHTML = "";
+            this.setState({ postmessage: null, fileName: null, files: null });
           } else {
             json.fileLocation = uploadResult.data.imageLocation;
             axios.post("/api/postRoute/postMoment", json).then((res) => {
@@ -114,8 +121,11 @@ class CreatePost extends Component {
                 this.state.hashtagList = [];
                 this.state.hashtag = "";
                 document.getElementById("hashtaglabel").innerHTML = "";
-                this.setState({ postmessage: null });
-                this.setState({ fileName: null });
+                this.setState({
+                  postmessage: null,
+                  fileName: null,
+                  files: null,
+                });
               } else {
                 this.setState({ message: res.data.message });
               }
@@ -162,7 +172,7 @@ class CreatePost extends Component {
           <textarea
             id="message"
             type="text"
-            placeholder="What's on your mind?"
+            placeholder="What's on your mind? You can also upload image or video that is less than 50MB!"
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
@@ -246,8 +256,6 @@ class CreatePost extends Component {
             }}
           ></div>
           <div className="buttons-container">
-            {this.state.message}
-
             <div className="div-container">
               <button
                 type="tag"
@@ -297,17 +305,22 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
+            <div style={{ textDecorationLine: "underline" }}>
+              {" "}
+              {this.state.message}
+            </div>
 
-            <label id="imagelabel" htmlFor="file">
+            <div id="imagelabel" htmlFor="file">
               {this.state.fileName}
-            </label>
-            <span style={{ color: "red" }}>
+            </div>
+
+            <div style={{ color: "red" }}>
               {this.state.whiteSpace + this.state.error}
-            </span>
-            <br></br>
-            <label id="hashtaglabel" htmlFor="hashtaginput">
+            </div>
+
+            <div id="hashtaglabel" htmlFor="hashtaginput">
               {hashtaginputs}
-            </label>
+            </div>
           </div>
         </form>
       </div>

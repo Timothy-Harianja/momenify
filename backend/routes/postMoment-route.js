@@ -16,16 +16,6 @@ const s3 = new aws.S3({
   Bucket: "momenify",
 });
 
-const storage = multer.diskStorage({
-  destination: "./frontend/src/components/uploadImages/",
-  filename: function (req, file, cb) {
-    cb(null, "FILE-" + Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({
-  storage: storage,
-}).single("myFiles");
-
 const profileImgUpload = multer({
   storage: multerS3({
     s3: s3,
@@ -71,7 +61,7 @@ router.post("/upload", (req, res) => {
         return res.json({ success: false });
       } else {
         // If Success
-        console.log("req.file: ", req.file);
+        // console.log("req.file: ", req.file);
         const imageLocation = req.file.location;
         // Save the file name into database into profile model
         return res.json({
