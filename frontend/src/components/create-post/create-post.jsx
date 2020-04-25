@@ -4,7 +4,7 @@ import pic from "./imageicon.png";
 import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
-
+import ProgressBar from "react-bootstrap/ProgressBar";
 function makeTime() {
   return new Date().getTime();
 }
@@ -51,22 +51,13 @@ class CreatePost extends Component {
     formData.append("myFiles", this.state.files);
 
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
-      //   const config = {
-      //     headers: {
-      //         'content-type': 'multipart/form-data'
-      //     }
-      // };
-
-      // console.log("upload before", this.state.files);
-      // let request = { files: json, formData: formData };
       axios
         .post("/api/postRoute/upload", formData, {
           onUploadProgress: (progressEvent) => {
             this.setState({
-              message:
-                "Uploading: " +
-                Math.round((progressEvent.loaded / progressEvent.total) * 100) +
-                "%",
+              message: Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              ),
             });
           },
         })
@@ -125,6 +116,10 @@ class CreatePost extends Component {
                   postmessage: null,
                   fileName: null,
                   files: null,
+                });
+
+                this.setState({
+                  message: "Post succeed!",
                 });
               } else {
                 this.setState({ message: res.data.message });
@@ -305,10 +300,28 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
-            <div style={{ textDecorationLine: "underline" }}>
-              {" "}
-              {this.state.message}
-            </div>
+
+            {this.state.message != null && this.state.message <= 100 ? (
+              <div style={{ width: "100%" }}>
+                <ProgressBar
+                  label={
+                    this.state.message == 100
+                      ? "Almost done"
+                      : this.state.message + "%"
+                  }
+                  animated
+                  now={this.state.message}
+                />
+              </div>
+            ) : (
+              <div style={{ textDecorationLine: "underline" }}>
+                {this.state.message}
+              </div>
+            )}
+
+            {/* <div style={{ width: "50%" }}>
+              <ProgressBar animated now={this.state.message} />
+            </div> */}
 
             <div id="imagelabel" htmlFor="file">
               {this.state.fileName}
