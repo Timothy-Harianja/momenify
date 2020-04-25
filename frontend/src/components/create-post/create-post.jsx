@@ -46,7 +46,7 @@ class CreatePost extends Component {
 
   putMoment = (json) => {
     // put image to local
-    // console.log("this.state.files put momment: ", this.state.files);
+    // console.log("this.state.files: ", this.state.files);
     const formData = new FormData();
     formData.append("myFiles", this.state.files);
 
@@ -62,7 +62,6 @@ class CreatePost extends Component {
           },
         })
         .then((uploadResult) => {
-          console.log("uploadResult.", uploadResult.data);
           if (
             !uploadResult.data.success &&
             uploadResult.data.message == "file too large"
@@ -139,14 +138,17 @@ class CreatePost extends Component {
   onChange = (e) => {
     switch (e.target.name) {
       case "selectedFile":
-        if (e.target.files.length > 0) {
+        if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
           //   console.log("input files:", e.target.files[0]);
 
           this.setState({
             fileName: "You have selected: " + e.target.files[0].name,
             files: e.target.files[0],
           });
+
           // this.setState({ files: formData });
+        } else {
+          alert("Please select a file that is less than 50MB!");
         }
         // console.log("files,", this.state.files);
 
@@ -167,7 +169,7 @@ class CreatePost extends Component {
           <textarea
             id="message"
             type="text"
-            placeholder="What's on your mind? You can also upload image or video that is less than 50MB!"
+            placeholder="What's on your mind? You can also upload a image or video that is less than 50MB!"
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
