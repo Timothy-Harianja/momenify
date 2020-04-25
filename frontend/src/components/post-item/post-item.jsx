@@ -57,17 +57,17 @@ class PostItem extends React.Component {
     let imageType = ["png", "jpg", "gif"];
     let videoType = ["mp4", "mov", "ogg"];
     // console.log("file.length", file.length);
-    const fileType = file.substring(file.length - 3, file.length);
+    const fileType = file.substring(file.length - 3, file.length).toLowerCase();
     // console.log(fileType);
     if (imageType.includes(fileType)) {
       return <img className="post-item-main-image" src={file} alt="" />;
     }
     if (videoType.includes(fileType)) {
       return (
-        <video className="post-item-main-image" controls>
-          <source src={file} type="video/mp4" />
+        <video className="post-item-main-image" src={file} controls="controls">
+          {/* <source src={file} type="video/mp4" />
           <source src={file} type="video/ogg" />
-          <source src={file} type="video/mov" />
+          <source src={file} type="video/mov" /> */}
         </video>
       );
     }
