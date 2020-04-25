@@ -92,11 +92,7 @@ class PostItem extends React.Component {
         </div>
 
         {this.props.file != null ? (
-          <img
-            className="post-item-main-image"
-            src={require("../uploadImages/" + this.props.file)}
-            alt=""
-          />
+          <img className="post-item-main-image" src={this.props.file} alt="" />
         ) : (
           <span></span>
         )}

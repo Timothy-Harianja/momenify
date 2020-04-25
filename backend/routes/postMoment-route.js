@@ -2,10 +2,20 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
-
-// store image locally
 const path = require("path");
 const multer = require("multer");
+const aws = require("aws-sdk");
+const multerS3 = require("multer-s3");
+
+/**
+ * PROFILE IMAGE STORING STARTS
+ */
+const s3 = new aws.S3({
+  accessKeyId: "AKIAJOTNL5MBC5VHYNTA",
+  secretAccessKey: "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",
+  Bucket: "momenify",
+});
+
 const storage = multer.diskStorage({
   destination: "./frontend/src/components/uploadImages/",
   filename: function (req, file, cb) {
@@ -14,6 +24,27 @@ const storage = multer.diskStorage({
 });
 const upload = multer({
   storage: storage,
+}).single("myFiles");
+
+const profileImgUpload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: "momenify",
+    acl: "public-read",
+    key: function (req, file, cb) {
+      cb(
+        null,
+        path.basename(file.originalname, path.extname(file.originalname)) +
+          "-" +
+          Date.now() +
+          path.extname(file.originalname)
+      );
+    },
+  }),
+  limits: { fileSize: 200000000 }, // In bytes: 2000000 bytes = 2 MB
+  // fileFilter: function (req, file, cb) {
+  //   checkFileType(file, cb);
+  // },
 }).single("myFiles");
 
 let post = {
@@ -27,16 +58,39 @@ let post = {
   files: null,
 };
 router.post("/upload", (req, res) => {
-  // console.log("params", req.params);
-  upload(req, res, (err) => {
-    if (err) {
-      console.log(err);
+  profileImgUpload(req, res, (error) => {
+    console.log("requestOkokok", req.file);
+    console.log("error", error);
+    if (error) {
+      console.log("errors", error);
       return res.json({ success: false });
     } else {
-      console.log("req.file", req.file);
-      return res.json({ success: true, files: req.file });
+      // If File not found
+      if (req.file === undefined) {
+        console.log("Error: No File Selected!");
+        return res.json({ success: false });
+      } else {
+        // If Success
+        console.log("req.file: ", req.file);
+        const imageLocation = req.file.location;
+        // Save the file name into database into profile model
+        return res.json({
+          success: true,
+          imageLocation: imageLocation,
+        });
+      }
     }
   });
+  // console.log("params", req.params);
+  // upload(req, res, (err) => {
+  //   if (err) {
+  //     console.log(err);
+  //     return res.json({ success: false });
+  //   } else {
+  //     console.log("req.file", req.file);
+  //     return res.json({ success: true, files: req.file });
+  //   }
+  // });
 });
 
 router.post("/postHashtag", (req, res) => {
@@ -165,7 +219,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.userLogo = req.body.userLogo;
   // photo
   console.log("Post moment: ", req.body.files);
-  postMoment.files = req.body.files;
+  postMoment.fileLocation = req.body.fileLocation;
 
   if (req.session.userId) {
     postMoment.save((err, newPost) => {

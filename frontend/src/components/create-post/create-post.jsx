@@ -58,7 +58,11 @@ class CreatePost extends Component {
       // let request = { files: json, formData: formData };
       axios.post("/api/postRoute/upload", formData).then((uploadResult) => {
         // console.log("uploadResult.data", uploadResult.data);
-        json.files = uploadResult.data.files;
+        json.fileLocation = uploadResult.data.imageLocation;
+        console.log(
+          "uploadResult.data.imageLocation: ",
+          uploadResult.data.imageLocation
+        );
         axios.post("/api/postRoute/postMoment", json).then((res) => {
           if (res.data.success) {
             this.setState({ message: res.data.message });
@@ -86,9 +90,9 @@ class CreatePost extends Component {
               userID: this.state.userId,
               logoNumber: this.state.userLogo,
               file:
-                uploadResult.data.files == null
+                uploadResult.data.imageLocation == null
                   ? null
-                  : uploadResult.data.files.filename,
+                  : uploadResult.data.imageLocation,
             });
             this.state.hashtagList = [];
             this.state.hashtag = "";

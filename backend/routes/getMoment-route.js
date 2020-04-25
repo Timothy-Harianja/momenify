@@ -228,7 +228,7 @@ router.get("/getMoment", (req, res) => {
       commentList.push(moments[i].commentList);
       postDateList.push(moments[i].postTime);
       hashtagList.push(moments[i].hashtagList);
-      filesList.push(moments[i].files.filename);
+      filesList.push(moments[i].fileLocation);
       if (moments[i].nickname == null) {
         logoList.push("0");
       } else {
@@ -237,50 +237,50 @@ router.get("/getMoment", (req, res) => {
     }
 
     // random the moment order
-    // for (let j = 0; j < moments.length; j++) {
-    //   let pos1 = getRandomInt(momentsList.length);
-    //   let pos2 = getRandomInt(momentsList.length);
+    for (let j = 0; j < moments.length; j++) {
+      let pos1 = getRandomInt(momentsList.length);
+      let pos2 = getRandomInt(momentsList.length);
 
-    //   let temp = momentsList[pos1];
-    //   momentsList[pos1] = momentsList[pos2];
-    //   momentsList[pos2] = temp;
+      let temp = momentsList[pos1];
+      momentsList[pos1] = momentsList[pos2];
+      momentsList[pos2] = temp;
 
-    //   let temp2 = usernameList[pos1];
-    //   usernameList[pos1] = usernameList[pos2];
-    //   usernameList[pos2] = temp2;
+      let temp2 = usernameList[pos1];
+      usernameList[pos1] = usernameList[pos2];
+      usernameList[pos2] = temp2;
 
-    //   let temp3 = postidList[pos1];
-    //   postidList[pos1] = postidList[pos2];
-    //   postidList[pos2] = temp3;
+      let temp3 = postidList[pos1];
+      postidList[pos1] = postidList[pos2];
+      postidList[pos2] = temp3;
 
-    //   let temp4 = numofLike[pos1];
-    //   numofLike[pos1] = numofLike[pos2];
-    //   numofLike[pos2] = temp4;
+      let temp4 = numofLike[pos1];
+      numofLike[pos1] = numofLike[pos2];
+      numofLike[pos2] = temp4;
 
-    //   let temp5 = logoList[pos1];
-    //   logoList[pos1] = logoList[pos2];
-    //   logoList[pos2] = temp5;
+      let temp5 = logoList[pos1];
+      logoList[pos1] = logoList[pos2];
+      logoList[pos2] = temp5;
 
-    //   let temp6 = commentList[pos1];
-    //   commentList[pos1] = commentList[pos2];
-    //   commentList[pos2] = temp6;
+      let temp6 = commentList[pos1];
+      commentList[pos1] = commentList[pos2];
+      commentList[pos2] = temp6;
 
-    //   let temp7 = postDateList[pos1];
-    //   postDateList[pos1] = postDateList[pos2];
-    //   postDateList[pos2] = temp7;
+      let temp7 = postDateList[pos1];
+      postDateList[pos1] = postDateList[pos2];
+      postDateList[pos2] = temp7;
 
-    //   let temp8 = hashtagList[pos1];
-    //   hashtagList[pos1] = hashtagList[pos2];
-    //   hashtagList[pos2] = temp8;
+      let temp8 = hashtagList[pos1];
+      hashtagList[pos1] = hashtagList[pos2];
+      hashtagList[pos2] = temp8;
 
-    //   let temp9 = idList[pos1];
-    //   idList[pos1] = idList[pos2];
-    //   idList[pos2] = temp9;
+      let temp9 = idList[pos1];
+      idList[pos1] = idList[pos2];
+      idList[pos2] = temp9;
 
-    //   let temp10 = filesList[pos1];
-    //   filesList[pos1] = filesList[pos2];
-    //   filesList[pos2] = temp10;
-    // }
+      let temp10 = filesList[pos1];
+      filesList[pos1] = filesList[pos2];
+      filesList[pos2] = temp10;
+    }
 
     return res.json({
       idList: idList,

@@ -49,54 +49,51 @@ class Body extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      axios.get("/api/getRoute/getHashtag").then((res) => {
-        if (res.data.success) {
-          this.setState({ topTrendList: res.data.hashtagList });
-        }
-      });
+    axios.get("/api/getRoute/getHashtag").then((res) => {
+      if (res.data.success) {
+        this.setState({ topTrendList: res.data.hashtagList });
+      }
+    });
 
-      axios
-        .get("/api/loginRoute/session")
-        .then((res) => {
-          this.setState({
-            userId: res.data.userId,
-            logoNumber: res.data.logoNumber,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+    axios
+      .get("/api/loginRoute/session")
+      .then((res) => {
+        this.setState({
+          userId: res.data.userId,
+          logoNumber: res.data.logoNumber,
         });
-      axios
-        .get("/api/getRoute/getMoment")
-        .then((res) => {
-          this.setState({
-            loadingFeedback:
-              res.data.allMoments.length > 3
-                ? "Loading Posts..."
-                : "No More New Posts, Come Back Later :)",
-            posts:
-              res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-            idList: res.data.idList,
-            moments: res.data.allMoments,
-            usernameList: res.data.allUsername,
-            postidList: res.data.allPostid,
-            likeStatus: Array(res.data.momentLength).fill(false),
-            numofLike: res.data.numofLike,
-            message: Array(res.data.momentLength).fill(""),
-            userLogo: res.data.logoList,
-            commentList: res.data.commentList,
-            postDateList: res.data.postDateList,
-            hashtagList: res.data.hashtagList,
-            loadStatus: true,
-            filesList: res.data.filesList,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios
+      .get("/api/getRoute/getMoment")
+      .then((res) => {
+        this.setState({
+          loadingFeedback:
+            res.data.allMoments.length > 3
+              ? "Loading Posts..."
+              : "No More New Posts, Come Back Later :)",
+          posts:
+            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+          idList: res.data.idList,
+          moments: res.data.allMoments,
+          usernameList: res.data.allUsername,
+          postidList: res.data.allPostid,
+          likeStatus: Array(res.data.momentLength).fill(false),
+          numofLike: res.data.numofLike,
+          message: Array(res.data.momentLength).fill(""),
+          userLogo: res.data.logoList,
+          commentList: res.data.commentList,
+          postDateList: res.data.postDateList,
+          hashtagList: res.data.hashtagList,
+          loadStatus: true,
+          filesList: res.data.filesList,
         });
-      this.componentDidMount();
-    }, 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   giveComment = (comment) => {
@@ -220,37 +217,35 @@ class Body extends Component {
   };
 
   addNewPost = (newPost) => {
-    setTimeout(() => {
-      let newMoments = [newPost.postmessage, ...this.state.moments];
-      let newPostidList = [newPost.postId, ...this.state.postidList];
-      let newUsernameList = [newPost.username, ...this.state.usernameList];
-      let newLikeStatus = [false, ...this.state.likeStatus];
-      let newNumofLike = [0, ...this.state.numofLike];
-      let newMessage = ["", ...this.state.message];
-      let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
-      let newCommentlist = [[], ...this.state.commentList];
-      let newPostDateList = [newPost.postDate, ...this.state.postDateList];
-      let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
-      let newIDList = [newPost.userID, ...this.state.idList];
-      let newFilesList = [newPost.file, ...this.state.filesList];
-      console.log("newPost.files: ", newPost.file);
-      console.log("newFilesList: ", newFilesList);
-      this.setState({
-        idList: newIDList,
-        moments: newMoments,
-        postidList: newPostidList,
-        usernameList: newUsernameList,
-        likeStatus: newLikeStatus,
-        numofLike: newNumofLike,
-        Message: newMessage,
-        userLogo: newLogoList,
-        commentList: newCommentlist,
-        postDateList: newPostDateList,
-        hashtagList: newHashtagList,
-        posts: this.state.posts + 1,
-        filesList: newFilesList,
-      });
-    }, 0);
+    let newMoments = [newPost.postmessage, ...this.state.moments];
+    let newPostidList = [newPost.postId, ...this.state.postidList];
+    let newUsernameList = [newPost.username, ...this.state.usernameList];
+    let newLikeStatus = [false, ...this.state.likeStatus];
+    let newNumofLike = [0, ...this.state.numofLike];
+    let newMessage = ["", ...this.state.message];
+    let newLogoList = [newPost.logoNumber, ...this.state.userLogo];
+    let newCommentlist = [[], ...this.state.commentList];
+    let newPostDateList = [newPost.postDate, ...this.state.postDateList];
+    let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
+    let newIDList = [newPost.userID, ...this.state.idList];
+    let newFilesList = [newPost.file, ...this.state.filesList];
+    console.log("newPost.files: ", newPost.file);
+    console.log("newFilesList: ", newFilesList);
+    this.setState({
+      idList: newIDList,
+      moments: newMoments,
+      postidList: newPostidList,
+      usernameList: newUsernameList,
+      likeStatus: newLikeStatus,
+      numofLike: newNumofLike,
+      Message: newMessage,
+      userLogo: newLogoList,
+      commentList: newCommentlist,
+      postDateList: newPostDateList,
+      hashtagList: newHashtagList,
+      posts: this.state.posts + 1,
+      filesList: newFilesList,
+    });
   };
 
   render() {

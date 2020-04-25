@@ -11,16 +11,7 @@ const PostSchema = new Schema({
   userLogo: String,
   postTime: String,
   hashtagList: [],
-  files: {
-    fieldname: String,
-    originalname: String,
-    encoding: String,
-    mimetype: String,
-    destination: String,
-    filename: String,
-    path: String,
-    size: Number,
-  },
+  fileLocation: String,
 });
 
 module.exports = mongoose.model("Moment", PostSchema);
