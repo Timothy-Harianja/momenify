@@ -29,6 +29,7 @@ class CreatePost extends Component {
     hashtagList: [],
     overlayState: false,
     files: null,
+    progress: null,
   };
 
   componentDidMount() {
@@ -59,22 +60,19 @@ class CreatePost extends Component {
       axios
         .post("/api/postRoute/upload", formData, {
           onUploadProgress: (progressEvent) => {
-            console.log("progressEvent: ", progressEvent);
-            console.log(
-              "progress: " +
+            this.setState({
+              message:
+                "Uploading: " +
                 Math.round((progressEvent.loaded / progressEvent.total) * 100) +
-                "%"
-            );
+                "%",
+            });
           },
         })
         .then((uploadResult) => {
           // console.log("uploadResult.data", uploadResult.data);
 
           json.fileLocation = uploadResult.data.imageLocation;
-          console.log(
-            "uploadResult.data.imageLocation: ",
-            uploadResult.data.imageLocation
-          );
+
           axios.post("/api/postRoute/postMoment", json).then((res) => {
             if (res.data.success) {
               this.setState({ message: res.data.message });
@@ -110,6 +108,7 @@ class CreatePost extends Component {
               this.state.hashtag = "";
               document.getElementById("hashtaglabel").innerHTML = "";
               this.setState({ postmessage: null });
+              this.setState({ fileName: null });
             } else {
               this.setState({ message: res.data.message });
             }
@@ -131,7 +130,7 @@ class CreatePost extends Component {
           //   console.log("input files:", e.target.files[0]);
 
           this.setState({
-            fileName: e.target.files[0].name,
+            fileName: "You have selected: " + e.target.files[0].name,
             files: e.target.files[0],
           });
           // this.setState({ files: formData });
@@ -145,16 +144,9 @@ class CreatePost extends Component {
   };
 
   render() {
-    const { fileName } = this.state;
     const { hashtag } = this.state;
-    let file = null;
-    let hashtaginputs = "";
 
-    file = fileName ? (
-      <span>You have selected: {fileName}</span>
-    ) : (
-      <span></span>
-    );
+    let hashtaginputs = "";
 
     return (
       <div className="create-post">
@@ -162,7 +154,7 @@ class CreatePost extends Component {
           <textarea
             id="message"
             type="text"
-            placeholder="You can say something here."
+            placeholder="What's on your mind?"
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
@@ -299,8 +291,9 @@ class CreatePost extends Component {
             </div>
 
             <label id="imagelabel" htmlFor="file">
-              {file}
+              {this.state.fileName}
             </label>
+            <br></br>
             <label id="hashtaglabel" htmlFor="hashtaginput">
               {hashtaginputs}
             </label>
