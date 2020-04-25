@@ -44,6 +44,7 @@ class Body extends Component {
       hashtagList: [],
       topTrendList: [],
       loadStatus: false,
+      filesList: [],
     };
   }
 
@@ -87,6 +88,7 @@ class Body extends Component {
           postDateList: res.data.postDateList,
           hashtagList: res.data.hashtagList,
           loadStatus: true,
+          filesList: res.data.filesList,
         });
       })
       .catch((err) => {
@@ -190,6 +192,7 @@ class Body extends Component {
               numofLike={this.state.numofLike[i]}
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
+              file={this.state.filesList[i]}
             />
           </div>
         );
@@ -225,6 +228,9 @@ class Body extends Component {
     let newPostDateList = [newPost.postDate, ...this.state.postDateList];
     let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
     let newIDList = [newPost.userID, ...this.state.idList];
+    let newFilesList = [newPost.file, ...this.state.filesList];
+    console.log("newPost.files: ", newPost.file);
+    console.log("newFilesList: ", newFilesList);
     this.setState({
       idList: newIDList,
       moments: newMoments,
@@ -238,6 +244,7 @@ class Body extends Component {
       postDateList: newPostDateList,
       hashtagList: newHashtagList,
       posts: this.state.posts + 1,
+      filesList: newFilesList,
     });
   };
 

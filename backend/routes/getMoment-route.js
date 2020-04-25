@@ -218,6 +218,7 @@ router.get("/getMoment", (req, res) => {
     let commentList = [];
     let postDateList = [];
     let hashtagList = [];
+    let filesList = [];
     for (let i = 0; i < moments.length; i++) {
       idList.push(moments[i].userId);
       momentsList.push(moments[i].postmessage);
@@ -227,6 +228,7 @@ router.get("/getMoment", (req, res) => {
       commentList.push(moments[i].commentList);
       postDateList.push(moments[i].postTime);
       hashtagList.push(moments[i].hashtagList);
+      filesList.push(moments[i].fileLocation);
       if (moments[i].nickname == null) {
         logoList.push("0");
       } else {
@@ -274,6 +276,10 @@ router.get("/getMoment", (req, res) => {
       let temp9 = idList[pos1];
       idList[pos1] = idList[pos2];
       idList[pos2] = temp9;
+
+      let temp10 = filesList[pos1];
+      filesList[pos1] = filesList[pos2];
+      filesList[pos2] = temp10;
     }
 
     return res.json({
@@ -287,8 +293,9 @@ router.get("/getMoment", (req, res) => {
       commentList: commentList,
       postDateList: postDateList,
       hashtagList: hashtagList,
+      filesList: filesList,
     });
-  });
+  }).sort({ postDate: -1 });
 });
 
 module.exports = router;
