@@ -56,53 +56,65 @@ class CreatePost extends Component {
 
       // console.log("upload before", this.state.files);
       // let request = { files: json, formData: formData };
-      axios.post("/api/postRoute/upload", formData).then((uploadResult) => {
-        // console.log("uploadResult.data", uploadResult.data);
-        json.fileLocation = uploadResult.data.imageLocation;
-        console.log(
-          "uploadResult.data.imageLocation: ",
-          uploadResult.data.imageLocation
-        );
-        axios.post("/api/postRoute/postMoment", json).then((res) => {
-          if (res.data.success) {
-            this.setState({ message: res.data.message });
-            //past post information to body , then pass to post container
-            //     console.log("res: ", res.data.postId);
-            if (this.state.hashtagList.length > 0) {
-              axios
-                .post("/api/postRoute/postHashtag", {
-                  hashtagList: this.state.hashtagList,
-                  currentTime: makeTime(),
-                  postID: res.data.postId,
-                })
-                .then((res) => {
-                  console.log(res);
-                });
-            }
-            //   console.log("uploadResult.data", uploadResult.data);
+      axios
+        .post("/api/postRoute/upload", formData, {
+          onUploadProgress: (progressEvent) => {
+            console.log("progressEvent: ", progressEvent);
+            console.log(
+              "progress: " +
+                Math.round((progressEvent.loaded / progressEvent.total) * 100) +
+                "%"
+            );
+          },
+        })
+        .then((uploadResult) => {
+          // console.log("uploadResult.data", uploadResult.data);
 
-            this.props.addNewPost({
-              postDate: currentTime(),
-              hashtagList: this.state.hashtagList,
-              username: this.state.username,
-              postmessage: this.state.postmessage,
-              postId: res.data.postId,
-              userID: this.state.userId,
-              logoNumber: this.state.userLogo,
-              file:
-                uploadResult.data.imageLocation == null
-                  ? null
-                  : uploadResult.data.imageLocation,
-            });
-            this.state.hashtagList = [];
-            this.state.hashtag = "";
-            document.getElementById("hashtaglabel").innerHTML = "";
-            this.setState({ postmessage: null });
-          } else {
-            this.setState({ message: res.data.message });
-          }
+          json.fileLocation = uploadResult.data.imageLocation;
+          console.log(
+            "uploadResult.data.imageLocation: ",
+            uploadResult.data.imageLocation
+          );
+          axios.post("/api/postRoute/postMoment", json).then((res) => {
+            if (res.data.success) {
+              this.setState({ message: res.data.message });
+              //past post information to body , then pass to post container
+              //     console.log("res: ", res.data.postId);
+              if (this.state.hashtagList.length > 0) {
+                axios
+                  .post("/api/postRoute/postHashtag", {
+                    hashtagList: this.state.hashtagList,
+                    currentTime: makeTime(),
+                    postID: res.data.postId,
+                  })
+                  .then((res) => {
+                    console.log(res);
+                  });
+              }
+              //   console.log("uploadResult.data", uploadResult.data);
+
+              this.props.addNewPost({
+                postDate: currentTime(),
+                hashtagList: this.state.hashtagList,
+                username: this.state.username,
+                postmessage: this.state.postmessage,
+                postId: res.data.postId,
+                userID: this.state.userId,
+                logoNumber: this.state.userLogo,
+                file:
+                  uploadResult.data.imageLocation == null
+                    ? null
+                    : uploadResult.data.imageLocation,
+              });
+              this.state.hashtagList = [];
+              this.state.hashtag = "";
+              document.getElementById("hashtaglabel").innerHTML = "";
+              this.setState({ postmessage: null });
+            } else {
+              this.setState({ message: res.data.message });
+            }
+          });
         });
-      });
     } else {
       alert("Input cannot be empty");
     }
