@@ -303,6 +303,7 @@ class CreatePost extends Component {
 
             {this.state.message != null && this.state.message <= 100 ? (
               <div style={{ width: "100%" }}>
+                Uploading:
                 <ProgressBar
                   label={
                     this.state.message == 100
