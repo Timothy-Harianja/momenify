@@ -41,6 +41,7 @@ class HashtagPage extends Component {
       hashtagList: [],
       topTrendList: [],
       loadStatus: false,
+      filesList: [],
     };
   }
 
@@ -70,6 +71,7 @@ class HashtagPage extends Component {
         hashtagList: res.data.hashtagList,
         hashtagName: res.data.hashtagName,
         loadStatus: true,
+        filesList: res.data.filesList,
       });
     });
   }
@@ -170,6 +172,7 @@ class HashtagPage extends Component {
               numofLike={this.state.numofLike[i]}
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
+              file={this.state.filesList[i]}
             />
           </div>
         );

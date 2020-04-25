@@ -40,6 +40,7 @@ class ProfilePage extends Component {
       hashtagList: [],
       topTrendList: [],
       loadStatus: false,
+      filesList: [],
     };
   }
 
@@ -76,6 +77,7 @@ class ProfilePage extends Component {
           postDateList: res.data.postDateList,
           hashtagList: res.data.hashtagList,
           loadStatus: true,
+          filesList: res.data.filesList,
         });
       })
       .catch((err) => {
@@ -179,6 +181,7 @@ class ProfilePage extends Component {
               numofLike={this.state.numofLike[i]}
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
+              file={this.state.filesList[i]}
             />
           </div>
         );

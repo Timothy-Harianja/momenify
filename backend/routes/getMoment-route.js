@@ -54,6 +54,7 @@ router.get("/profilePage", (req, res) => {
   let commentList = [];
   let postDateList = [];
   let hashtagList = [];
+  let filesList = [];
   Post.find({ userId: token }, (err, posts) => {
     if (err) {
       console.log(err);
@@ -74,6 +75,7 @@ router.get("/profilePage", (req, res) => {
         commentList: commentList,
         postDateList: postDateList,
         hashtagList: hashtagList,
+        filesList: filesList,
       });
     } else {
       for (let i = 0; i < posts.length; i++) {
@@ -86,6 +88,7 @@ router.get("/profilePage", (req, res) => {
         commentList.push(posts[i].commentList);
         postDateList.push(posts[i].postTime);
         hashtagList.push(posts[i].hashtagList);
+        filesList.push(posts[i].fileLocation);
       }
       return res.json({
         idList: idList,
@@ -98,6 +101,7 @@ router.get("/profilePage", (req, res) => {
         commentList: commentList,
         postDateList: postDateList,
         hashtagList: hashtagList,
+        filesList: filesList,
       });
     }
   }).sort({ postDate: -1 });
@@ -127,6 +131,7 @@ router.get("/hashtagPage", (req, res) => {
     let commentList = [];
     let postDateList = [];
     let hashtagList = [];
+    let filesList = [];
     if (hashtags == null || hashtags.length == 0) {
       return res.json({
         hashtagName: "#" + token.toLowerCase(),
@@ -155,6 +160,7 @@ router.get("/hashtagPage", (req, res) => {
           commentList.push(result[i].commentList);
           postDateList.push(result[i].postTime);
           hashtagList.push(result[i].hashtagList);
+          filesList.push(result[i].fileLocation);
         }
 
         return res.json({
@@ -169,6 +175,7 @@ router.get("/hashtagPage", (req, res) => {
           commentList: commentList,
           postDateList: postDateList,
           hashtagList: hashtagList,
+          filesList: filesList,
         });
       });
     }

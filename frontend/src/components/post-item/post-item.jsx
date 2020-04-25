@@ -13,7 +13,6 @@ class PostItem extends React.Component {
       commentText: null,
       postid: this.props.postid,
       position: this.props.position,
-      file: this.props.file,
     };
   }
 
