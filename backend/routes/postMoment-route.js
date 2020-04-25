@@ -41,7 +41,7 @@ const profileImgUpload = multer({
       );
     },
   }),
-  limits: { fileSize: 100000000 }, // In bytes: 2000000 bytes = 2 MB
+  limits: { fileSize: 50 * 1000000 }, // In bytes: 1000000 bytes = 1 MB
   // fileFilter: function (req, file, cb) {
   //   checkFileType(file, cb);
   // },
@@ -60,10 +60,10 @@ let post = {
 router.post("/upload", (req, res) => {
   profileImgUpload(req, res, (error) => {
     console.log("requestOkokok", req.file);
-    console.log("error", error);
+    // console.log("error", error);
     if (error) {
       console.log("errors", error);
-      return res.json({ success: false });
+      return res.json({ success: false, message: "file too large" });
     } else {
       // If File not found
       if (req.file === undefined) {
@@ -218,7 +218,7 @@ router.post("/postMoment", (req, res) => {
     req.body.hashtagList != null ? req.body.hashtagList : [];
   postMoment.userLogo = req.body.userLogo;
   // photo
-  console.log("Post moment: ", req.body.files);
+  // console.log("Post moment: ", req.body.files);
   postMoment.fileLocation = req.body.fileLocation;
 
   if (req.session.userId) {
