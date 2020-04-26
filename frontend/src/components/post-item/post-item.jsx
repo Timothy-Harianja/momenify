@@ -66,7 +66,7 @@ class PostItem extends React.Component {
       return (
         <video
           className="post-item-main-image"
-          playsinline
+          playsInline
           // src={file}
           controls="controls"
         >
