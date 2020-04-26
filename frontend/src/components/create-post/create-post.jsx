@@ -169,7 +169,7 @@ class CreatePost extends Component {
           <textarea
             id="message"
             type="text"
-            placeholder="What's on your mind? You can also upload a image or video that is less than 50MB!"
+            placeholder="What's on your mind? You can also upload a image or video."
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
