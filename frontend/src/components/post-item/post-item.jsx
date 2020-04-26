@@ -68,9 +68,11 @@ class PostItem extends React.Component {
           className="post-item-main-image"
           playsInline
           // src={file}
-          controls="controls"
+          controls
+          loop
+          preload="metadata"
         >
-          <source src={file} />
+          <source src={file + "#t=0.1"} />
           {/* <source src={file} type="video/ogg" />
           <source src={file} type="video/mov" /> */}
         </video>
