@@ -41,7 +41,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(cors());
-const halfDay = 1000 * 60 * 60 * 12;
+const oneYear = 1000 * 60 * 60 * 24 * 365;
 
 app.use(
   session({
@@ -49,7 +49,7 @@ app.use(
     saveUninitialized: false,
     secret: "quit it",
     cookie: {
-      // maxAge: halfDay,
+      maxAge: oneYear,
       sameSite: true,
     },
   })
