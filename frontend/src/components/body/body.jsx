@@ -230,6 +230,8 @@ class Body extends Component {
     let newIDList = [newPost.userID, ...this.state.idList];
     let newFilesList = [newPost.file, ...this.state.filesList];
 
+    console.log("newPost.file: ", newPost.file);
+    console.log("newFilesList: ", newFilesList);
     this.setState({
       idList: newIDList,
       moments: newMoments,

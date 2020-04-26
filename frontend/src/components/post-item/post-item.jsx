@@ -71,8 +71,9 @@ class PostItem extends React.Component {
           controls
           loop
           preload="metadata"
+          src={file + "#t=0.1"}
         >
-          <source src={file + "#t=0.1"} />
+          {/* <source src={file + "#t=0.1"} /> */}
           {/* <source src={file} type="video/ogg" />
           <source src={file} type="video/mov" /> */}
         </video>
