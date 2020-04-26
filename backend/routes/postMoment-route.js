@@ -16,16 +16,6 @@ const s3 = new aws.S3({
   Bucket: "momenify",
 });
 
-const storage = multer.diskStorage({
-  destination: "./frontend/src/components/uploadImages/",
-  filename: function (req, file, cb) {
-    cb(null, "FILE-" + Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({
-  storage: storage,
-}).single("myFiles");
-
 const profileImgUpload = multer({
   storage: multerS3({
     s3: s3,
@@ -41,7 +31,7 @@ const profileImgUpload = multer({
       );
     },
   }),
-  limits: { fileSize: 100000000 }, // In bytes: 2000000 bytes = 2 MB
+  limits: { fileSize: 50 * 1000000 }, // In bytes: 1000000 bytes = 1 MB
   // fileFilter: function (req, file, cb) {
   //   checkFileType(file, cb);
   // },
@@ -60,10 +50,10 @@ let post = {
 router.post("/upload", (req, res) => {
   profileImgUpload(req, res, (error) => {
     console.log("requestOkokok", req.file);
-    console.log("error", error);
+    // console.log("error", error);
     if (error) {
       console.log("errors", error);
-      return res.json({ success: false });
+      return res.json({ success: false, message: "file too large" });
     } else {
       // If File not found
       if (req.file === undefined) {
@@ -71,7 +61,7 @@ router.post("/upload", (req, res) => {
         return res.json({ success: false });
       } else {
         // If Success
-        console.log("req.file: ", req.file);
+        // console.log("req.file: ", req.file);
         const imageLocation = req.file.location;
         // Save the file name into database into profile model
         return res.json({
@@ -218,7 +208,7 @@ router.post("/postMoment", (req, res) => {
     req.body.hashtagList != null ? req.body.hashtagList : [];
   postMoment.userLogo = req.body.userLogo;
   // photo
-  console.log("Post moment: ", req.body.files);
+  // console.log("Post moment: ", req.body.files);
   postMoment.fileLocation = req.body.fileLocation;
 
   if (req.session.userId) {

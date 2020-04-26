@@ -53,6 +53,26 @@ class PostItem extends React.Component {
     e.preventDefault();
   };
 
+  CheckMediaType = (file) => {
+    let imageType = ["png", "jpg", "gif"];
+    let videoType = ["mp4", "mov", "ogg"];
+    // console.log("file.length", file.length);
+    const fileType = file.substring(file.length - 3, file.length).toLowerCase();
+    // console.log(fileType);
+    if (imageType.includes(fileType)) {
+      return <img className="post-item-main-image" src={file} alt="" />;
+    }
+    if (videoType.includes(fileType)) {
+      return (
+        <video className="post-item-main-image" src={file} controls="controls">
+          {/* <source src={file} type="video/mp4" />
+          <source src={file} type="video/ogg" />
+          <source src={file} type="video/mov" /> */}
+        </video>
+      );
+    }
+    return "unkown";
+  };
   render() {
     //console.log("filename: ", this.props.file);
     return (
@@ -91,7 +111,7 @@ class PostItem extends React.Component {
         </div>
 
         {this.props.file != null ? (
-          <img className="post-item-main-image" src={this.props.file} alt="" />
+          this.CheckMediaType(this.props.file)
         ) : (
           <span></span>
         )}
