@@ -65,6 +65,9 @@ class PostItem extends React.Component {
     if (videoType.includes(fileType)) {
       return (
         <video
+          autoplay
+          loop
+          muted
           playsinline
           className="post-item-main-image"
           src={file}
