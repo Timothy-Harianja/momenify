@@ -64,9 +64,16 @@ class PostItem extends React.Component {
     }
     if (videoType.includes(fileType)) {
       return (
-        <video className="post-item-main-image" src={file} controls="controls">
-          {/* <source src={file} type="video/mp4" />
-          <source src={file} type="video/ogg" />
+        <video
+          className="post-item-main-image"
+          playsInline
+          // src={file}
+          controls
+          loop
+          preload="metadata"
+        >
+          <source src={file + "#t=0.1"} />
+          {/* <source src={file} type="video/ogg" />
           <source src={file} type="video/mov" /> */}
         </video>
       );
