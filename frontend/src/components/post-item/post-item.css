@@ -54,12 +54,12 @@
 
 .post-item-header-date {
   position: relative;
-  float: right; 
+  float: right;
   font-size: 1em;
   color: grey;
   position: relative;
   top: 18px;
-   /* Note, try "margin-right" or "right" if you want to add more space.  */
+  /* Note, try "margin-right" or "right" if you want to add more space.  */
 }
 
 .post-item-main-image {
@@ -111,7 +111,7 @@
   height: 48px;
   position: relative;
   float: right;
-  //background-color: rgba(227, 235, 253) !important;
+  /* background-color: rgba(227, 235, 253) !important; */
   background-color: white !important;
   color: black !important;
   font-weight: bold !important;
@@ -128,7 +128,7 @@
   height: 48px;
   position: relative;
   float: left;
-  //background-color: rgba(227, 235, 253) !important;
+  /* background-color: rgba(227, 235, 253) !important; */
   background-color: white !important;
   color: black !important;
   font-weight: bold !important;
