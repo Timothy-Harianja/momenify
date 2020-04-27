@@ -13,6 +13,7 @@ class PostItem extends React.Component {
       commentText: null,
       postid: this.props.postid,
       position: this.props.position,
+      userid: this.props.id,
     };
   }
 
@@ -102,7 +103,7 @@ class PostItem extends React.Component {
           )}
 
           <span className="post-item-header-dropdown">
-            <PostDropdown></PostDropdown>
+            <PostDropdown userid={this.state.userid}></PostDropdown>
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
