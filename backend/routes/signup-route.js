@@ -6,8 +6,8 @@ var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "themomenify@gmail.com",
-    pass: "cse312@project"
-  }
+    pass: "cse312@project",
+  },
 });
 
 const router = express.Router();
@@ -15,7 +15,7 @@ const router = express.Router();
 async function hashPassword(password) {
   const saltRounds = 10;
   const hashedPassword = await new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, function(err, hash) {
+    bcrypt.hash(password, saltRounds, function (err, hash) {
       if (err) reject(err);
       resolve(hash);
     });
@@ -27,7 +27,7 @@ async function hashPassword(password) {
 router.post("/putUser", (req, res) => {
   console.log("sigu up function called");
   var user = new User();
-  User.countDocuments({}, function(err, c) {
+  User.countDocuments({}, function (err, c) {
     note = {
       from: "themomenify@gmail.com",
       to: "themomenify@gmail.com",
@@ -37,7 +37,7 @@ router.post("/putUser", (req, res) => {
         " has signed up our platform" +
         "\n" +
         "Total users so far: " +
-        c
+        c,
     };
     transporter.sendMail(note);
   });
@@ -49,10 +49,10 @@ router.post("/putUser", (req, res) => {
   user.activeTokenExpire = req.body.activeTokenExpire;
   user.logo = Math.floor(Math.random() * 9 + 1);
 
-  user.password = hashPassword(req.body.password).then(result => {
+  user.password = hashPassword(req.body.password).then((result) => {
     user.password = result;
 
-    User.findOne({ email: req.body.email }, function(err, result) {
+    User.findOne({ email: req.body.email }, function (err, result) {
       if (err) {
         console.log(err);
         return err;
@@ -60,15 +60,15 @@ router.post("/putUser", (req, res) => {
         console.log("result", result);
         return res.json({
           success: false,
-          message: "User alreayd register"
+          message: "User alreayd register",
         });
       } else {
-        user.save(err => {
+        user.save((err) => {
           if (err) {
             console.log(err);
             return res.json({
               success: false,
-              message: "User is not register"
+              message: "User is not register",
             });
           } else {
             //console.log("req:", req.headers);
@@ -81,7 +81,7 @@ router.post("/putUser", (req, res) => {
                 "Thank you for signing up Momenify, below is your link for activation: \n" +
                 tokenLink +
                 "\n" +
-                "\n Momenify, Inc."
+                "\n Momenify, Inc.",
             };
             transporter.sendMail(mail);
             return res.json({ success: true, message: "User Register" });

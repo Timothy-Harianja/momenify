@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./accountpage.css";
 import axios from "axios";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 class AccountPage extends Component {
   state = {
@@ -11,35 +12,48 @@ class AccountPage extends Component {
     oldPassword: null,
     newPassword: null,
     confirmPassword: null,
-    message: null
+    message: null,
+    userLogo: null,
+    currentLogo: null,
+    progress: null,
+    updateMessage: null,
   };
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
+    axios.get("/api/loginRoute/session").then((res) => {
       console.log(res.data);
       this.setState({
         userId: res.data.userId,
         userEmail: res.data.email,
-        userNickname: res.data.username
+        userNickname: res.data.username,
+        currentLogo: res.data.logoNumber,
       });
     });
   }
 
-  tryReset = obj => {
+  updateInfo = (obj) => {
+    console.log("call updateinfo");
+
+    axios.post("/api/config/updateInfo", obj).then((res) => {
+      this.setState({ updateMessage: res.data.message });
+    });
+  };
+
+  tryReset = (obj) => {
     var confirmNewP = this.state.newPassword === this.state.confirmPassword;
     console.log("confirmnewp", confirmNewP);
     if (confirmNewP) {
       axios
         .post("/api/resetPasswordRoute/resetPassword", obj)
-        .then(res => {
+        .then((res) => {
           if (res.data.success) {
             this.setState({
-              message: "password has resetted"
+              message: "password has resetted",
             });
           } else {
             this.setState({ message: " old password is incorrect" });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("error of catch:", err);
         });
     } else {
@@ -47,8 +61,43 @@ class AccountPage extends Component {
     }
   };
 
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
+  };
+
+  onChange = (e) => {
+    if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
+      this.setState({
+        userLogo: e.target.files[0],
+      });
+    } else {
+      alert("Please select a file that is less than 50MB!");
+    }
+
+    setTimeout(() => {
+      console.log("new userlogo: ", this.state.userLogo);
+      const formData = new FormData();
+      formData.append("myFiles", this.state.userLogo);
+      axios
+        .post("/api/config/uploadLogo", formData, {
+          onUploadProgress: (progressEvent) => {
+            this.setState({
+              progress: Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              ),
+            });
+          },
+        })
+        .then((res) => {
+          console.log("res from upload logo: ", res);
+          if (res.data.success) {
+            this.setState({
+              progress: null,
+              currentLogo: res.data.imageLocation,
+            });
+          }
+        });
+    }, 500);
   };
 
   render() {
@@ -80,9 +129,55 @@ class AccountPage extends Component {
             <input
               className="form-control"
               value={this.state.userNickname}
-              disabled
+              onChange={(e) => this.setState({ userNickname: e.target.value })}
             />
           </div>
+          <p>Current Logo</p>
+          <div className="form-group">
+            <img className="side-profile" src={this.state.currentLogo} />
+            <br></br>
+            <div class="file btn btn-lg btn-light" id="uploadbutton">
+              Change Logo
+              <input
+                id="file"
+                type="file"
+                accept="image/*"
+                name="selectedFile"
+                onChange={(event) => this.onChange(event)}
+              />
+            </div>
+          </div>
+          {this.state.progress != null && this.state.progress <= 100 ? (
+            <div style={{ width: "100%" }}>
+              Uploading:
+              <ProgressBar
+                label={
+                  this.state.progress == 100
+                    ? "Almost done"
+                    : this.state.progress + "%"
+                }
+                animated
+                now={this.state.progress}
+              />
+            </div>
+          ) : (
+            <span></span>
+          )}
+          <br></br>
+
+          <Button
+            className="btn btn-info btn-block"
+            type="submit"
+            onClick={() =>
+              this.updateInfo({
+                userNickname: this.state.userNickname,
+                currentLogo: this.state.currentLogo,
+              })
+            }
+          >
+            Update
+          </Button>
+          {this.state.updateMessage}
         </form>
         <br></br>
         <form onSubmit={this.submitHandler}>
@@ -92,7 +187,7 @@ class AccountPage extends Component {
             <FormLabel>Current Password </FormLabel>
             <FormControl
               //   value={password}
-              onChange={e => this.setState({ oldPassword: e.target.value })}
+              onChange={(e) => this.setState({ oldPassword: e.target.value })}
               type="password"
             />
           </FormGroup>
@@ -100,7 +195,7 @@ class AccountPage extends Component {
             <FormLabel>New Password </FormLabel>
             <FormControl
               //   value={password}
-              onChange={e => this.setState({ newPassword: e.target.value })}
+              onChange={(e) => this.setState({ newPassword: e.target.value })}
               type="password"
             />
           </FormGroup>
@@ -108,21 +203,23 @@ class AccountPage extends Component {
             <FormLabel>Confirm New Password </FormLabel>
             <FormControl
               //   value={password}
-              onChange={e => this.setState({ confirmPassword: e.target.value })}
+              onChange={(e) =>
+                this.setState({ confirmPassword: e.target.value })
+              }
               type="password"
             />
           </FormGroup>
           <Button
-            className="btn btn-primary btn-block"
+            className="btn btn-info btn-block"
             type="submit"
             onClick={() =>
               this.tryReset({
                 oldPassword: this.state.oldPassword,
-                newPassword: this.state.newPassword
+                newPassword: this.state.newPassword,
               })
             }
           >
-            Submit
+            Change Password
           </Button>
           {this.state.message == "password has resetted" ? (
             <div id="reset-password-message" style={{ color: "green" }}>

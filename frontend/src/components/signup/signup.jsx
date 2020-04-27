@@ -32,14 +32,14 @@ class Signup extends Component {
     activation: false,
     activeToken: null,
     activeTokenExpire: null,
-    lastLogin: null
+    lastLogin: null,
   };
 
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
   };
 
-  putDataToUsers = json => {
+  putDataToUsers = (json) => {
     var checkAll = true;
     if (this.state.nickname == null || this.state.nickname.trim() == "") {
       checkAll = false;
@@ -69,7 +69,7 @@ class Signup extends Component {
       console.log("this.props:", this.props);
       axios
         .post("/api/signupRoute/putUser", json)
-        .then(res => {
+        .then((res) => {
           console.log("res: ", res);
           console.log("res data: ", res.data);
 
@@ -78,11 +78,11 @@ class Signup extends Component {
             this.props.history.push("/confirmation");
           } else {
             this.setState({
-              message: "This email has already registered"
+              message: "This email has already registered",
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     } else {
@@ -102,7 +102,7 @@ class Signup extends Component {
               type="text"
               className="form-control"
               placeholder="First name"
-              onChange={e => this.setState({ nickname: e.target.value })}
+              onChange={(e) => this.setState({ nickname: e.target.value })}
             />
           </div>
 
@@ -112,7 +112,7 @@ class Signup extends Component {
               type="email"
               className="form-control"
               placeholder="Enter email"
-              onChange={e => this.setState({ email: e.target.value })}
+              onChange={(e) => this.setState({ email: e.target.value })}
             />
           </div>
 
@@ -122,7 +122,7 @@ class Signup extends Component {
               type="password"
               className="form-control"
               placeholder="Password"
-              onChange={e => this.setState({ password: e.target.value })}
+              onChange={(e) => this.setState({ password: e.target.value })}
             />
           </div>
           <div className="form-group">
@@ -131,7 +131,9 @@ class Signup extends Component {
               type="password"
               className="form-control"
               placeholder="Re-enter Password"
-              onChange={e => this.setState({ ReEnterPassword: e.target.value })}
+              onChange={(e) =>
+                this.setState({ ReEnterPassword: e.target.value })
+              }
             />
           </div>
 
@@ -146,7 +148,7 @@ class Signup extends Component {
                 activation: this.state.activation,
                 lastLogin: makeTime(),
                 activeToken: makeToken(30),
-                activeTokenExpire: new Date().getTime() + 24 * 60 * 60 * 1000
+                activeTokenExpire: new Date().getTime() + 24 * 60 * 60 * 1000,
               });
             }}
           >

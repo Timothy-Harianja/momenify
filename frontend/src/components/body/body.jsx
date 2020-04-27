@@ -4,8 +4,6 @@ import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add th
 import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
 import TrendContainer from "../posts-container/trend-container";
-import kun from "./kun.png";
-import anonymous from "../posts-container/anonymous.png";
 import CreatePost from "../create-post/create-post";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
@@ -45,7 +43,6 @@ class Body extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
-
       visitedList: [],
     };
   }
@@ -182,11 +179,10 @@ class Body extends Component {
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
-              imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
               profileUrl={
                 this.state.usernameList[i] == undefined
-                  ? anonymous
-                  : this.getLogo(this.state.userLogo[i])
+                  ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                  : this.state.userLogo[i]
               }
               postid={this.state.postidList[i]}
               position={i}
@@ -264,8 +260,8 @@ class Body extends Component {
                   <img
                     src={
                       this.state.userId == null
-                        ? anonymous
-                        : this.getLogo(this.state.logoNumber)
+                        ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                        : this.state.logoNumber
                     }
                     alt="kun"
                     id="side-profile"
