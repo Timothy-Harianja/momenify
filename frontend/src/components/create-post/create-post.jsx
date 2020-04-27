@@ -112,6 +112,8 @@ class CreatePost extends Component {
                 this.state.hashtag = "";
                 document.getElementById("hashtaglabel").innerHTML = "";
                 document.getElementById("post").removeAttribute("disabled");
+                document.getElementById("file").removeAttribute("disabled");
+                document.getElementById("tag").removeAttribute("disabled");
                 this.setState({
                   postmessage: null,
                   fileName: null,
@@ -290,6 +292,10 @@ class CreatePost extends Component {
                   document
                     .getElementById("post")
                     .setAttribute("disabled", true);
+                  document
+                    .getElementById("file")
+                    .setAttribute("disabled", true);
+                  document.getElementById("tag").setAttribute("disabled", true);
                   this.putMoment({
                     postmessage: this.state.postmessage,
                     userId: this.state.userId,
