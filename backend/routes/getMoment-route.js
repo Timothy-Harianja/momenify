@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
 function makeTime() {
@@ -205,104 +206,77 @@ router.get("/getHashtag", (req, res) => {
   }).sort("count");
 });
 
-router.get("/getMoment", (req, res) => {
-  let day = 1000 * 60 * 60 * 24 * 7;
+router.post("/getMoment", (req, res) => {
+  let days = 1000 * 60 * 60 * 24 * 7;
+  let visitedPost = req.body.visitedList;
 
-  Post.find({ postDate: { $gte: makeTime() - day } }, function (err, moments) {
-    if (err) {
-      console.log(err);
+  Post.aggregate(
+    [
+      {
+        $match: {
+          _id: {
+            $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
+          },
+          postDate: {
+            $gte: makeTime() - days,
+          },
+        },
+      },
+      { $sample: { size: 5 } },
+    ],
+    function (err, moments) {
+      if (err) {
+        console.log(err);
+        return res.json({
+          success: false,
+          message: "error posting the hashtag",
+        });
+      }
+      let idList = [];
+      let momentsList = [];
+      let usernameList = [];
+      let postidList = [];
+      let numofLike = [];
+      let logoList = [];
+      let commentList = [];
+      let postDateList = [];
+      let hashtagList = [];
+      let filesList = [];
+      let postTimeList = [];
+      for (let i = 0; i < moments.length; i++) {
+        idList.push(moments[i].userId);
+        momentsList.push(moments[i].postmessage);
+        usernameList.push(moments[i].nickname);
+        postidList.push(moments[i]._id);
+        numofLike.push(moments[i].likeList.length);
+        commentList.push(moments[i].commentList);
+        postDateList.push(moments[i].postTime);
+        hashtagList.push(moments[i].hashtagList);
+        filesList.push(moments[i].fileLocation);
+        postTimeList.push(moments[i].postDate);
+        if (moments[i].nickname == null) {
+          logoList.push("0");
+        } else {
+          logoList.push(moments[i].userLogo);
+        }
+      }
+
       return res.json({
-        success: false,
-        message: "error posting the hashtag",
+        idList: idList,
+        allMoments: momentsList,
+        allUsername: usernameList,
+        allPostid: postidList,
+        numofLike: numofLike,
+        momentLength: moments.length,
+        logoList: logoList,
+        commentList: commentList,
+        postDateList: postDateList,
+        hashtagList: hashtagList,
+        filesList: filesList,
+        postTimeList: postTimeList,
       });
     }
-    let idList = [];
-    let momentsList = [];
-    let usernameList = [];
-    let postidList = [];
-    let numofLike = [];
-    let logoList = [];
-    let commentList = [];
-    let postDateList = [];
-    let hashtagList = [];
-    let filesList = [];
-    for (let i = 0; i < moments.length; i++) {
-      idList.push(moments[i].userId);
-      momentsList.push(moments[i].postmessage);
-      usernameList.push(moments[i].nickname);
-      postidList.push(moments[i]._id);
-      numofLike.push(moments[i].likeList.length);
-      commentList.push(moments[i].commentList);
-      postDateList.push(moments[i].postTime);
-      hashtagList.push(moments[i].hashtagList);
-      filesList.push(moments[i].fileLocation);
-      if (moments[i].nickname == null) {
-        logoList.push("0");
-      } else {
-        logoList.push(moments[i].userLogo);
-      }
-    }
-
-    // random the moment order
-    for (let j = 0; j < moments.length; j++) {
-      let pos1 = getRandomInt(momentsList.length);
-      let pos2 = getRandomInt(momentsList.length);
-
-      let temp = momentsList[pos1];
-      momentsList[pos1] = momentsList[pos2];
-      momentsList[pos2] = temp;
-
-      let temp2 = usernameList[pos1];
-      usernameList[pos1] = usernameList[pos2];
-      usernameList[pos2] = temp2;
-
-      let temp3 = postidList[pos1];
-      postidList[pos1] = postidList[pos2];
-      postidList[pos2] = temp3;
-
-      let temp4 = numofLike[pos1];
-      numofLike[pos1] = numofLike[pos2];
-      numofLike[pos2] = temp4;
-
-      let temp5 = logoList[pos1];
-      logoList[pos1] = logoList[pos2];
-      logoList[pos2] = temp5;
-
-      let temp6 = commentList[pos1];
-      commentList[pos1] = commentList[pos2];
-      commentList[pos2] = temp6;
-
-      let temp7 = postDateList[pos1];
-      postDateList[pos1] = postDateList[pos2];
-      postDateList[pos2] = temp7;
-
-      let temp8 = hashtagList[pos1];
-      hashtagList[pos1] = hashtagList[pos2];
-      hashtagList[pos2] = temp8;
-
-      let temp9 = idList[pos1];
-      idList[pos1] = idList[pos2];
-      idList[pos2] = temp9;
-
-      let temp10 = filesList[pos1];
-      filesList[pos1] = filesList[pos2];
-      filesList[pos2] = temp10;
-    }
-
-    return res.json({
-      idList: idList,
-      allMoments: momentsList,
-      allUsername: usernameList,
-      allPostid: postidList,
-      numofLike: numofLike,
-      momentLength: moments.length,
-      logoList: logoList,
-      commentList: commentList,
-      postDateList: postDateList,
-      hashtagList: hashtagList,
-      filesList: filesList,
-    });
-  }).sort({ postDate: -1 });
+  );
 });
 
 module.exports = router;
