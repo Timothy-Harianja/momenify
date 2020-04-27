@@ -2,61 +2,109 @@ import React, { Component } from "react";
 import "./career.css";
 
 class Career extends Component {
+  state ={
+    files: null,
+    resume: ""
+
+  }
+  onChange = (e) => {
+    switch (e.target.name) {
+      case "selectedFile":
+        if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
+          this.setState({
+            resume: "You have selected: " + e.target.files[0].name,
+            files: e.target.files[0],
+          });
+        } else {
+          alert("Please select a file that is less than 50MB!");
+        }
+        break;
+      default:
+        this.setState({ [e.target.name]: e.target.value });
+    }
+  };
+
+  onChangeResume = (e) => {
+    switch (e.target.name) {
+      case "selectedFile":
+        if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
+          this.setState({
+            resume: "You have selected: " + e.target.files[0].name,
+            files: e.target.files[0],
+          });
+        } else {
+          alert("Please select a file that is less than 50MB!");
+        }
+        break;
+      default:
+        this.setState({ [e.target.name]: e.target.value });
+    }
+  };
+
+
+
   render() {
     return (
       <div className="career">
-        <form id="careerform" onSubmit={this.submitHandler}>
-        <h1 id="careerheader">Careers</h1>
-      <br></br>
-        <h2 id="h5">Add Resume*</h2>
-        <div class = "file btn btn-lg btn-light" id="resume">
-              Select
-          <input type="file" name="file" id="uploadresume" />
-        </div>
-       <br></br>
-       <br></br>
-        <h2 id="h5">Add Cover Letter*</h2>
-        <div class = "file btn btn-lg btn-light" id="cover">
-              Select
-          <input type="file" name="file" id="uploadcover" />
-        </div>
-        <br></br>
-        <br></br>
-        <h2 id="h5">Personal Information</h2>
-        <div id="personalinfo">
-        <form role ="form">
-        <div class="row">
-        <div className="form-group col-sm-3 col-md-4 col-xs-5 col-lg-2">
-        <label>First Name*:  </label>
-        <input type="text" className="form-control input-normal" />
-        </div>
-        </div>
-        <div class="row">
-        <div className="form-group col-sm-3 col-md-4 col-xs-5 col-lg-2">
-        <label> Last Name*:  </label>
-        <input type="text" className="form-control input-normal" />
-        </div>
-        </div>
-        <div class="row">
-        <div className="form-group col-sm-3 col-md-4 col-xs-5 col-lg-2">
-        <label> Phone: </label>
-        <input  type="text" className="form-control input-normal"/>
-        </div>
-        </div>
-        <div class="row">
-        <div className="form-group col-sm-3 col-md-4 col-xs-5 col-lg-2">
-        <label>Email*: </label>
-        <input type="text" className="form-control input-normal"/>
-        </div>
-        </div>
-        <br></br> 
-       </form>
-       <div class="row">
-        <button type="submit"  className="btn btn-light" id="submit">Submit</button>
-        </div>
-        </div>
-      </form>
+      <div class="container">
+      <div class="row">
+      <div class="col">
+
       </div>
+  
+    <div class="col-7">
+    <h1>Careers</h1>
+    <br></br>
+
+    <div class="form-group row">
+    <label  class="col-sm-2 col-form-label">Full name*</label>
+    <div class="col-sm-10">
+    <input type="text" class="form-control" />
+    </div>
+    </div>
+    <hr></hr>
+    <div class="form-group row">
+    <label  class="col-sm-2 col-form-label">Phone</label>
+    <div class="col-sm-10">
+    <input type="text" class="form-control" />
+    </div>
+    </div>
+<hr></hr>
+    <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Email*</label>
+    <div class="col-sm-10">
+    <input type="text" class="form-control" />
+    </div>
+    </div>
+<hr></hr>
+  
+    <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Resume*</label>
+    <div class="col-sm-10">
+    <div class = "file btn btn-lg btn-light" id="resume">
+    Choose file <input id="file" type="file" name="selectedFile" id="uploadresume" accept="application/*" onChange={(event) => this.onChange(event)}/>
+    
+    </div>
+    <div  htmlFor="file">{this.state.resume} </div>
+    </div>
+    </div>
+<hr></hr>
+  
+ 
+  </div>
+ 
+  
+  <div class="col">
+
+  </div>
+  </div>
+  <footer>
+  <button id="careerssubmit" type="submit"  className="btn btn-primary">Send Application</button>
+  </footer>
+  
+  </div>
+  
+  </div>
     );
   }
 }

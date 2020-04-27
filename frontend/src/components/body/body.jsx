@@ -45,6 +45,8 @@ class Body extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
+
+      visitedList: [],
     };
   }
 
@@ -54,7 +56,6 @@ class Body extends Component {
         this.setState({ topTrendList: res.data.hashtagList });
       }
     });
-
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
@@ -66,35 +67,39 @@ class Body extends Component {
       .catch((err) => {
         console.log(err);
       });
+
+    this.queryPost();
+  }
+  queryPost = () => {
     axios
-      .get("/api/getRoute/getMoment")
+      .post("/api/getRoute/getMoment", { visitedList: this.state.postidList })
       .then((res) => {
+        for (let i = 0; i < res.data.allMoments.length; i++) {
+          this.state.idList.push(res.data.idList[i]);
+          this.state.moments.push(res.data.allMoments[i]);
+          this.state.usernameList.push(res.data.allUsername[i]);
+          this.state.postidList.push(res.data.allPostid[i]);
+          this.state.likeStatus.push(false);
+          this.state.numofLike.push(res.data.numofLike[i]);
+          this.state.userLogo.push(res.data.logoList[i]);
+          this.state.commentList.push(res.data.commentList[i]);
+          this.state.postDateList.push(res.data.postDateList[i]);
+          this.state.hashtagList.push(res.data.hashtagList[i]);
+          this.state.filesList.push(res.data.filesList[i]);
+          this.state.posts++;
+        }
         this.setState({
-          loadingFeedback:
-            res.data.allMoments.length > 3
-              ? "Loading Posts..."
-              : "No More New Posts, Come Back Later :)",
-          posts:
-            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-          idList: res.data.idList,
-          moments: res.data.allMoments,
-          usernameList: res.data.allUsername,
-          postidList: res.data.allPostid,
-          likeStatus: Array(res.data.momentLength).fill(false),
-          numofLike: res.data.numofLike,
-          message: Array(res.data.momentLength).fill(""),
-          userLogo: res.data.logoList,
-          commentList: res.data.commentList,
-          postDateList: res.data.postDateList,
-          hashtagList: res.data.hashtagList,
           loadStatus: true,
-          filesList: res.data.filesList,
+          loadingFeedback:
+            res.data.allMoments.length == 0
+              ? "No More New Posts, Come Back Later :)"
+              : "Loading More...",
         });
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
@@ -201,21 +206,6 @@ class Body extends Component {
     return posts;
   };
 
-  loadMorePosts = () => {
-    let leftPost = this.state.moments.length - this.state.posts;
-    let newPost = 0;
-    if (leftPost > 0) {
-      newPost = leftPost >= 3 ? 3 : leftPost;
-      setTimeout(() => {
-        this.setState({ posts: this.state.posts + newPost });
-      }, 200);
-    } else {
-      this.setState({
-        loadingFeedback: "No More Posts, Come Back Later :)",
-      });
-    }
-  };
-
   addNewPost = (newPost) => {
     let newMoments = [newPost.postmessage, ...this.state.moments];
     let newPostidList = [newPost.postId, ...this.state.postidList];
@@ -261,7 +251,7 @@ class Body extends Component {
             <PostsContainer
               postContent={this.state.postContent}
               resetPostContent={() => this.resetNewPost()}
-              loadMorePosts={() => this.loadMorePosts()}
+              loadMorePosts={() => this.queryPost()}
               showPosts={() => this.showPosts()}
               giveLike={(post) => this.giveLike(post)}
               state={this.state}
