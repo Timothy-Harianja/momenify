@@ -60,9 +60,11 @@ class Header extends Component {
       <Styles>
         <Navbar expand="lg">
           <Navbar.Brand href="/">Momenify</Navbar.Brand>
-          <Form className="form-center">
+
+          <Form className="form-center mobileResponsive">
             <FormControl type="text" placeholder="Search" className="" />
           </Form>
+
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
@@ -87,6 +89,7 @@ class Header extends Component {
                       </svg>
                     </Nav.Link>
                   </Nav.Item>
+
                   <Nav.Item>
                     <Nav.Link href="/accountpage">
                       <svg
@@ -151,6 +154,10 @@ class Header extends Component {
               <Nav.Item>
                 <Nav.Link href="/term-of-use">Terms of Use</Nav.Link>
               </Nav.Item> */}
+
+              <Form className="form-center mobilePopUp">
+                <FormControl type="text" placeholder="Search" className="" />
+              </Form>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

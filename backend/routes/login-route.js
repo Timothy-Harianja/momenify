@@ -4,7 +4,14 @@ const User = require("../user");
 const bcrypt = require("bcryptjs");
 
 router.get("/session", (req, res) => {
-  res.send(req.session);
+  User.findOne({ email: req.session.email }, (err, result) => {
+    if (err) console.log(err);
+    if (result != null) {
+      req.session.username = result.nickname;
+      req.session.logoNumber = result.logo;
+    }
+    res.send(req.session);
+  });
 });
 
 router.post("/logout", (req, res) => {
@@ -33,6 +40,7 @@ router.post("/login", (req, res) => {
           req.session.username = result2.nickname;
           req.session.email = result2.email;
           req.session.logoNumber = result2.logo;
+
           // console.log("req session in login:", req.session);
 
           return res.json({

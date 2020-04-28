@@ -1,5 +1,21 @@
 .search-bar {
   margin-left: 25%;
+  /* text-align: center; */
+}
+
+@media only screen and (min-width: 600px) {
+  .mobilePopUp {
+    display: none;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .mobileResponsive {
+    display: none;
+    width: 0%;
+  }
+  .mobilePopUp {
+    display: block;
+  }
 }
 
 @media all and (max-width: 1000px) {

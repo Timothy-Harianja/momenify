@@ -7,35 +7,45 @@ class EmailLogin extends Component {
     body: null,
     message: null,
     newPassword: null,
-    confirmPassword: null
+    confirmPassword: null,
   };
-  confirm = json => {
-    var confirmNewP = this.state.newPassword == this.state.confirmPassword;
+  confirm = (json) => {
+    let confirmNewP = true;
+    if (this.state.newPassword == null || this.state.newPassword.length < 8) {
+      confirmNewP = false;
+      this.setState({
+        message: "New password must be greate than 8 characters!",
+      });
+    }
+    if (this.state.confirmPassword != this.state.newPassword) {
+      confirmNewP = false;
+      this.setState({
+        message: "Passwords do not match!",
+      });
+    }
+
     if (confirmNewP) {
       axios
         .post("/api/forgetPasswordRoute/newPassword", json)
-        .then(res => {
-          console.log("res success status: ", res.data.success);
+        .then((res) => {
           if (res.data.success) {
             this.props.history.push("/login");
             this.setState({
-              message: "confirm success!"
+              message: "confirm success!",
             });
           } else {
             this.setState({
-              message: "The link is expired!"
+              message: "The link is expired!",
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           this.setState({ message: "Error, confirmation not exists." });
         });
-    } else {
-      this.setState({ message: "New password doesn't match!" });
     }
   };
-  submitHandler = e => {
+  submitHandler = (e) => {
     e.preventDefault();
   };
   render() {
@@ -48,7 +58,7 @@ class EmailLogin extends Component {
             <FormLabel>New Password </FormLabel>
             <FormControl
               //   value={password}
-              onChange={e => this.setState({ newPassword: e.target.value })}
+              onChange={(e) => this.setState({ newPassword: e.target.value })}
               type="password"
             />
           </FormGroup>
@@ -56,7 +66,9 @@ class EmailLogin extends Component {
             <FormLabel>Confirm new Password </FormLabel>
             <FormControl
               //   value={password}
-              onChange={e => this.setState({ confirmPassword: e.target.value })}
+              onChange={(e) =>
+                this.setState({ confirmPassword: e.target.value })
+              }
               type="password"
             />
           </FormGroup>
@@ -66,7 +78,7 @@ class EmailLogin extends Component {
             onClick={() =>
               this.confirm({
                 newPassword: this.state.newPassword,
-                confirmPassword: this.state.confirmPassword
+                confirmPassword: this.state.confirmPassword,
               })
             }
           >

@@ -51,6 +51,9 @@ class CreatePost extends Component {
     formData.append("myFiles", this.state.files);
 
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
+      document.getElementById("post").setAttribute("disabled", true);
+      document.getElementById("file").setAttribute("disabled", true);
+      document.getElementById("tag").setAttribute("disabled", true);
       axios
         .post("/api/postRoute/upload", formData, {
           onUploadProgress: (progressEvent) => {
@@ -119,10 +122,6 @@ class CreatePost extends Component {
                   fileName: null,
                   files: null,
                 });
-
-                this.setState({
-                  message: "Post succeed!",
-                });
               } else {
                 this.setState({ message: res.data.message });
               }
@@ -176,22 +175,37 @@ class CreatePost extends Component {
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
-          <div class="hashtagpp" id="hashtagid">
-            <form id="hashtagform">
+      
+<div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="modal" role="dialog" onClick={()=>{
+  window.onclick = function(event) {
+  if (event.target == this.document.getElementById("modal")) {
+    this.document.getElementById("modal").style.display = "none";
+  }
+}
+}}>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" id="modalcontent">
+      <div class="modal-header">
+      <h5 class="modal-title">Enter Your Hashtag</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
+                  if (this.state.overlayState == true) {
+                this.setState({ overlayState: false });
+                document.getElementById("modal").style.display = "none";
+               
+              }
+                  
+                }}>
               <span
                 class="close"
-                onClick={() => {
-                  const closeBtn = document.querySelector(".close");
-                  closeBtn.addEventListener("click", () => {
-                    document.getElementById("hashtagid").style.display = "none";
-                    document.getElementById("overlay").style.display = "none";
-                    this.setState({ overlayState: false });
-                  });
-                }}
+                
               >
                 &times;
               </span>
-              <h4>Enter Your Hashtag</h4>
+              </button>
+              
+             
+              </div>
+              <div class="modal-body">
               <input
                 type="text"
                 id="hashtaginput"
@@ -201,8 +215,27 @@ class CreatePost extends Component {
                   this.setState({ hashtag: e.target.value });
                 }}
               />
-              No space and special character.
+              
+              <p>No space and special character.</p>
+              </div>
+              <div class="modal-footer">
               <div>
+              <button
+              id="clear"
+                  className="clear-btn btn btn-secondary"
+                  onClick={(e) => {
+                    this.state.hashtagList = [];
+                    this.state.hashtag = "";
+                    document.getElementById("hashtaglabel").innerHTML = "";
+                    document.getElementById("hashtaginput").value = "";
+                    document.getElementById("modal").style.display = "none";
+                  
+                    e.preventDefault();
+                  }}
+                >
+                  Clear
+                </button>
+                
                 <button
                   id="hashtagsubmit"
                   type="submit"
@@ -218,9 +251,9 @@ class CreatePost extends Component {
                       document.getElementById("hashtaglabel").innerHTML =
                         "Hashtag(s): " + this.state.hashtagList;
                       document.getElementById("hashtaginput").value = "";
-                      document.getElementById("hashtagid").style.display =
+                      document.getElementById("modal").style.display =
                         "none";
-                      document.getElementById("overlay").style.display = "none";
+                     
                     }
 
                     return false;
@@ -228,33 +261,11 @@ class CreatePost extends Component {
                 >
                   Submit
                 </button>
-                <button
-                  className="clear-btn btn btn-primary"
-                  onClick={(e) => {
-                    this.state.hashtagList = [];
-                    this.state.hashtag = "";
-                    document.getElementById("hashtaglabel").innerHTML = "";
-                    document.getElementById("hashtaginput").value = "";
-                    document.getElementById("hashtagid").style.display = "none";
-                    document.getElementById("overlay").style.display = "none";
-                    e.preventDefault();
-                  }}
-                >
-                  Clear
-                </button>
+                
               </div>
-            </form>
-          </div>
-          <div
-            id="overlay"
-            onClick={() => {
-              if (this.state.overlayState == true) {
-                this.setState({ overlayState: false });
-                document.getElementById("hashtagid").style.display = "none";
-                document.getElementById("overlay").style.display = "none";
-              }
-            }}
-          ></div>
+              </div>
+            </div> </div> </div>
+       
           <div className="buttons-container">
             <div className="div-container">
               <button
@@ -262,8 +273,8 @@ class CreatePost extends Component {
                 className="btn btn-light"
                 id="tag"
                 onClick={() => {
-                  document.getElementById("hashtagid").style.display = "block";
-                  document.getElementById("overlay").style.display = "block";
+                  document.getElementById("modal").style.display = "block";
+                
                   this.setState({ overlayState: true });
                 }}
               >
@@ -289,13 +300,7 @@ class CreatePost extends Component {
                 id="post"
                 onClick={() => {
                   document.getElementById("submitform").reset();
-                  document
-                    .getElementById("post")
-                    .setAttribute("disabled", true);
-                  document
-                    .getElementById("file")
-                    .setAttribute("disabled", true);
-                  document.getElementById("tag").setAttribute("disabled", true);
+
                   this.putMoment({
                     postmessage: this.state.postmessage,
                     userId: this.state.userId,
