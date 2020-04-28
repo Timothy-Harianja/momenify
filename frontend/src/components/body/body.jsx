@@ -177,7 +177,7 @@ class Body extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
-
+    console.log("follow list: ", this.state.followStatus);
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
         posts.push(
@@ -188,6 +188,7 @@ class Body extends Component {
                   ? "Anonymous"
                   : this.state.usernameList[i]
               }
+              userId={this.state.userId}
               id={this.state.idList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}

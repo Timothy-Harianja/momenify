@@ -69,7 +69,7 @@ router.post("/follow", (req, res) => {
     });
   } else {
     console.log("you shold login first");
-    return res.json({ success: false, message: "you shold login first" });
+    return res.json({ success: false, message: "You need to login first" });
   }
 });
 

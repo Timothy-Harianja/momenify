@@ -14,9 +14,7 @@ const forgetPasswordRoute = require("./backend/routes/forget-password-route.js")
 const postMomentRoute = require("./backend/routes/postMoment-route.js");
 const getMomentRoute = require("./backend/routes/getMoment-route.js");
 const followChangeRoute = require("./backend/routes/follow-change-route.js");
-=======
 const config = require("./backend/routes/config.js");
-
 const path = require("path");
 const session = require("express-session");
 

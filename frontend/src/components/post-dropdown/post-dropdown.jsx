@@ -9,43 +9,14 @@ class PostDropdown extends React.Component {
     followStatus: this.props.followStatus,
   };
 
-
-const PostDropdown = () => {
-  return (
-    
-    <Dropdown classname="dropdown">
-      <Dropdown.Toggle
-        className="dropdown-toggle"
-        variant=""
-        id="dropdown-basic"
-      >
-        <svg
-          class="bi bi-justify"
-          width="1em"
-          height="1em"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M2 12.5a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </Dropdown.Toggle>
-
   follow = () => {
-    console.log("userid be followed is null?: ", this.state.userid == null);
+    console.log("followStatus: ", this.state.followStatus);
     if (this.state.userid != null) {
       axios
         .post("/api/followChangeRoute/follow", { userid: this.state.userid })
         .then((res) => {
           console.log("res of follow: ", res.data);
-          if (
-            res.data.success ||
-            res.data.message.includes("followed this user")
-          ) {
+          if (res.data.success) {
             console.log(res.data.message);
             this.setState({ followStatus: true });
             this.props.changeFollowStatus(true);
@@ -58,7 +29,8 @@ const PostDropdown = () => {
         });
       //not anonymous
     } else {
-      console.log("user to be followed not exist.");
+      alert("You cannot follow an anonymous!");
+      console.log("You cannot follow an anonymous.");
     }
   };
   unfollow = () => {
@@ -197,84 +169,5 @@ const PostDropdown = () => {
     );
   }
 }
-          
-<div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="reportmodal" role="dialog" onClick={()=>{
-  window.onclick = function(event) {
-  if (event.target == this.document.getElementById("reportmodal")) {
-    this.document.getElementById("reportmodal").style.display = "none";
-  }
-}
-}}>
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content" id="modalcontent">
-      <div class="modal-header">
-      <h5 class="modal-title">Report</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
-                  if (this.state.overlayState == true) {
-                this.setState({ overlayState: false });
-                document.getElementById("reportmodal").style.display = "none";
-               }}}>
-              <span
-                class="close"
-              >
-                &times;
-              </span>
-              </button>
-              
-             
-              </div>
-              <div class="modal-body">
-              <textarea
-                type="text"
-                id="reportinput"
-                name="reportnput"
-                placeholder="Reason to report this user/post"
-                
-              />
-              
-             
-              </div>
-              <div class="modal-footer">
-              <div>
-                <button
-                  id="reportsubmit"
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                      document.getElementById("reportinput").value = "";
-                      document.getElementById("reportmodal").style.display ="none";
-                   
-                  }}
-                >
-                  Submit
-                </button>
-                
-              </div>
-              </div>
-            </div> </div> </div>
-
-
-          <span onClick={()=>{
-             document.getElementById("reportmodal").style.display = "block";
-          }}>Report</span>
-        </Dropdown.Item>
-        <Dropdown.Item>
-          <svg class="svg-icon" viewBox="0 0 20 20">
-            <path
-              fill="none"
-              d="M7.083,8.25H5.917v7h1.167V8.25z M18.75,3h-5.834V1.25c0-0.323-0.262-0.583-0.582-0.583H7.667
-								c-0.322,0-0.583,0.261-0.583,0.583V3H1.25C0.928,3,0.667,3.261,0.667,3.583c0,0.323,0.261,0.583,0.583,0.583h1.167v14
-								c0,0.644,0.522,1.166,1.167,1.166h12.833c0.645,0,1.168-0.522,1.168-1.166v-14h1.166c0.322,0,0.584-0.261,0.584-0.583
-								C19.334,3.261,19.072,3,18.75,3z M8.25,1.833h3.5V3h-3.5V1.833z M16.416,17.584c0,0.322-0.262,0.583-0.582,0.583H4.167
-								c-0.322,0-0.583-0.261-0.583-0.583V4.167h12.833V17.584z M14.084,8.25h-1.168v7h1.168V8.25z M10.583,7.083H9.417v8.167h1.167V7.083
-								z"
-            ></path>
-          </svg>
-          <span>Delete</span>
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-  );
-};
 
 export default PostDropdown;
