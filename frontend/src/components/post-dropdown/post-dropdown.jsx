@@ -7,6 +7,7 @@ class PostDropdown extends React.Component {
   state = {
     userid: this.props.userid,
     followStatus: this.props.followStatus,
+    userId: this.props.userId,
   };
 
   follow = () => {

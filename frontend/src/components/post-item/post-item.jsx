@@ -14,7 +14,6 @@ class PostItem extends React.Component {
       postid: this.props.postid,
       position: this.props.position,
       userid: this.props.id,
-      followStatus: this.props.followStatus,
     };
   }
 
@@ -107,7 +106,11 @@ class PostItem extends React.Component {
               {this.props.username}
             </a>
           )}
-          {this.state.followStatus ? <span> followed</span> : null}
+          {this.props.followStatus ? (
+            <span> followed</span>
+          ) : (
+            <span> not followed</span>
+          )}
 
           <span className="post-item-header-dropdown">
             <PostDropdown
@@ -115,6 +118,7 @@ class PostItem extends React.Component {
               changeFollowStatus={(e) => this.changeFollowStatus(e)}
               followStatus={this.props.followStatus}
               updateFollow={(e) => this.props.updateFollow(e)}
+              userId={this.props.userId}
             ></PostDropdown>
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
