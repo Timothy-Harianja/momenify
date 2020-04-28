@@ -21,8 +21,10 @@ import AboutUs from "./components/about-us/about-us.jsx";
 import TermOfUse from "./components/term-of-use/term-of-use.jsx";
 import Message from "./components/Messenger/index.js";
 import Career from "./components/career/career.jsx";
+import ContactUs from "./components/contact-us/contact-us.jsx";
 import AccountPage from "./components/accountPage/accountpage.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 class App extends Component {
   state = {
     userId: null,
@@ -72,6 +74,7 @@ class App extends Component {
             <Route path="/resetconfirmation" component={ResetConfirmation} />
 
             <Route path="/about-us" component={AboutUs} />
+            <Route path="/contact-us" component={ContactUs}/>
             <Route path="/term-of-use" component={TermOfUse} />
             <Route path="/careers" component={Career} />
             <Route
