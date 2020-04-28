@@ -57,4 +57,22 @@ router.post("/login", (req, res) => {
   });
 });
 
+router.get("/userInfo", (req, res) => {
+  console.log("is null?", req.body.userid);
+  if (req.body.userid == undefined) {
+    console.log("checked undefined,");
+    return res.json({
+      success: false,
+      userInfo: null,
+      message: "your userid is undefined",
+    });
+  }
+  User.findOne({ _id: req.body.userid }, (err, user) => {
+    if (err) {
+      return res.json({ success: false, userInfo: null });
+    }
+    return res.json({ success: true, userInfo: user });
+  });
+});
+
 module.exports = router;

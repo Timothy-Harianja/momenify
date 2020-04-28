@@ -45,8 +45,9 @@ class Body extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
-
       visitedList: [],
+      followStatus: [],
+      following: [],
     };
   }
 
@@ -59,6 +60,7 @@ class Body extends Component {
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
+        console.log("res.data.userId, ", res.data.userId);
         this.setState({
           userId: res.data.userId,
           logoNumber: res.data.logoNumber,
@@ -66,9 +68,21 @@ class Body extends Component {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        console.log("thisstate.userid, ", this.state.userId);
+        axios
+          .get("/api/loginRoute/userInfo", { userid: this.state.userId })
+          .then((res) => {
+            if (res.data.success) {
+              console.log("found user and info");
+              this.setState({ following: res.data.userInfo.following });
+            }
+          })
+          .then(() => {
+            this.queryPost();
+          });
       });
-
-    this.queryPost();
   }
   queryPost = () => {
     axios
@@ -98,6 +112,19 @@ class Body extends Component {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        var idList = this.state.idList;
+        var following = this.state.following;
+        var followStatus = [];
+        for (let i = 0; i < idList.length; i++) {
+          if (following.includes(idList[i])) {
+            followStatus.push(true);
+          } else {
+            followStatus.push(false);
+          }
+        }
+        this.setState({ followStatus: followStatus });
       });
   };
 
@@ -198,6 +225,8 @@ class Body extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              followStatus={this.state.followStatus[i]}
+              updateFollow={(e) => this.updateFollow(e)}
             />
           </div>
         );
@@ -235,6 +264,18 @@ class Body extends Component {
       posts: this.state.posts + 1,
       filesList: newFilesList,
     });
+  };
+
+  updateFollow = (followid) => {
+    console.log("update follow");
+    var idList = this.state.idList;
+    var followStatus = this.state.followStatus;
+    for (let i = 0; i < idList.length; i++) {
+      if (idList[i] == followid) {
+        followStatus[i] = !followStatus[i];
+      }
+    }
+    this.setState({ followStatus: followStatus });
   };
 
   render() {

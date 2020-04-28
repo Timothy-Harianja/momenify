@@ -6,7 +6,7 @@ import axios from "axios";
 class PostDropdown extends React.Component {
   state = {
     userid: this.props.userid,
-    followStatus: false,
+    followStatus: this.props.followStatus,
   };
 
   follow = () => {
@@ -18,13 +18,16 @@ class PostDropdown extends React.Component {
           console.log("res of follow: ", res.data);
           if (
             res.data.success ||
-            res.data.message.includes("you already followed this user")
+            res.data.message.includes("followed this user")
           ) {
             console.log(res.data.message);
             this.setState({ followStatus: true });
+            this.props.changeFollowStatus(true);
+            this.props.updateFollow(this.state.id);
           } else {
             console.log(res.data.message);
             this.setState({ followStatus: false });
+            this.props.changeFollowStatus(false);
           }
         });
       //not anonymous
@@ -32,7 +35,28 @@ class PostDropdown extends React.Component {
       console.log("user to be followed not exist.");
     }
   };
-  unfollow = () => {};
+  unfollow = () => {
+    console.log("userid to unfollow is null?: ", this.state.userid == null);
+    if (this.state.userid != null) {
+      axios
+        .post("/api/followChangeRoute/unfollow", { userid: this.state.userid })
+        .then((res) => {
+          console.log("res of unfollow: ", res.data);
+          if (res.data.success || res.data.message.includes("You unfollowed")) {
+            console.log(res.data.message);
+            this.setState({ followStatus: false });
+            this.props.changeFollowStatus(false);
+            this.props.updateFollow(this.state.id);
+          } else {
+            console.log(res.data.message);
+            this.setState({ followStatus: true });
+            this.props.changeFollowStatus(true);
+          }
+        });
+    } else {
+      console.log("user to unfollowed not exist.");
+    }
+  };
   render() {
     return (
       <Dropdown classname="dropdown">

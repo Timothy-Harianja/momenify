@@ -75,6 +75,74 @@ router.post("/follow", (req, res) => {
 
 router.post("/unfollow", (req, res) => {
   console.log("backend: /follow");
+  console.log("req.session.userId is null?: ", req.session.userId == null);
+  if (req.session.userId != null) {
+    var yourId = req.session.userId;
+    console.log("you did login");
+    //find user to unfollow in database
+    User.findOne({ _id: req.body.userid }, (err, userFollowed) => {
+      if (err) {
+        console.log("err in find the user to be followed:", err);
+        return res.json({
+          success: false,
+          message: "err in find the user to be followed",
+        });
+      }
+      if (!userFollowed.follower.includes(yourId)) {
+        //did not follow the user
+        console.log("the follower didn't records you", err);
+        return res.json({
+          success: false,
+          message: "the follower didn't records you: " + userFollowed.nickname,
+        });
+      }
+      var userNickName = userFollowed.nickname;
+      var updateFollower = userFollowed.follower;
+      updateFollower = updateFollower.splice(updateFollower.indexOf(yourId), 1);
+      userFollowed.follower = updateFollower;
+      userFollowed.save((err) => {
+        if (err) {
+          console.log("err in user to be unfollowed", err);
+          return res.json({
+            success: false,
+            message: "err in user to be unfollowed",
+          });
+        }
+        User.findOne({ _id: yourId }, (err, yours) => {
+          if (err) {
+            console.log("err in find your info", err);
+            return res.json({
+              success: false,
+              message: "err in find your info",
+            });
+          }
+          var updateFollowing = yours.following;
+          updateFollowing = updateFollowing.splice(
+            updateFollowing.indexOf(req.body.userid),
+            1
+          );
+          yours.following = updateFollowing;
+          yours.save((err) => {
+            if (err) {
+              console.log("err in update your info", err);
+              return res.json({
+                success: false,
+                message: "err in update your info",
+              });
+            }
+            //now you and the other user are updated
+            return res.json({
+              success: true,
+              message: "You unfollowed " + userNickName,
+            });
+          });
+        });
+      });
+    });
+  } else {
+    console.log("you shold login first");
+    return res.json({ success: false, message: "you shold login first" });
+  }
 });
 
 module.exports = router;

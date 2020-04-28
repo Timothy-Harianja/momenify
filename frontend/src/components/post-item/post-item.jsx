@@ -14,6 +14,7 @@ class PostItem extends React.Component {
       postid: this.props.postid,
       position: this.props.position,
       userid: this.props.id,
+      followStatus: this.props.followStatus,
     };
   }
 
@@ -82,6 +83,11 @@ class PostItem extends React.Component {
     }
     return "unkown";
   };
+
+  changeFollowStatus = (newStatus) => {
+    this.setState({ followStatus: newStatus });
+    console.log("changed follow status");
+  };
   render() {
     //console.log("filename: ", this.props.file);
     return (
@@ -101,9 +107,15 @@ class PostItem extends React.Component {
               {this.props.username}
             </a>
           )}
+          {this.state.followStatus ? <span> followed</span> : null}
 
           <span className="post-item-header-dropdown">
-            <PostDropdown userid={this.state.userid}></PostDropdown>
+            <PostDropdown
+              userid={this.state.userid}
+              changeFollowStatus={(e) => this.changeFollowStatus(e)}
+              followStatus={this.props.followStatus}
+              updateFollow={(e) => this.props.updateFollow(e)}
+            ></PostDropdown>
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
