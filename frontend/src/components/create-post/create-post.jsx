@@ -51,6 +51,9 @@ class CreatePost extends Component {
     formData.append("myFiles", this.state.files);
 
     if (this.state.postmessage != null && this.state.postmessage.trim() != "") {
+      document.getElementById("post").setAttribute("disabled", true);
+      document.getElementById("file").setAttribute("disabled", true);
+      document.getElementById("tag").setAttribute("disabled", true);
       axios
         .post("/api/postRoute/upload", formData, {
           onUploadProgress: (progressEvent) => {
@@ -285,13 +288,7 @@ class CreatePost extends Component {
                 id="post"
                 onClick={() => {
                   document.getElementById("submitform").reset();
-                  document
-                    .getElementById("post")
-                    .setAttribute("disabled", true);
-                  document
-                    .getElementById("file")
-                    .setAttribute("disabled", true);
-                  document.getElementById("tag").setAttribute("disabled", true);
+
                   this.putMoment({
                     postmessage: this.state.postmessage,
                     userId: this.state.userId,
