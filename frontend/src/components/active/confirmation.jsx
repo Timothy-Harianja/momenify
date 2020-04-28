@@ -12,7 +12,7 @@ export const Confirmation = () => (
   <Wrapper>
     <h1>Thanks for Sign Up!</h1>
     <h3 id="confirm">
-      You will receive an email shortly, please active in 24 hours!
+      You will receive an activation email shortly, please active soon!
     </h3>
   </Wrapper>
 );
