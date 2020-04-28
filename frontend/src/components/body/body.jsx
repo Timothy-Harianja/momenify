@@ -3,21 +3,9 @@ import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
-import TrendContainer from "../posts-container/trend-container";
-import kun from "./kun.png";
-import anonymous from "../posts-container/anonymous.png";
 import CreatePost from "../create-post/create-post";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
-import logo1 from "../images/logo1.png";
-import logo2 from "../images/logo2.png";
-import logo3 from "../images/logo3.png";
-import logo4 from "../images/logo4.png";
-import logo5 from "../images/logo5.png";
-import logo6 from "../images/logo6.png";
-import logo7 from "../images/logo7.png";
-import logo8 from "../images/logo1.png";
-import logo9 from "../images/logo9.png";
 import one from "../images/one.png";
 import two from "../images/two.png";
 import three from "../images/three.png";
@@ -45,7 +33,6 @@ class Body extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
-
       visitedList: [],
     };
   }
@@ -155,11 +142,6 @@ class Body extends Component {
       });
   };
 
-  getLogo = (num) => {
-    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
-    return list[parseInt(num) - 1];
-  };
-
   getNumberLogo = (num) => {
     let list = [one, two, three, four, five];
     return list[parseInt(num)];
@@ -182,11 +164,10 @@ class Body extends Component {
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
-              imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
               profileUrl={
                 this.state.usernameList[i] == undefined
-                  ? anonymous
-                  : this.getLogo(this.state.userLogo[i])
+                  ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                  : this.state.userLogo[i]
               }
               postid={this.state.postidList[i]}
               position={i}
@@ -264,8 +245,8 @@ class Body extends Component {
                   <img
                     src={
                       this.state.userId == null
-                        ? anonymous
-                        : this.getLogo(this.state.logoNumber)
+                        ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                        : this.state.logoNumber
                     }
                     alt="kun"
                     id="side-profile"

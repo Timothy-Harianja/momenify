@@ -5,7 +5,6 @@
 
   .account form {
     padding: 30px 30px;
-  
     border-radius: 8px;
     border-style: solid;
     border-width: 2px;
@@ -13,4 +12,23 @@
     margin: 0 auto;
     max-width: 320px;
   }
+}
+
+.side-profile {
+  position: relative;
+  margin: 10px 10px 10px 80px;
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+}
+
+#updatebutton {
+  position: relative;
+  overflow: hidden;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+  font-weight: bold;
+  font-size: 15px;
+  background-color: white;
+  border-radius: 2em;
+  border-width: 0.2em;
 }
