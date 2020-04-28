@@ -47,8 +47,8 @@ router.post("/putUser", (req, res) => {
   user.activation = req.body.activation;
   user.activeToken = req.body.activeToken;
   user.activeTokenExpire = req.body.activeTokenExpire;
-  user.logo = Math.floor(Math.random() * 9 + 1);
-
+  user.logo = "https://momenify.s3.us-east-2.amazonaws.com/default.png";
+  user.uniqueID = req.body.uniqueID;
   user.password = hashPassword(req.body.password).then((result) => {
     user.password = result;
 
@@ -60,31 +60,44 @@ router.post("/putUser", (req, res) => {
         console.log("result", result);
         return res.json({
           success: false,
-          message: "User alreayd register",
+          message: "This email has already registered",
         });
       } else {
-        user.save((err) => {
+        User.findOne({ uniqueID: req.body.uniqueID }, (err, result2) => {
           if (err) {
             console.log(err);
+            return err;
+          } else if (result2 != null) {
             return res.json({
               success: false,
-              message: "User is not register",
+              message:
+                "This uniqueID has already exists, please pick a different one!",
             });
           } else {
-            //console.log("req:", req.headers);
-            tokenLink = req.headers.origin + "/active/" + user.activeToken;
-            mail = {
-              from: "themomenify@gmail.com",
-              to: user.email,
-              subject: "Welcome to Momenify",
-              text:
-                "Thank you for signing up Momenify, below is your link for activation: \n" +
-                tokenLink +
-                "\n" +
-                "\n Momenify, Inc.",
-            };
-            transporter.sendMail(mail);
-            return res.json({ success: true, message: "User Register" });
+            user.save((err) => {
+              if (err) {
+                console.log(err);
+                return res.json({
+                  success: false,
+                  message: "User is not register",
+                });
+              } else {
+                //console.log("req:", req.headers);
+                tokenLink = req.headers.origin + "/active/" + user.activeToken;
+                mail = {
+                  from: "themomenify@gmail.com",
+                  to: user.email,
+                  subject: "Welcome to Momenify",
+                  text:
+                    "Thank you for signing up Momenify, below is your link for activation: \n" +
+                    tokenLink +
+                    "\n" +
+                    "\n Momenify, Inc.",
+                };
+                transporter.sendMail(mail);
+                return res.json({ success: true, message: "User Register" });
+              }
+            });
           }
         });
       }

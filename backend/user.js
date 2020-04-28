@@ -9,7 +9,8 @@ const UserSchema = new Schema({
   activation: Boolean,
   activeToken: String,
   activeTokenExpire: String,
-  logo: String
+  logo: String,
+  uniqueID: String,
 });
 
 module.exports = mongoose.model("User", UserSchema);

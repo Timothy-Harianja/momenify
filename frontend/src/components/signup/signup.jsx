@@ -33,6 +33,7 @@ class Signup extends Component {
     activeToken: null,
     activeTokenExpire: null,
     lastLogin: null,
+    uniqueID: null,
   };
 
   submitHandler = (e) => {
@@ -43,50 +44,51 @@ class Signup extends Component {
     var checkAll = true;
     if (this.state.nickname == null || this.state.nickname.trim() == "") {
       checkAll = false;
-      this.setState({ message: "Nichname cannot be empty" });
+      this.setState({ message: "Nickname cannot be empty" });
     }
 
     if (this.state.email) {
       //not null
       if (!this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
         checkAll = false;
-        console.log("email incorrect");
       }
     } else {
       //null
       checkAll = false;
-      this.setState({ message: "email cannot be empty" });
+      this.setState({ message: "Email cannot be empty" });
+    }
+
+    if (this.state.password.length < 8) {
+      checkAll = false;
+      this.setState({ message: "Password must have 8 characters" });
     }
 
     if (!(this.state.ReEnterPassword == this.state.password)) {
       checkAll = false;
-      console.log("password doesn't match");
       this.setState({ message: "Password doesn't match" });
     }
 
+    if (this.state.uniqueID == null || this.state.uniqueID.length < 3) {
+      checkAll = false;
+      this.setState({ message: "Unique must be greater than 3 characters" });
+    }
+
     if (checkAll) {
-      console.log("this.json:", json);
-      console.log("this.props:", this.props);
       axios
         .post("/api/signupRoute/putUser", json)
         .then((res) => {
-          console.log("res: ", res);
-          console.log("res data: ", res.data);
-
           if (res.data.success) {
             // this.props.setConfirmationContent(this.state.content);
             this.props.history.push("/confirmation");
           } else {
             this.setState({
-              message: "This email has already registered",
+              message: res.data.message,
             });
           }
         })
         .catch((err) => {
           console.log(err);
         });
-    } else {
-      console.log("somthing is wrong");
     }
   };
 
@@ -99,16 +101,29 @@ class Signup extends Component {
           <div className="form-group">
             <label>Nickname</label>
             <input
+              required
               type="text"
               className="form-control"
-              placeholder="First name"
+              placeholder="A name that everyone can see"
               onChange={(e) => this.setState({ nickname: e.target.value })}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Unique ID</label>
+            <input
+              required
+              type="text"
+              className="form-control"
+              placeholder="Pick a unique for your account"
+              onChange={(e) => this.setState({ uniqueID: e.target.value })}
             />
           </div>
 
           <div className="form-group">
             <label>Email address</label>
             <input
+              required
               type="email"
               className="form-control"
               placeholder="Enter email"
@@ -119,6 +134,7 @@ class Signup extends Component {
           <div className="form-group">
             <label>Password</label>
             <input
+              required
               type="password"
               className="form-control"
               placeholder="Password"
@@ -128,6 +144,7 @@ class Signup extends Component {
           <div className="form-group">
             <label>Re-enter Password</label>
             <input
+              required
               type="password"
               className="form-control"
               placeholder="Re-enter Password"
@@ -147,6 +164,7 @@ class Signup extends Component {
                 email: this.state.email,
                 activation: this.state.activation,
                 lastLogin: makeTime(),
+                uniqueID: this.state.uniqueID,
                 activeToken: makeToken(30),
                 activeTokenExpire: new Date().getTime() + 24 * 60 * 60 * 1000,
               });
