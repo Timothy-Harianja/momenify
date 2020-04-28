@@ -110,12 +110,17 @@ class Signup extends Component {
           </div>
 
           <div className="form-group">
-            <label>Unique ID</label>
+            <label>
+              Unique ID
+              <span style={{ fontSize: 10, color: "grey" }}>
+                -The ID cannot be changed in future
+              </span>
+            </label>
             <input
               required
               type="text"
               className="form-control"
-              placeholder="Pick a unique for your account"
+              placeholder="Pick a unique ID for your account"
               onChange={(e) => this.setState({ uniqueID: e.target.value })}
             />
           </div>
@@ -166,7 +171,6 @@ class Signup extends Component {
                 lastLogin: makeTime(),
                 uniqueID: this.state.uniqueID,
                 activeToken: makeToken(30),
-                activeTokenExpire: new Date().getTime() + 24 * 60 * 60 * 1000,
               });
             }}
           >

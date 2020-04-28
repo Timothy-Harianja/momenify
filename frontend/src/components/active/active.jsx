@@ -4,22 +4,22 @@ import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import "./active.css";
 class Active extends Component {
   state = {
-    body: null
+    body: null,
   };
   confirm = () => {
     axios
       .post("/api/activeRoute/active")
-      .then(data => {
-        console.log("data: ", data.data.success);
+      .then((data) => {
+        console.log("data: ", data.data);
         if (data.data.success) {
           this.props.history.push("/login");
         } else {
           this.setState({
-            message: "This email has already activated or the link is expired!"
+            message: data.data.message,
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };

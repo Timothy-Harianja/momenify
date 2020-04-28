@@ -25,7 +25,6 @@ async function hashPassword(password) {
 }
 
 router.post("/putUser", (req, res) => {
-  console.log("sigu up function called");
   var user = new User();
   User.countDocuments({}, function (err, c) {
     note = {
@@ -46,9 +45,8 @@ router.post("/putUser", (req, res) => {
   user.lastLogin = req.body.lastLogin;
   user.activation = req.body.activation;
   user.activeToken = req.body.activeToken;
-  user.activeTokenExpire = req.body.activeTokenExpire;
   user.logo = "https://momenify.s3.us-east-2.amazonaws.com/default.png";
-  user.uniqueID = req.body.uniqueID;
+  user.uniqueID = req.body.uniqueID.toLowerCase();
   user.password = hashPassword(req.body.password).then((result) => {
     user.password = result;
 

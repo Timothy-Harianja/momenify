@@ -8,7 +8,6 @@ const UserSchema = new Schema({
   lastLogin: String,
   activation: Boolean,
   activeToken: String,
-  activeTokenExpire: String,
   logo: String,
   uniqueID: String,
 });
