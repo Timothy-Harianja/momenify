@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../user");
+const Post = require("../postMoment");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
@@ -31,10 +32,7 @@ const profileImgUpload = multer({
 }).single("myFiles");
 
 router.post("/uploadLogo", (req, res) => {
-  console.log("upload image called!");
   profileImgUpload(req, res, (error) => {
-    console.log("requestOkokok", req.file);
-    // console.log("error", error);
     if (error) {
       console.log("errors", error);
       return res.json({ success: false, message: "file too large" });
@@ -60,6 +58,12 @@ router.post("/uploadLogo", (req, res) => {
 router.post("/updateInfo", (req, res) => {
   let username = req.body.userNickname;
   let currentLogo = req.body.currentLogo;
+  if (username.trim().length == 0 || username == null) {
+    return res.json({ success: false, message: "Name cannot be empty!" });
+  }
+  if (currentLogo.trim().length == 0 || currentLogo == null) {
+    return res.json({ success: false, message: "Upload image failed!" });
+  }
   User.findOneAndUpdate(
     { _id: req.session.userId },
     { nickname: username, logo: currentLogo },
@@ -70,6 +74,13 @@ router.post("/updateInfo", (req, res) => {
       } else {
         return res.json({ success: true, message: "Updated!" });
       }
+    }
+  );
+  Post.updateMany(
+    { userId: req.session.userId },
+    { nickname: username, userLogo: currentLogo },
+    (err) => {
+      if (err) console.log(err);
     }
   );
 });

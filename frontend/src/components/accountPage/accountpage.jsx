@@ -20,7 +20,6 @@ class AccountPage extends Component {
   };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then((res) => {
-      console.log(res.data);
       this.setState({
         userId: res.data.userId,
         userEmail: res.data.email,
@@ -31,16 +30,16 @@ class AccountPage extends Component {
   }
 
   updateInfo = (obj) => {
-    console.log("call updateinfo");
-
     axios.post("/api/config/updateInfo", obj).then((res) => {
-      this.setState({ updateMessage: res.data.message });
+      this.setState({
+        updateMessage: res.data.message,
+      });
     });
   };
 
   tryReset = (obj) => {
     var confirmNewP = this.state.newPassword === this.state.confirmPassword;
-    console.log("confirmnewp", confirmNewP);
+
     if (confirmNewP) {
       axios
         .post("/api/resetPasswordRoute/resetPassword", obj)
@@ -73,9 +72,9 @@ class AccountPage extends Component {
     } else {
       alert("Please select a file that is less than 50MB!");
     }
+    document.getElementById("updateInfo").setAttribute("disabled", true);
 
     setTimeout(() => {
-      console.log("new userlogo: ", this.state.userLogo);
       const formData = new FormData();
       formData.append("myFiles", this.state.userLogo);
       axios
@@ -90,6 +89,7 @@ class AccountPage extends Component {
         })
         .then((res) => {
           console.log("res from upload logo: ", res);
+          document.getElementById("updateInfo").removeAttribute("disabled");
           if (res.data.success) {
             this.setState({
               progress: null,
@@ -136,7 +136,7 @@ class AccountPage extends Component {
           <div className="form-group">
             <img className="side-profile" src={this.state.currentLogo} />
             <br></br>
-            <div class="file btn btn-lg btn-light" id="uploadbutton">
+            <div class="file btn btn-lg btn-light" id="updatebutton">
               Change Logo
               <input
                 id="file"
@@ -168,6 +168,7 @@ class AccountPage extends Component {
           <Button
             className="btn btn-info btn-block"
             type="submit"
+            id="updateInfo"
             onClick={() =>
               this.updateInfo({
                 userNickname: this.state.userNickname,
@@ -177,7 +178,15 @@ class AccountPage extends Component {
           >
             Update
           </Button>
-          {this.state.updateMessage}
+          {this.state.updateMessage == "Updated!" ? (
+            <div id="reset-password-message" style={{ color: "green" }}>
+              {this.state.updateMessage}
+            </div>
+          ) : (
+            <div id="reset-password-message" style={{ color: "red" }}>
+              {this.state.updateMessage}
+            </div>
+          )}
         </form>
         <br></br>
         <form onSubmit={this.submitHandler}>

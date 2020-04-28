@@ -119,10 +119,6 @@ class CreatePost extends Component {
                   fileName: null,
                   files: null,
                 });
-
-                this.setState({
-                  message: "Post succeed!",
-                });
               } else {
                 this.setState({ message: res.data.message });
               }

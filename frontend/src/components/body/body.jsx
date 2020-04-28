@@ -3,19 +3,9 @@ import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
-import TrendContainer from "../posts-container/trend-container";
 import CreatePost from "../create-post/create-post";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
-import logo1 from "../images/logo1.png";
-import logo2 from "../images/logo2.png";
-import logo3 from "../images/logo3.png";
-import logo4 from "../images/logo4.png";
-import logo5 from "../images/logo5.png";
-import logo6 from "../images/logo6.png";
-import logo7 from "../images/logo7.png";
-import logo8 from "../images/logo1.png";
-import logo9 from "../images/logo9.png";
 import one from "../images/one.png";
 import two from "../images/two.png";
 import three from "../images/three.png";
@@ -150,11 +140,6 @@ class Body extends Component {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  getLogo = (num) => {
-    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
-    return list[parseInt(num) - 1];
   };
 
   getNumberLogo = (num) => {
