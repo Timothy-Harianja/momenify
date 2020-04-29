@@ -118,15 +118,10 @@ class Body extends Component {
         var idList = this.state.idList;
         var following = this.state.following;
         var followStatus = [];
-        // console.log("following list: ", this.state.following);
         for (let i = 0; i < idList.length; i++) {
-          // console.log("id : ", idList[i]);
-
           if (following.includes(idList[i])) {
-            console.log("insert true");
             followStatus.push(true);
           } else {
-            console.log("insert false");
             followStatus.push(false);
           }
         }
@@ -280,7 +275,6 @@ class Body extends Component {
   };
 
   updateFollow = (followid) => {
-    console.log("update follow");
     var idList = this.state.idList;
     var followStatus = this.state.followStatus;
     for (let i = 0; i < idList.length; i++) {

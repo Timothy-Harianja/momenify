@@ -107,9 +107,9 @@ class PostItem extends React.Component {
             </a>
           )}
           {this.props.followStatus ? (
-            <span> followed</span>
+            <span className="post-item-follow">-Followed</span>
           ) : (
-            <span> not followed</span>
+            <span> </span>
           )}
 
           <span className="post-item-header-dropdown">

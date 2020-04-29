@@ -4,25 +4,18 @@ const User = require("../user");
 const router = express.Router();
 
 router.post("/follow", (req, res) => {
-  console.log("backend: /follow");
-  // console.log("req.body.userid: ", req.body.userid);
-  console.log("req.session.userId is null?: ", req.session.userId == null);
   if (req.session.userId != null) {
     var yourId = req.session.userId;
-    console.log("you login already");
 
     //check you cannot follow yourself
     if (yourId == req.body.userid) {
-      console.log("you cannot follow yourself");
       return res.json({
         success: false,
         message: "you cannot follow yourself",
       });
     }
-    //find user to follow in database
     User.findOne({ _id: req.body.userid }, (err, userToFollow) => {
       if (err) {
-        console.log("err in find the user to be followed:", err);
         return res.json({
           success: false,
           message: "err in find the user to be followed",
@@ -30,10 +23,9 @@ router.post("/follow", (req, res) => {
       }
       if (userToFollow.follower.includes(yourId)) {
         //if you followed already don't update
-        console.log("you already followed this user", err);
         return res.json({
           success: false,
-          message: "you already followed this user: " + userToFollow.nickname,
+          message: "You already followed this user: " + userToFollow.nickname,
         });
       }
       var userNickName = userToFollow.nickname;
@@ -77,18 +69,13 @@ router.post("/follow", (req, res) => {
       });
     });
   } else {
-    console.log("you shold login first");
     return res.json({ success: false, message: "You need to login first" });
   }
 });
 
 router.post("/unfollow", (req, res) => {
-  console.log("backend: /unfollow");
-  console.log("req.session.userId is: ", req.session.userId);
-  console.log("req.body.userid is : ", req.body.userid);
   if (req.session.userId != null) {
     var yourId = req.session.userId;
-    console.log("you did login");
     //find user to unfollow in database
     User.findOne({ _id: req.body.userid }, (err, userFollowed) => {
       if (err) {
@@ -98,10 +85,8 @@ router.post("/unfollow", (req, res) => {
           message: "err in find the user to be followed",
         });
       }
-      console.log("userFollowed.follower, ", userFollowed.follower);
       if (!userFollowed.follower.includes(yourId)) {
         //did not follow the user
-        console.log("the follower didn't records you", err);
         return res.json({
           success: false,
           message: "the follower didn't records you: " + userFollowed.nickname,
@@ -109,10 +94,7 @@ router.post("/unfollow", (req, res) => {
       }
       var userNickName = userFollowed.nickname;
       var updateFollower = userFollowed.follower;
-      console.log("updateFollower before,  ", updateFollower);
       updateFollower = updateFollower.filter((item) => item != yourId);
-      console.log("updateFollower after ,  ", updateFollower);
-
       userFollowed.follower = updateFollower;
       userFollowed.save((err) => {
         if (err) {
@@ -131,11 +113,9 @@ router.post("/unfollow", (req, res) => {
             });
           }
           var updateFollowing = yours.following;
-          console.log("updateFollowing before, ", updateFollowing);
           updateFollowing = updateFollowing.filter(
             (item) => item != req.body.userid
           );
-          console.log("updateFollowing after, ", updateFollowing);
 
           yours.following = updateFollowing;
           yours.save((err) => {
@@ -156,8 +136,7 @@ router.post("/unfollow", (req, res) => {
       });
     });
   } else {
-    console.log("you shold login first");
-    return res.json({ success: false, message: "you shold login first" });
+    return res.json({ success: false, message: "You should login first" });
   }
 });
 

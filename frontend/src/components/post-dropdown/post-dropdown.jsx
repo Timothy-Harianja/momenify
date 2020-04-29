@@ -15,49 +15,29 @@ class PostDropdown extends React.Component {
       axios
         .post("/api/followChangeRoute/follow", { userid: this.props.id })
         .then((res) => {
-          console.log("res of follow: ", res.data);
           if (res.data.success) {
-            console.log(res.data.message);
-            // this.setState({ followStatus: true });
-            // this.props.changeFollowStatus(true);
             this.props.updateFollow(this.props.id);
           } else {
-            console.log(res.data.message);
-            // this.setState({ followStatus: false });
-            // this.props.changeFollowStatus(false);
+            alert(res.data.message);
           }
         });
-      //not anonymous
     } else {
       alert("You cannot follow an anonymous!");
-      console.log("You cannot follow an anonymous.");
     }
   };
   unfollow = () => {
-    console.log("id to unfollow is null?: ", this.props.id == null);
     if (this.props.id != null) {
       axios
         .post("/api/followChangeRoute/unfollow", { userid: this.props.id })
         .then((res) => {
-          console.log("res of unfollow: ", res.data);
           if (res.data.success || res.data.message.includes("You unfollowed")) {
-            console.log(res.data.message);
-            // this.setState({ followStatus: false });
-            // this.props.changeFollowStatus(false);
             this.props.updateFollow(this.props.id);
-          } else {
-            console.log(res.data.message);
-            // this.setState({ followStatus: true });
-            // this.props.changeFollowStatus(true);
           }
         });
-    } else {
-      console.log("user to unfollowed not exist.");
     }
   };
 
   render() {
-    // this.setFollowStatus();
     return (
       <Dropdown classname="dropdown">
         <div
@@ -275,32 +255,49 @@ class PostDropdown extends React.Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu className="dropdown-menu">
-          <Dropdown.Item>
-            <svg
-              class="bi bi-person-plus"
-              width="1em"
-              height="1em"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M11 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM1.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM6 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zm4.5 0a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z"
-                clip-rule="evenodd"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            {this.props.followStatus ? (
-              <span onClick={() => this.unfollow()}>unfollow</span>
-            ) : (
-              <span onClick={() => this.follow()}>Follow</span>
-            )}
-          </Dropdown.Item>
+          {this.props.followStatus ? (
+            <Dropdown.Item onClick={() => this.unfollow()}>
+              <svg
+                class="bi bi-person-dash"
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M11 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM1.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM6 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zm2 2.5a.5.5 0 01.5-.5h4a.5.5 0 010 1h-4a.5.5 0 01-.5-.5z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>Unfollow</span>
+            </Dropdown.Item>
+          ) : (
+            <Dropdown.Item onClick={() => this.follow()}>
+              <svg
+                class="bi bi-person-plus"
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M11 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM1.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM6 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zm4.5 0a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z"
+                  clip-rule="evenodd"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>Follow</span>
+            </Dropdown.Item>
+          )}
+
           <Dropdown.Item
             onClick={() => {
               document.getElementById("messagemodal").style.display = "block";
