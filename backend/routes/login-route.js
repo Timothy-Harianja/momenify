@@ -15,8 +15,10 @@ router.get("/session", (req, res) => {
       console.log("session: your following list", result.following);
       return res.json({
         userId: req.session.userId,
-        logoNumber: req.session.logoNumber,
+        logoNumber: result.logo,
         following: result.following,
+        email: result.email,
+        username: result.nickname,
         success: true,
       });
     }
