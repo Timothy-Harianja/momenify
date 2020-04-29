@@ -21,6 +21,7 @@ class CreatePost extends Component {
   state = {
     userId: null,
     username: null,
+    uniqueID: null,
     postmessage: null,
     message: null,
     userLogo: null,
@@ -40,13 +41,12 @@ class CreatePost extends Component {
         userId: res.data.userId,
         username: res.data.username,
         userLogo: res.data.logoNumber,
+        uniqueID: res.data.uniqueID,
       });
     });
   }
 
   putMoment = (json) => {
-    // put image to local
-    // console.log("this.state.files: ", this.state.files);
     const formData = new FormData();
     formData.append("myFiles", this.state.files);
 
@@ -106,6 +106,7 @@ class CreatePost extends Component {
                   postId: res.data.postId,
                   userID: this.state.userId,
                   logoNumber: this.state.userLogo,
+                  uniqueID: this.state.uniqueID,
                   file:
                     uploadResult.data.imageLocation == null
                       ? null
@@ -175,97 +176,101 @@ class CreatePost extends Component {
             onChange={(e) => this.setState({ postmessage: e.target.value })}
           ></textarea>
 
-      
-<div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="modal" role="dialog" onClick={()=>{
-  window.onclick = function(event) {
-  if (event.target == this.document.getElementById("modal")) {
-    this.document.getElementById("modal").style.display = "none";
-  }
-}
-}}>
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content" id="modalcontent">
-      <div class="modal-header">
-      <h5 class="modal-title">Enter Your Hashtag</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
-                  if (this.state.overlayState == true) {
-                this.setState({ overlayState: false });
-                document.getElementById("modal").style.display = "none";
-               
-              }
-                  
-                }}>
-              <span
-                class="close"
-                
-              >
-                &times;
-              </span>
-              </button>
-              
-             
-              </div>
-              <div class="modal-body">
-              <input
-                type="text"
-                id="hashtaginput"
-                name="hashtaginput"
-                placeholder="Enter Your Hashtag"
-                onChange={(e) => {
-                  this.setState({ hashtag: e.target.value });
-                }}
-              />
-              
-              <p>No space and special character.</p>
-              </div>
-              <div class="modal-footer">
-              <div>
-              <button
-              id="clear"
-                  className="clear-btn btn btn-secondary"
-                  onClick={(e) => {
-                    this.state.hashtagList = [];
-                    this.state.hashtag = "";
-                    document.getElementById("hashtaglabel").innerHTML = "";
-                    document.getElementById("hashtaginput").value = "";
-                    document.getElementById("modal").style.display = "none";
-                  
-                    e.preventDefault();
-                  }}
-                >
-                  Clear
-                </button>
-                
-                <button
-                  id="hashtagsubmit"
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                    if (hashtag == null || hashtag == "") {
-                      alert("Hashtag cannot be empty!");
-                    } else if (!hashtag.match("^[A-Za-z0-9]+$")) {
-                      alert("Hashtag can only contains letter or digit!");
-                    } else {
-                      this.state.hashtagList.push("#" + hashtag);
-                      this.state.hashtag = "";
-                      document.getElementById("hashtaglabel").innerHTML =
-                        "Hashtag(s): " + this.state.hashtagList;
-                      document.getElementById("hashtaginput").value = "";
-                      document.getElementById("modal").style.display =
-                        "none";
-                     
-                    }
+          <div
+            class="modal"
+            aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true"
+            tabindex="-1"
+            id="modal"
+            role="dialog"
+            onClick={() => {
+              window.onclick = function (event) {
+                if (event.target == this.document.getElementById("modal")) {
+                  this.document.getElementById("modal").style.display = "none";
+                }
+              };
+            }}
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content" id="modalcontent">
+                <div class="modal-header">
+                  <h5 class="modal-title">Enter Your Hashtag</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                    onClick={() => {
+                      if (this.state.overlayState == true) {
+                        this.setState({ overlayState: false });
+                        document.getElementById("modal").style.display = "none";
+                      }
+                    }}
+                  >
+                    <span class="close">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <input
+                    type="text"
+                    id="hashtaginput"
+                    name="hashtaginput"
+                    placeholder="Enter Your Hashtag"
+                    onChange={(e) => {
+                      this.setState({ hashtag: e.target.value });
+                    }}
+                  />
 
-                    return false;
-                  }}
-                >
-                  Submit
-                </button>
-                
-              </div>
-              </div>
-            </div> </div> </div>
-       
+                  <p>No space and special character.</p>
+                </div>
+                <div class="modal-footer">
+                  <div>
+                    <button
+                      id="clear"
+                      className="clear-btn btn btn-secondary"
+                      onClick={(e) => {
+                        this.state.hashtagList = [];
+                        this.state.hashtag = "";
+                        document.getElementById("hashtaglabel").innerHTML = "";
+                        document.getElementById("hashtaginput").value = "";
+                        document.getElementById("modal").style.display = "none";
+
+                        e.preventDefault();
+                      }}
+                    >
+                      Clear
+                    </button>
+
+                    <button
+                      id="hashtagsubmit"
+                      type="submit"
+                      className="btn btn-primary"
+                      onClick={(e) => {
+                        if (hashtag == null || hashtag == "") {
+                          alert("Hashtag cannot be empty!");
+                        } else if (!hashtag.match("^[A-Za-z0-9]+$")) {
+                          alert("Hashtag can only contains letter or digit!");
+                        } else {
+                          this.state.hashtagList.push("#" + hashtag);
+                          this.state.hashtag = "";
+                          document.getElementById("hashtaglabel").innerHTML =
+                            "Hashtag(s): " + this.state.hashtagList;
+                          document.getElementById("hashtaginput").value = "";
+                          document.getElementById("modal").style.display =
+                            "none";
+                        }
+
+                        return false;
+                      }}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </div>{" "}
+            </div>{" "}
+          </div>
+
           <div className="buttons-container">
             <div className="div-container">
               <button
@@ -274,7 +279,7 @@ class CreatePost extends Component {
                 id="tag"
                 onClick={() => {
                   document.getElementById("modal").style.display = "block";
-                
+
                   this.setState({ overlayState: true });
                 }}
               >
@@ -310,6 +315,7 @@ class CreatePost extends Component {
                     userLogo: this.state.userLogo,
                     hashtagList: this.state.hashtagList,
                     files: this.state.files,
+                    uniqueID: this.state.uniqueID,
                   });
                 }}
               >

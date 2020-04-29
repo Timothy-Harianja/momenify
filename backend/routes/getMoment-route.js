@@ -56,7 +56,8 @@ router.get("/profilePage", (req, res) => {
   let postDateList = [];
   let hashtagList = [];
   let filesList = [];
-  Post.find({ userId: token }, (err, posts) => {
+  let uniqueIDList = [];
+  Post.find({ uniqueID: token }, (err, posts) => {
     if (err) {
       console.log(err);
       return res.json({
@@ -90,6 +91,7 @@ router.get("/profilePage", (req, res) => {
         postDateList.push(posts[i].postTime);
         hashtagList.push(posts[i].hashtagList);
         filesList.push(posts[i].fileLocation);
+        uniqueIDList.push(posts[i].uniqueID);
       }
       return res.json({
         idList: idList,
@@ -103,6 +105,7 @@ router.get("/profilePage", (req, res) => {
         postDateList: postDateList,
         hashtagList: hashtagList,
         filesList: filesList,
+        uniqueIDList: uniqueIDList,
       });
     }
   }).sort({ postDate: -1 });
@@ -243,6 +246,7 @@ router.post("/getMoment", (req, res) => {
       let hashtagList = [];
       let filesList = [];
       let postTimeList = [];
+      let uniqueIDList = [];
       for (let i = 0; i < moments.length; i++) {
         idList.push(moments[i].userId);
         momentsList.push(moments[i].postmessage);
@@ -254,6 +258,7 @@ router.post("/getMoment", (req, res) => {
         hashtagList.push(moments[i].hashtagList);
         filesList.push(moments[i].fileLocation);
         postTimeList.push(moments[i].postDate);
+        uniqueIDList.push(moments[i].uniqueID);
         if (moments[i].nickname == null) {
           logoList.push("0");
         } else {
@@ -274,6 +279,7 @@ router.post("/getMoment", (req, res) => {
         hashtagList: hashtagList,
         filesList: filesList,
         postTimeList: postTimeList,
+        uniqueIDList: uniqueIDList,
       });
     }
   );
