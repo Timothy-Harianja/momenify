@@ -5,9 +5,183 @@ import "./post-dropdown.css";
 
 
 const PostDropdown = () => {
+
   return (
-    
-    <Dropdown classname="dropdown">
+  <Dropdown classname="dropdown">
+ <div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="messagemodal" role="dialog" onClick={()=>{
+  window.onclick = function(event) {
+  if (event.target == this.document.getElementById("messagemodal")) {
+    this.document.getElementById("messagemodal").style.display = "none";
+  }
+}
+}}>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" id="modalcontent">
+      <div class="modal-header">
+      <h5 class="modal-title">Message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
+                
+                document.getElementById("messagemodal").style.display = "none";
+               
+              
+               
+               }}>
+              <span
+                class="close"
+              >
+                &times;
+              </span>
+              </button>
+              
+             
+              </div>
+              <div class="modal-body">
+              <textarea
+                type="text"
+                id="messageinput"
+                name="messageinput"
+                placeholder="Say something to this user."
+                
+              />
+              
+             
+              </div>
+              <div class="modal-footer">
+              <div>
+                <button
+                  id="messagesubmit"
+                  type="submit"
+                  className="btn btn-primary"
+                  onClick={(e) => {
+                      document.getElementById("messageinput").value = "";
+                      document.getElementById("messagemodal").style.display ="none";
+                   
+                  }}
+                >
+                  Send
+                </button>
+                
+              </div>
+              </div>
+            </div> </div> </div>
+
+
+  <div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="reportmodal" role="dialog" onClick={()=>{
+  window.onclick = function(event) {
+  if (event.target == this.document.getElementById("reportmodal")) {
+    this.document.getElementById("reportmodal").style.display = "none";
+  }
+}
+}}>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" id="modalcontent">
+      <div class="modal-header">
+      <h5 class="modal-title">Report</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
+                
+                document.getElementById("reportmodal").style.display = "none";
+               
+              
+               
+               }}>
+              <span
+                class="close"
+              >
+                &times;
+              </span>
+              </button>
+              
+             
+              </div>
+              <div class="modal-body">
+              <textarea
+                type="text"
+                id="reportinput"
+                name="reportnput"
+                placeholder="Reason to report this user/post"
+                
+              />
+              
+             
+              </div>
+              <div class="modal-footer">
+              <div>
+                <button
+                  id="reportsubmit"
+                  type="submit"
+                  className="btn btn-primary"
+                  onClick={(e) => {
+                      document.getElementById("reportinput").value = "";
+                      document.getElementById("reportmodal").style.display ="none";
+                   
+                  }}
+                >
+                  Submit
+                </button>
+                
+              </div>
+              </div>
+            </div> </div> </div>
+
+
+<div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="deletemodal" role="dialog" onClick={()=>{
+  window.onclick = function(event) {
+  if (event.target == this.document.getElementById("deletemodal")) {
+    this.document.getElementById("deletemodal").style.display = "none";
+  }
+}
+}}>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" id="modalcontent">
+      <div class="modal-header">
+      <h5 class="modal-title">Delete</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
+                
+                document.getElementById("deletemodal").style.display = "none"
+               
+               }}>
+              <span
+                class="close"
+              >
+                &times;
+              </span>
+              </button>
+              
+             
+              </div>
+              <div class="modal-body">
+            <p>Are you sure you want to permanently remove this post from Momenify?</p>
+              </div>
+              <div class="modal-footer">
+              <div>
+              <button
+                  id="deletebutton"
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={(e) => {
+                      document.getElementById("deletemodal").style.display ="none";
+                   
+                  }}
+                >
+                  Delete
+                </button>
+              <button
+              className="btn btn-danger"
+              id="deletecancel"
+              type="button"
+           
+              onClick={(e)=>{
+                document.getElementById("deletemodal").style.display ="none";
+              }}
+              
+             >Cancel</button>
+               
+                
+              </div>
+              </div>
+            </div> </div> </div>
+
+      
       <Dropdown.Toggle
         className="dropdown-toggle"
         variant=""
@@ -52,7 +226,11 @@ const PostDropdown = () => {
           </svg>
           <span>Follow</span>
         </Dropdown.Item>
-        <Dropdown.Item>
+        <Dropdown.Item onClick={()=>{
+           
+           document.getElementById("messagemodal").style.display = "block";
+      
+        }}>
           <svg
             class="bi bi-chat"
             width="1em"
@@ -69,7 +247,11 @@ const PostDropdown = () => {
           </svg>
           <span>Message</span>
         </Dropdown.Item>
-        <Dropdown.Item>
+        <Dropdown.Item  onClick={()=>{
+           
+           document.getElementById("reportmodal").style.display = "block";
+      
+        }}>
           <svg
             class="bi bi-x-circle"
             width="1em"
@@ -94,68 +276,11 @@ const PostDropdown = () => {
               clip-rule="evenodd"
             />
           </svg>
-          
-<div class="modal"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true" tabindex="-1" id="reportmodal" role="dialog" onClick={()=>{
-  window.onclick = function(event) {
-  if (event.target == this.document.getElementById("reportmodal")) {
-    this.document.getElementById("reportmodal").style.display = "none";
-  }
-}
-}}>
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content" id="modalcontent">
-      <div class="modal-header">
-      <h5 class="modal-title">Report</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick={() => {
-                  if (this.state.overlayState == true) {
-                this.setState({ overlayState: false });
-                document.getElementById("reportmodal").style.display = "none";
-               }}}>
-              <span
-                class="close"
-              >
-                &times;
-              </span>
-              </button>
-              
-             
-              </div>
-              <div class="modal-body">
-              <textarea
-                type="text"
-                id="reportinput"
-                name="reportnput"
-                placeholder="Reason to report this user/post"
-                
-              />
-              
-             
-              </div>
-              <div class="modal-footer">
-              <div>
-                <button
-                  id="reportsubmit"
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                      document.getElementById("reportinput").value = "";
-                      document.getElementById("reportmodal").style.display ="none";
-                   
-                  }}
-                >
-                  Submit
-                </button>
-                
-              </div>
-              </div>
-            </div> </div> </div>
-
-
-          <span onClick={()=>{
-             document.getElementById("reportmodal").style.display = "block";
-          }}>Report</span>
+          <span>Report</span>
         </Dropdown.Item>
-        <Dropdown.Item>
+        <Dropdown.Item onClick={()=>{
+            document.getElementById("deletemodal").style.display = "block";
+          }}>
           <svg class="svg-icon" viewBox="0 0 20 20">
             <path
               fill="none"
