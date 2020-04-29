@@ -5,12 +5,23 @@ const bcrypt = require("bcryptjs");
 
 router.get("/session", (req, res) => {
   User.findOne({ email: req.session.email }, (err, result) => {
-    if (err) console.log(err);
+    if (err) {
+      console.log("here is an arror", err);
+      return res.json({ success: false });
+    }
     if (result != null) {
       req.session.username = result.nickname;
       req.session.logoNumber = result.logo;
+      console.log("session: your following list", result.following);
+      return res.json({
+        userId: req.session.userId,
+        logoNumber: req.session.logoNumber,
+        following: result.following,
+        success: true,
+      });
     }
-    res.send(req.session);
+    return res.json({ success: false });
+    // res.send(req.session);
   });
 });
 
@@ -65,8 +76,8 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.get("/userInfo", (req, res) => {
-  console.log("is null?", req.body.userid);
+router.post("/userInfo", (req, res) => {
+  console.log("is null?", req.body);
   if (req.body.userid == undefined) {
     console.log("checked undefined,");
     return res.json({
