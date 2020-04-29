@@ -5,27 +5,26 @@ import axios from "axios";
 
 class PostDropdown extends React.Component {
   state = {
-    userid: this.props.userid,
-    followStatus: this.props.followStatus,
-    userId: this.props.userId,
+    // followStatus: false,
+    // userId: this.props.userId,
   };
 
   follow = () => {
-    console.log("followStatus: ", this.state.followStatus);
-    if (this.state.userid != null) {
+    console.log("followStatus: ", this.props.followStatus);
+    if (this.props.id != null) {
       axios
-        .post("/api/followChangeRoute/follow", { userid: this.state.userid })
+        .post("/api/followChangeRoute/follow", { userid: this.props.id })
         .then((res) => {
           console.log("res of follow: ", res.data);
           if (res.data.success) {
             console.log(res.data.message);
-            this.setState({ followStatus: true });
-            this.props.changeFollowStatus(true);
-            this.props.updateFollow(this.state.id);
+            // this.setState({ followStatus: true });
+            // this.props.changeFollowStatus(true);
+            this.props.updateFollow(this.props.id);
           } else {
             console.log(res.data.message);
-            this.setState({ followStatus: false });
-            this.props.changeFollowStatus(false);
+            // this.setState({ followStatus: false });
+            // this.props.changeFollowStatus(false);
           }
         });
       //not anonymous
@@ -35,28 +34,30 @@ class PostDropdown extends React.Component {
     }
   };
   unfollow = () => {
-    console.log("userid to unfollow is null?: ", this.state.userid == null);
-    if (this.state.userid != null) {
+    console.log("id to unfollow is null?: ", this.props.id == null);
+    if (this.props.id != null) {
       axios
-        .post("/api/followChangeRoute/unfollow", { userid: this.state.userid })
+        .post("/api/followChangeRoute/unfollow", { userid: this.props.id })
         .then((res) => {
           console.log("res of unfollow: ", res.data);
           if (res.data.success || res.data.message.includes("You unfollowed")) {
             console.log(res.data.message);
-            this.setState({ followStatus: false });
-            this.props.changeFollowStatus(false);
-            this.props.updateFollow(this.state.id);
+            // this.setState({ followStatus: false });
+            // this.props.changeFollowStatus(false);
+            this.props.updateFollow(this.props.id);
           } else {
             console.log(res.data.message);
-            this.setState({ followStatus: true });
-            this.props.changeFollowStatus(true);
+            // this.setState({ followStatus: true });
+            // this.props.changeFollowStatus(true);
           }
         });
     } else {
       console.log("user to unfollowed not exist.");
     }
   };
+
   render() {
+    // this.setFollowStatus();
     return (
       <Dropdown classname="dropdown">
         <Dropdown.Toggle
@@ -101,7 +102,7 @@ class PostDropdown extends React.Component {
                 clip-rule="evenodd"
               />
             </svg>
-            {this.state.followStatus ? (
+            {this.props.followStatus ? (
               <span onClick={() => this.unfollow()}>unfollow</span>
             ) : (
               <span onClick={() => this.follow()}>Follow</span>

@@ -10,6 +10,15 @@ router.post("/follow", (req, res) => {
   if (req.session.userId != null) {
     var yourId = req.session.userId;
     console.log("you login already");
+
+    //check you cannot follow yourself
+    if (yourId == req.body.userid) {
+      console.log("you cannot follow yourself");
+      return res.json({
+        success: false,
+        message: "you cannot follow yourself",
+      });
+    }
     //find user to follow in database
     User.findOne({ _id: req.body.userid }, (err, userToFollow) => {
       if (err) {
@@ -74,8 +83,9 @@ router.post("/follow", (req, res) => {
 });
 
 router.post("/unfollow", (req, res) => {
-  console.log("backend: /follow");
-  console.log("req.session.userId is null?: ", req.session.userId == null);
+  console.log("backend: /unfollow");
+  console.log("req.session.userId is: ", req.session.userId);
+  console.log("req.body.userid is : ", req.body.userid);
   if (req.session.userId != null) {
     var yourId = req.session.userId;
     console.log("you did login");
@@ -88,6 +98,7 @@ router.post("/unfollow", (req, res) => {
           message: "err in find the user to be followed",
         });
       }
+      console.log("userFollowed.follower, ", userFollowed.follower);
       if (!userFollowed.follower.includes(yourId)) {
         //did not follow the user
         console.log("the follower didn't records you", err);
@@ -98,7 +109,10 @@ router.post("/unfollow", (req, res) => {
       }
       var userNickName = userFollowed.nickname;
       var updateFollower = userFollowed.follower;
-      updateFollower = updateFollower.splice(updateFollower.indexOf(yourId), 1);
+      console.log("updateFollower before,  ", updateFollower);
+      updateFollower = updateFollower.filter((item) => item != yourId);
+      console.log("updateFollower after ,  ", updateFollower);
+
       userFollowed.follower = updateFollower;
       userFollowed.save((err) => {
         if (err) {
@@ -117,10 +131,12 @@ router.post("/unfollow", (req, res) => {
             });
           }
           var updateFollowing = yours.following;
-          updateFollowing = updateFollowing.splice(
-            updateFollowing.indexOf(req.body.userid),
-            1
+          console.log("updateFollowing before, ", updateFollowing);
+          updateFollowing = updateFollowing.filter(
+            (item) => item != req.body.userid
           );
+          console.log("updateFollowing after, ", updateFollowing);
+
           yours.following = updateFollowing;
           yours.save((err) => {
             if (err) {
