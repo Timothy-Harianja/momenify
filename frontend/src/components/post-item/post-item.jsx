@@ -100,7 +100,7 @@ class PostItem extends React.Component {
             <span className="post-item-header-name">{this.props.username}</span>
           ) : (
             <a
-              href={"/profile/" + this.props.id}
+              href={"/profile/" + this.props.uniqueID}
               className="post-item-header-name"
             >
               {this.props.username}

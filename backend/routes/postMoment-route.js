@@ -207,8 +207,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.hashtagList =
     req.body.hashtagList != null ? req.body.hashtagList : [];
   postMoment.userLogo = req.body.userLogo;
-  // photo
-  // console.log("Post moment: ", req.body.files);
+  postMoment.uniqueID = req.body.uniqueID;
   postMoment.fileLocation = req.body.fileLocation;
 
   if (req.session.userId) {

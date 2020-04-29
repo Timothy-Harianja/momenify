@@ -36,6 +36,7 @@ class Body extends Component {
       visitedList: [],
       followStatus: [],
       following: [],
+      uniqueIDList: [],
     };
   }
 
@@ -79,12 +80,13 @@ class Body extends Component {
           this.state.postDateList.push(res.data.postDateList[i]);
           this.state.hashtagList.push(res.data.hashtagList[i]);
           this.state.filesList.push(res.data.filesList[i]);
+          this.state.uniqueIDList.push(res.data.uniqueIDList[i]);
           this.state.posts++;
           this.state.followStatus.push(
             this.state.following.includes(res.data.idList[i]) ? true : false
           );
         }
-        console.log("this.state.followStatus: ", this.state.followStatus);
+
         this.setState({
           loadStatus: true,
           loadingFeedback:
@@ -96,20 +98,6 @@ class Body extends Component {
       .catch((err) => {
         console.log(err);
       });
-    // .then(() => {
-    //   var following = this.state.following;
-    //   var followStatus = this.state.followStatus;
-    //   for (let i = 0; i < res.data.idList.length; i++) {
-    //     if (following.includes(idList[i])) {
-    //       followStatus.push(true);
-    //     } else {
-    //       followStatus.push(false);
-    //     }
-    //   }
-    //   this.setState({
-    //     followStatus: followStatus,
-    //   });
-    // });
   };
 
   giveComment = (comment) => {
@@ -171,15 +159,7 @@ class Body extends Component {
     return list[parseInt(num)];
   };
   showPosts = () => {
-    // get all the posts from the
     var posts = [];
-    // console.log("follow list: ", this.state.followStatus);
-    // console.log(
-    //   "get follow list after promise?: ",
-    //   this.state.followStatusDone
-    // );
-
-    // console.log("post list: ", this.state.posts);
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
@@ -193,6 +173,7 @@ class Body extends Component {
               }
               userId={this.state.userId}
               id={this.state.idList[i]}
+              uniqueID={this.state.uniqueIDList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
@@ -235,6 +216,7 @@ class Body extends Component {
     let newIDList = [newPost.userID, ...this.state.idList];
     let newFilesList = [newPost.file, ...this.state.filesList];
     let newFollowStatus = [false, ...this.state.followStatus];
+    let newUniqueIDList = [newPost.uniqueID, ...this.state.uniqueIDList];
 
     this.setState({
       idList: newIDList,
@@ -251,11 +233,11 @@ class Body extends Component {
       posts: this.state.posts + 1,
       filesList: newFilesList,
       followStatus: newFollowStatus,
+      uniqueIDList: newUniqueIDList,
     });
   };
 
   updateFollow = (req) => {
-    console.log(req.id);
     var idList = this.state.idList;
     var followStatus = this.state.followStatus;
     for (let i = 0; i < idList.length; i++) {

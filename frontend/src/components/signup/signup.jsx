@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./signup.css";
 import axios from "axios";
 import Login from "../login/login.jsx";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 function makeTime() {
   let ts = Date.now();
@@ -34,6 +35,8 @@ class Signup extends Component {
     activeTokenExpire: null,
     lastLogin: null,
     uniqueID: null,
+    progress: null,
+    logoURL: "https://momenify.s3.us-east-2.amazonaws.com/default.png",
   };
 
   submitHandler = (e) => {
@@ -92,6 +95,42 @@ class Signup extends Component {
     }
   };
 
+  onChange = (e) => {
+    if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
+      this.setState({
+        userLogo: e.target.files[0],
+      });
+    } else {
+      alert("Please select a file that is less than 50MB!");
+    }
+    document.getElementById("signup").setAttribute("disabled", true);
+
+    setTimeout(() => {
+      const formData = new FormData();
+      formData.append("myFiles", this.state.userLogo);
+      axios
+        .post("/api/config/uploadLogo", formData, {
+          onUploadProgress: (progressEvent) => {
+            this.setState({
+              progress: Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              ),
+            });
+          },
+        })
+        .then((res) => {
+          console.log("res from upload logo: ", res);
+          document.getElementById("signup").removeAttribute("disabled");
+          if (res.data.success) {
+            this.setState({
+              progress: null,
+              logoURL: res.data.imageLocation,
+            });
+          }
+        });
+    }, 500);
+  };
+
   render() {
     return (
       <div className="SignUp">
@@ -111,7 +150,7 @@ class Signup extends Component {
 
           <div className="form-group">
             <label>
-              Unique ID
+              ID
               <span style={{ fontSize: 10, color: "grey" }}>
                 -The ID cannot be changed in future
               </span>
@@ -120,7 +159,7 @@ class Signup extends Component {
               required
               type="text"
               className="form-control"
-              placeholder="Pick a unique ID for your account"
+              placeholder="Pick a unique ID"
               onChange={(e) => this.setState({ uniqueID: e.target.value })}
             />
           </div>
@@ -159,9 +198,42 @@ class Signup extends Component {
             />
           </div>
 
+          <div className="form-group">
+            <img className="side-profile" src={this.state.logoURL} />
+            <br></br>
+            <div class="file btn btn-lg btn-light" id="updatebutton">
+              Upload a logo(optional)
+              <input
+                id="file"
+                type="file"
+                accept="image/*"
+                name="selectedFile"
+                onChange={(event) => this.onChange(event)}
+              />
+            </div>
+          </div>
+          {this.state.progress != null && this.state.progress <= 100 ? (
+            <div style={{ width: "100%" }}>
+              Uploading:
+              <ProgressBar
+                label={
+                  this.state.progress == 100
+                    ? "Almost done"
+                    : this.state.progress + "%"
+                }
+                animated
+                now={this.state.progress}
+              />
+            </div>
+          ) : (
+            <span></span>
+          )}
+          <br></br>
+
           <button
             type="submit"
             className="btn btn-primary btn-block"
+            id="signup"
             onClick={() => {
               this.putDataToUsers({
                 nickname: this.state.nickname,
@@ -171,6 +243,7 @@ class Signup extends Component {
                 lastLogin: makeTime(),
                 uniqueID: this.state.uniqueID,
                 activeToken: makeToken(30),
+                logoURL: this.state.logoURL,
               });
             }}
           >
