@@ -51,6 +51,8 @@ class Body extends Component {
       .then((res) => {
         // console.log("res.data.userId, ", res.data.userId);
         if (res.data.success) {
+          console.log("userId, ", res.data.userId);
+          console.log("logoNumber, ", res.data.logoNumber);
           this.setState({
             userId: res.data.userId,
             logoNumber: res.data.logoNumber,
@@ -276,7 +278,7 @@ class Body extends Component {
   };
 
   updateFollow = (followid) => {
-    // console.log("update follow");
+    console.log("update follow");
     var idList = this.state.idList;
     var followStatus = this.state.followStatus;
     for (let i = 0; i < idList.length; i++) {

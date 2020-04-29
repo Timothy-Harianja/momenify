@@ -83,10 +83,10 @@ class PostItem extends React.Component {
     return "unkown";
   };
 
-  changeFollowStatus = (newStatus) => {
-    this.setState({ followStatus: newStatus });
-    console.log("changed follow status");
-  };
+  // changeFollowStatus = (newStatus) => {
+  //   this.setState({ followStatus: newStatus });
+  //   console.log("changed follow status");
+  // };
   render() {
     //console.log("filename: ", this.props.file);
     return (
@@ -115,9 +115,10 @@ class PostItem extends React.Component {
           <span className="post-item-header-dropdown">
             <PostDropdown
               userid={this.state.userid}
-              changeFollowStatus={(e) => this.changeFollowStatus(e)}
+              // changeFollowStatus={(e) => this.changeFollowStatus(e)}
               followStatus={this.props.followStatus}
               updateFollow={(e) => this.props.updateFollow(e)}
+              id={this.props.id}
               userId={this.props.userId}
             ></PostDropdown>
           </span>
