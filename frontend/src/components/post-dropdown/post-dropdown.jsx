@@ -16,7 +16,7 @@ class PostDropdown extends React.Component {
         .post("/api/followChangeRoute/follow", { userid: this.props.id })
         .then((res) => {
           if (res.data.success) {
-            this.props.updateFollow(this.props.id);
+            this.props.updateFollow({ id: this.props.id, action: "follow" });
           } else {
             alert(res.data.message);
           }
@@ -31,7 +31,7 @@ class PostDropdown extends React.Component {
         .post("/api/followChangeRoute/unfollow", { userid: this.props.id })
         .then((res) => {
           if (res.data.success || res.data.message.includes("You unfollowed")) {
-            this.props.updateFollow(this.props.id);
+            this.props.updateFollow({ id: this.props.id, action: "unfollow" });
           }
         });
     }
