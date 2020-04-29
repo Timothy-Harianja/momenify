@@ -13,6 +13,7 @@ class PostItem extends React.Component {
       commentText: null,
       postid: this.props.postid,
       position: this.props.position,
+      userid: this.props.id,
     };
   }
 
@@ -71,8 +72,9 @@ class PostItem extends React.Component {
           controls
           loop
           preload="metadata"
+          src={file + "#t=0.1"}
         >
-          <source src={file + "#t=0.1"} />
+          {/* <source src={file + "#t=0.1"} /> */}
           {/* <source src={file} type="video/ogg" />
           <source src={file} type="video/mov" /> */}
         </video>
@@ -80,6 +82,11 @@ class PostItem extends React.Component {
     }
     return "unkown";
   };
+
+  // changeFollowStatus = (newStatus) => {
+  //   this.setState({ followStatus: newStatus });
+  //   console.log("changed follow status");
+  // };
   render() {
     //console.log("filename: ", this.props.file);
     return (
@@ -99,9 +106,21 @@ class PostItem extends React.Component {
               {this.props.username}
             </a>
           )}
+          {this.props.followStatus ? (
+            <span className="post-item-follow">-Followed</span>
+          ) : (
+            <span> </span>
+          )}
 
           <span className="post-item-header-dropdown">
-            <PostDropdown></PostDropdown>
+            <PostDropdown
+              userid={this.state.userid}
+              // changeFollowStatus={(e) => this.changeFollowStatus(e)}
+              followStatus={this.props.followStatus}
+              updateFollow={(e) => this.props.updateFollow(e)}
+              id={this.props.id}
+              userId={this.props.userId}
+            ></PostDropdown>
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>

@@ -9,12 +9,12 @@ var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "themomenify@gmail.com",
-    pass: "cse312@project"
-  }
+    pass: "cse312@project",
+  },
 });
 router.post("/forgetPassword", (req, res) => {
   var fp = new FP();
-  FP.countDocuments({}, function(err, c) {
+  FP.countDocuments({}, function (err, c) {
     note = {
       from: "themomenify@gmail.com",
       to: "themomenify@gmail.com",
@@ -22,7 +22,7 @@ router.post("/forgetPassword", (req, res) => {
       text:
         "user with email: " +
         req.body.email +
-        "is trying to login with emil confirmation"
+        "is trying to login with email confirmation",
     };
     transporter.sendMail(note);
   });
@@ -35,7 +35,7 @@ router.post("/forgetPassword", (req, res) => {
       console.log(err);
       return res.json({ success: false });
     } else if (user != null && user.activation) {
-      fp.save(err => {
+      fp.save((err) => {
         if (err) {
           console.log(err);
           return res.json({ success: false });
@@ -50,7 +50,7 @@ router.post("/forgetPassword", (req, res) => {
               "Below is your reset password link: \n" +
               tokenLink +
               "\n" +
-              "\n Momenify, Inc."
+              "\n Momenify, Inc.",
           };
           transporter.sendMail(mail);
           return res.json({ success: true });
@@ -77,7 +77,7 @@ function getToken(res) {
 async function hashPassword(password) {
   const saltRounds = 10;
   const hashedPassword = await new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, function(err, hash) {
+    bcrypt.hash(password, saltRounds, function (err, hash) {
       if (err) reject(err);
       resolve(hash);
     });
@@ -102,12 +102,12 @@ router.post("/newPassword", (req, res) => {
       if (fp.tokenExpire > time) {
         //user login and delete current fp
         var email = fp.email;
-        FP.deleteMany({ email: email }, err2 => {
+        FP.deleteMany({ email: email }, (err2) => {
           if (err2) {
             console.log("err2 : ", err2);
             return res.json({ success: false });
           }
-        }).then(result => {
+        }).then((result) => {
           console.log("result after delete fp; ", result);
           User.findOne({ email: email }, (err3, user) => {
             if (err3) {
@@ -115,10 +115,10 @@ router.post("/newPassword", (req, res) => {
               return res.json({ success: false });
             } else if (user != null && user.activation) {
               //change passoword
-              hashPassword(req.body.newPassword).then(result => {
+              hashPassword(req.body.newPassword).then((result) => {
                 user.password = result;
                 console.log("new passsword set )))))))))))),", result);
-                user.save(err5 => {
+                user.save((err5) => {
                   if (err5) {
                     console.log("error 5, ", err5);
                     return res.json({ success: false });
@@ -137,7 +137,7 @@ router.post("/newPassword", (req, res) => {
       } else {
         // expired, delete fp
         var email = fp.email;
-        FP.deleteMany({ email: email }, err2 => {
+        FP.deleteMany({ email: email }, (err2) => {
           if (err2) {
             console.log("expired, delete fp ,err4 : ", err4);
             return res.json({ success: false });

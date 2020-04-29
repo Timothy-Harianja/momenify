@@ -160,8 +160,8 @@ class HashtagPage extends Component {
               imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
               profileUrl={
                 this.state.usernameList[i] == undefined
-                  ? anonymous
-                  : this.getLogo(this.state.userLogo[i])
+                  ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                  : this.state.userLogo[i]
               }
               postid={this.state.postidList[i]}
               position={i}

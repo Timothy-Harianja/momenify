@@ -4,7 +4,27 @@ const User = require("../user");
 const bcrypt = require("bcryptjs");
 
 router.get("/session", (req, res) => {
-  res.send(req.session);
+  User.findOne({ email: req.session.email }, (err, result) => {
+    if (err) {
+      console.log("here is an arror", err);
+      return res.json({ success: false });
+    }
+    if (result != null) {
+      req.session.username = result.nickname;
+      req.session.logoNumber = result.logo;
+      console.log("session: your following list", result.following);
+      return res.json({
+        userId: req.session.userId,
+        logoNumber: result.logo,
+        following: result.following,
+        email: result.email,
+        username: result.nickname,
+        success: true,
+      });
+    }
+    return res.json({ success: false });
+    // res.send(req.session);
+  });
 });
 
 router.post("/logout", (req, res) => {
@@ -33,6 +53,7 @@ router.post("/login", (req, res) => {
           req.session.username = result2.nickname;
           req.session.email = result2.email;
           req.session.logoNumber = result2.logo;
+
           // console.log("req session in login:", req.session);
 
           return res.json({
@@ -54,6 +75,24 @@ router.post("/login", (req, res) => {
         success: false,
       });
     }
+  });
+});
+
+router.post("/userInfo", (req, res) => {
+  console.log("is null?", req.body);
+  if (req.body.userid == undefined) {
+    console.log("checked undefined,");
+    return res.json({
+      success: false,
+      userInfo: null,
+      message: "your userid is undefined",
+    });
+  }
+  User.findOne({ _id: req.body.userid }, (err, user) => {
+    if (err) {
+      return res.json({ success: false, userInfo: null });
+    }
+    return res.json({ success: true, userInfo: user });
   });
 });
 

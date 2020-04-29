@@ -3,21 +3,9 @@ import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 import "./body.css";
 import TopRightContainer from "../posts-container/top-right-container";
-import TrendContainer from "../posts-container/trend-container";
-import kun from "./kun.png";
-import anonymous from "../posts-container/anonymous.png";
 import CreatePost from "../create-post/create-post";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
-import logo1 from "../images/logo1.png";
-import logo2 from "../images/logo2.png";
-import logo3 from "../images/logo3.png";
-import logo4 from "../images/logo4.png";
-import logo5 from "../images/logo5.png";
-import logo6 from "../images/logo6.png";
-import logo7 from "../images/logo7.png";
-import logo8 from "../images/logo1.png";
-import logo9 from "../images/logo9.png";
 import one from "../images/one.png";
 import two from "../images/two.png";
 import three from "../images/three.png";
@@ -45,6 +33,9 @@ class Body extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
+      visitedList: [],
+      followStatus: [],
+      following: [],
     };
   }
 
@@ -54,47 +45,72 @@ class Body extends Component {
         this.setState({ topTrendList: res.data.hashtagList });
       }
     });
-
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
-        this.setState({
-          userId: res.data.userId,
-          logoNumber: res.data.logoNumber,
-        });
+        if (res.data.success) {
+          this.setState({
+            userId: res.data.userId,
+            logoNumber: res.data.logoNumber,
+            following: res.data.following,
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
-      });
-    axios
-      .get("/api/getRoute/getMoment")
-      .then((res) => {
-        this.setState({
-          loadingFeedback:
-            res.data.allMoments.length > 3
-              ? "Loading Posts..."
-              : "No More New Posts, Come Back Later :)",
-          posts:
-            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-          idList: res.data.idList,
-          moments: res.data.allMoments,
-          usernameList: res.data.allUsername,
-          postidList: res.data.allPostid,
-          likeStatus: Array(res.data.momentLength).fill(false),
-          numofLike: res.data.numofLike,
-          message: Array(res.data.momentLength).fill(""),
-          userLogo: res.data.logoList,
-          commentList: res.data.commentList,
-          postDateList: res.data.postDateList,
-          hashtagList: res.data.hashtagList,
-          loadStatus: true,
-          filesList: res.data.filesList,
-        });
       })
-      .catch((err) => {
-        console.log(err);
+      .then(() => {
+        this.queryPost();
       });
   }
+  queryPost = () => {
+    axios
+      .post("/api/getRoute/getMoment", { visitedList: this.state.postidList })
+      .then((res) => {
+        for (let i = 0; i < res.data.allMoments.length; i++) {
+          this.state.idList.push(res.data.idList[i]);
+          this.state.moments.push(res.data.allMoments[i]);
+          this.state.usernameList.push(res.data.allUsername[i]);
+          this.state.postidList.push(res.data.allPostid[i]);
+          this.state.likeStatus.push(false);
+          this.state.numofLike.push(res.data.numofLike[i]);
+          this.state.userLogo.push(res.data.logoList[i]);
+          this.state.commentList.push(res.data.commentList[i]);
+          this.state.postDateList.push(res.data.postDateList[i]);
+          this.state.hashtagList.push(res.data.hashtagList[i]);
+          this.state.filesList.push(res.data.filesList[i]);
+          this.state.posts++;
+          this.state.followStatus.push(
+            this.state.following.includes(res.data.idList[i]) ? true : false
+          );
+        }
+        console.log("this.state.followStatus: ", this.state.followStatus);
+        this.setState({
+          loadStatus: true,
+          loadingFeedback:
+            res.data.allMoments.length == 0
+              ? "No More New Posts, Come Back Later :)"
+              : "Loading More...",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // .then(() => {
+    //   var following = this.state.following;
+    //   var followStatus = this.state.followStatus;
+    //   for (let i = 0; i < res.data.idList.length; i++) {
+    //     if (following.includes(idList[i])) {
+    //       followStatus.push(true);
+    //     } else {
+    //       followStatus.push(false);
+    //     }
+    //   }
+    //   this.setState({
+    //     followStatus: followStatus,
+    //   });
+    // });
+  };
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
@@ -150,11 +166,6 @@ class Body extends Component {
       });
   };
 
-  getLogo = (num) => {
-    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
-    return list[parseInt(num) - 1];
-  };
-
   getNumberLogo = (num) => {
     let list = [one, two, three, four, five];
     return list[parseInt(num)];
@@ -162,6 +173,13 @@ class Body extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
+    // console.log("follow list: ", this.state.followStatus);
+    // console.log(
+    //   "get follow list after promise?: ",
+    //   this.state.followStatusDone
+    // );
+
+    // console.log("post list: ", this.state.posts);
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
@@ -173,15 +191,15 @@ class Body extends Component {
                   ? "Anonymous"
                   : this.state.usernameList[i]
               }
+              userId={this.state.userId}
               id={this.state.idList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
-              imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
               profileUrl={
                 this.state.usernameList[i] == undefined
-                  ? anonymous
-                  : this.getLogo(this.state.userLogo[i])
+                  ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                  : this.state.userLogo[i]
               }
               postid={this.state.postidList[i]}
               position={i}
@@ -193,27 +211,14 @@ class Body extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              followStatus={this.state.followStatus[i]}
+              updateFollow={(e) => this.updateFollow(e)}
             />
           </div>
         );
       }
     }
     return posts;
-  };
-
-  loadMorePosts = () => {
-    let leftPost = this.state.moments.length - this.state.posts;
-    let newPost = 0;
-    if (leftPost > 0) {
-      newPost = leftPost >= 3 ? 3 : leftPost;
-      setTimeout(() => {
-        this.setState({ posts: this.state.posts + newPost });
-      }, 200);
-    } else {
-      this.setState({
-        loadingFeedback: "No More Posts, Come Back Later :)",
-      });
-    }
   };
 
   addNewPost = (newPost) => {
@@ -229,6 +234,7 @@ class Body extends Component {
     let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
     let newIDList = [newPost.userID, ...this.state.idList];
     let newFilesList = [newPost.file, ...this.state.filesList];
+    let newFollowStatus = [false, ...this.state.followStatus];
 
     this.setState({
       idList: newIDList,
@@ -244,7 +250,26 @@ class Body extends Component {
       hashtagList: newHashtagList,
       posts: this.state.posts + 1,
       filesList: newFilesList,
+      followStatus: newFollowStatus,
     });
+  };
+
+  updateFollow = (req) => {
+    console.log(req.id);
+    var idList = this.state.idList;
+    var followStatus = this.state.followStatus;
+    for (let i = 0; i < idList.length; i++) {
+      if (idList[i] == req.id) {
+        followStatus[i] = !followStatus[i];
+      }
+    }
+    this.setState({ followStatus: followStatus });
+    //update following list
+    if (req.action == "follow") {
+      this.state.following.push(req.id);
+    } else {
+      this.state.following.filter((item) => item != req.id);
+    }
   };
 
   render() {
@@ -261,7 +286,7 @@ class Body extends Component {
             <PostsContainer
               postContent={this.state.postContent}
               resetPostContent={() => this.resetNewPost()}
-              loadMorePosts={() => this.loadMorePosts()}
+              loadMorePosts={() => this.queryPost()}
               showPosts={() => this.showPosts()}
               giveLike={(post) => this.giveLike(post)}
               state={this.state}
@@ -274,8 +299,8 @@ class Body extends Component {
                   <img
                     src={
                       this.state.userId == null
-                        ? anonymous
-                        : this.getLogo(this.state.logoNumber)
+                        ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                        : this.state.logoNumber
                     }
                     alt="kun"
                     id="side-profile"

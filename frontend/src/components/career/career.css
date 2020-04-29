@@ -1,73 +1,69 @@
-@media all and (min-width: 480px) {
-    .career{
-        padding: 60px 0;
-    }
+.career{
+    margin-top: 50px;
+}
   
-}
+/* Left and right column */
+  .col{
+    width: 25%;
+  }
+  
+  /* Middle column */
+  .col-7 {
+    font-weight: bold;
+    width: 50%;
+    height: 100%;
+   
+ 
+  }
 
-
-#careerheader{
-    text-align: center;
-}
+  /* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 280px) and (min-width: 280px){
+    .col, .col-7 {
+      width: 100%;
+    }
+  }
 
 #resume {
-    margin-left: 100px;
+    margin-left: 0px;
     position: relative;
     overflow: hidden;
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
     font-weight: bold;
     font-size: 20px;
     background-color: white;
+    border-style: solid;
+    border-color: rgba(227, 235, 253, 1);
+    border-width: 2px;
+    border-radius: 8px;
   }
+
+
 
 #uploadresume {
-    
+  
     position: absolute;
-    font-size: 15px;
+    font-size: 30px;
     opacity: 0;
     right: 0;
     top: 0;
 }
 
-#cover{
-    margin-left: 100px;
-    position: relative;
-    overflow: hidden;
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
+#submitcareer{
     font-weight: bold;
-    font-size: 20px;
-    background-color: white;
-}
-
-#uploadcover{
-    position: absolute;
-    font-size: 15px;
-    opacity: 0;
-    right: 0;
-    top: 0;
-}
-
-#resbody {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 100px;
     margin-left: 100px;
-    font-size: 120%;
-  }
+   
+}
+footer {
 
-  #submit {
-    background-color: white;
-    padding: 6px 10px;
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
-    font-weight: bold;
-    font-size: 20px;
-    width: 100px;
-    margin-left: 1%;
-    margin-right: auto;
+    padding: 10px;
+    text-align: center;
+    color: white;
   }
-
-  #personalinfo{
-      margin-left:100px;
-      margin-right: 100px;
-
-  }
+  
