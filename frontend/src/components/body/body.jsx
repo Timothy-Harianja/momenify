@@ -259,6 +259,7 @@ class Body extends Component {
     let newHashtagList = [newPost.hashtagList, ...this.state.hashtagList];
     let newIDList = [newPost.userID, ...this.state.idList];
     let newFilesList = [newPost.file, ...this.state.filesList];
+    let newFollowStatus = [false, ...this.state.followStatus];
 
     this.setState({
       idList: newIDList,
@@ -274,6 +275,7 @@ class Body extends Component {
       hashtagList: newHashtagList,
       posts: this.state.posts + 1,
       filesList: newFilesList,
+      followStatus: newFollowStatus,
     });
   };
 
