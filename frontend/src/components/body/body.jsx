@@ -86,7 +86,7 @@ class Body extends Component {
             this.state.following.includes(res.data.idList[i]) ? true : false
           );
         }
-        console.log("uniqueIDList: ", this.state.uniqueIDList);
+
         this.setState({
           loadStatus: true,
           loadingFeedback:
@@ -238,7 +238,6 @@ class Body extends Component {
   };
 
   updateFollow = (req) => {
-    console.log(req.id);
     var idList = this.state.idList;
     var followStatus = this.state.followStatus;
     for (let i = 0; i < idList.length; i++) {
