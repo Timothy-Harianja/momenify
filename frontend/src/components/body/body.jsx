@@ -36,7 +36,6 @@ class Body extends Component {
       visitedList: [],
       followStatus: [],
       following: [],
-      followStatusDone: false,
     };
   }
 
@@ -49,39 +48,18 @@ class Body extends Component {
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
-        // console.log("res.data.userId, ", res.data.userId);
         if (res.data.success) {
-          console.log("userId, ", res.data.userId);
-          console.log("logoNumber, ", res.data.logoNumber);
           this.setState({
             userId: res.data.userId,
             logoNumber: res.data.logoNumber,
             following: res.data.following,
           });
         }
-        // this.setState({ getFollowing: true });
       })
       .catch((err) => {
         console.log(err);
-        // this.setState({ getFollowing: true });
       })
       .then(() => {
-        // console.log("thisstate.userid, ", this.state.userId);
-        // var userid = this.state.userId;
-        // console.log("userid, ", userid);
-
-        // axios
-        //   .post("/api/loginRoute/userInfo", { userid: userid })
-        //   .then((res) => {
-        //     if (res.data.success) {
-        //       console.log("found user and info, ", res.data.userInfo.following);
-        //       this.setState({ following: res.data.userInfo.following });
-        //     }
-        //   })
-        //   .then(() => {
-        //     this.queryPost();
-        //   });
-
         this.queryPost();
       });
   }
@@ -102,7 +80,11 @@ class Body extends Component {
           this.state.hashtagList.push(res.data.hashtagList[i]);
           this.state.filesList.push(res.data.filesList[i]);
           this.state.posts++;
+          this.state.followStatus.push(
+            this.state.following.includes(res.data.idList[i]) ? true : false
+          );
         }
+        console.log("this.state.followStatus: ", this.state.followStatus);
         this.setState({
           loadStatus: true,
           loadingFeedback:
@@ -113,23 +95,21 @@ class Body extends Component {
       })
       .catch((err) => {
         console.log(err);
-      })
-      .then(() => {
-        var idList = this.state.idList;
-        var following = this.state.following;
-        var followStatus = [];
-        for (let i = 0; i < idList.length; i++) {
-          if (following.includes(idList[i])) {
-            followStatus.push(true);
-          } else {
-            followStatus.push(false);
-          }
-        }
-        this.setState({
-          followStatus: followStatus,
-          followStatusDone: true,
-        });
       });
+    // .then(() => {
+    //   var following = this.state.following;
+    //   var followStatus = this.state.followStatus;
+    //   for (let i = 0; i < res.data.idList.length; i++) {
+    //     if (following.includes(idList[i])) {
+    //       followStatus.push(true);
+    //     } else {
+    //       followStatus.push(false);
+    //     }
+    //   }
+    //   this.setState({
+    //     followStatus: followStatus,
+    //   });
+    // });
   };
 
   giveComment = (comment) => {
@@ -274,15 +254,22 @@ class Body extends Component {
     });
   };
 
-  updateFollow = (followid) => {
+  updateFollow = (req) => {
+    console.log(req.id);
     var idList = this.state.idList;
     var followStatus = this.state.followStatus;
     for (let i = 0; i < idList.length; i++) {
-      if (idList[i] == followid) {
+      if (idList[i] == req.id) {
         followStatus[i] = !followStatus[i];
       }
     }
     this.setState({ followStatus: followStatus });
+    //update following list
+    if (req.action == "follow") {
+      this.state.following.push(req.id);
+    } else {
+      this.state.following.filter((item) => item != req.id);
+    }
   };
 
   render() {
