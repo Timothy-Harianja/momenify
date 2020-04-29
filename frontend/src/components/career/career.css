@@ -44,22 +44,9 @@
     border-radius: 8px;
   }
 
-#coverletter{
-    margin-top: 10px;
-    margin-left: 0px;
-    position: relative;
-    overflow: hidden;
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif !important;
-    font-weight: bold;
-    font-size: 20px;
-    background-color: white;
-    border-style: solid;
-    border-color: rgba(227, 235, 253, 1);
-    border-width: 2px;
-    border-radius: 8px;
-}
 
-#uploadresume,#uploadcoverletter {
+
+#uploadresume {
   
     position: absolute;
     font-size: 30px;

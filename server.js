@@ -13,8 +13,8 @@ const resetPasswordRoute = require("./backend/routes/reset-password-route.js");
 const forgetPasswordRoute = require("./backend/routes/forget-password-route.js");
 const postMomentRoute = require("./backend/routes/postMoment-route.js");
 const getMomentRoute = require("./backend/routes/getMoment-route.js");
+const followChangeRoute = require("./backend/routes/follow-change-route.js");
 const config = require("./backend/routes/config.js");
-
 const path = require("path");
 const session = require("express-session");
 
@@ -63,6 +63,7 @@ app.use("/api/resetPasswordRoute", resetPasswordRoute);
 app.use("/api/forgetPasswordRoute", forgetPasswordRoute);
 app.use("/api/postRoute", postMomentRoute);
 app.use("/api/getRoute", getMomentRoute);
+app.use("/api/followChangeRoute", followChangeRoute);
 app.use("/api/config", config);
 // if (process.env.NODE_ENV == "production") {
 app.use(express.static("frontend/build"));
