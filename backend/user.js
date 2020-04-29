@@ -8,6 +8,8 @@ const UserSchema = new Schema({
   lastLogin: String,
   activation: Boolean,
   activeToken: String,
+  following: [],
+  follower: [],
   logo: String,
   uniqueID: String,
 });

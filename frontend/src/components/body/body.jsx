@@ -34,6 +34,9 @@ class Body extends Component {
       loadStatus: false,
       filesList: [],
       visitedList: [],
+      followStatus: [],
+      following: [],
+      followStatusDone: false,
     };
   }
 
@@ -46,16 +49,39 @@ class Body extends Component {
     axios
       .get("/api/loginRoute/session")
       .then((res) => {
-        this.setState({
-          userId: res.data.userId,
-          logoNumber: res.data.logoNumber,
-        });
+        // console.log("res.data.userId, ", res.data.userId);
+        if (res.data.success) {
+          this.setState({
+            userId: res.data.userId,
+            logoNumber: res.data.logoNumber,
+            following: res.data.following,
+          });
+        }
+        // this.setState({ getFollowing: true });
       })
       .catch((err) => {
         console.log(err);
-      });
+        // this.setState({ getFollowing: true });
+      })
+      .then(() => {
+        // console.log("thisstate.userid, ", this.state.userId);
+        // var userid = this.state.userId;
+        // console.log("userid, ", userid);
 
-    this.queryPost();
+        // axios
+        //   .post("/api/loginRoute/userInfo", { userid: userid })
+        //   .then((res) => {
+        //     if (res.data.success) {
+        //       console.log("found user and info, ", res.data.userInfo.following);
+        //       this.setState({ following: res.data.userInfo.following });
+        //     }
+        //   })
+        //   .then(() => {
+        //     this.queryPost();
+        //   });
+
+        this.queryPost();
+      });
   }
   queryPost = () => {
     axios
@@ -85,6 +111,27 @@ class Body extends Component {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .then(() => {
+        var idList = this.state.idList;
+        var following = this.state.following;
+        var followStatus = [];
+        // console.log("following list: ", this.state.following);
+        for (let i = 0; i < idList.length; i++) {
+          // console.log("id : ", idList[i]);
+
+          if (following.includes(idList[i])) {
+            console.log("insert true");
+            followStatus.push(true);
+          } else {
+            console.log("insert false");
+            followStatus.push(false);
+          }
+        }
+        this.setState({
+          followStatus: followStatus,
+          followStatusDone: true,
+        });
       });
   };
 
@@ -149,6 +196,13 @@ class Body extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
+    // console.log("follow list: ", this.state.followStatus);
+    // console.log(
+    //   "get follow list after promise?: ",
+    //   this.state.followStatusDone
+    // );
+
+    // console.log("post list: ", this.state.posts);
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
@@ -160,6 +214,7 @@ class Body extends Component {
                   ? "Anonymous"
                   : this.state.usernameList[i]
               }
+              userId={this.state.userId}
               id={this.state.idList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
@@ -179,6 +234,8 @@ class Body extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              followStatus={this.state.followStatus[i]}
+              updateFollow={(e) => this.updateFollow(e)}
             />
           </div>
         );
@@ -216,6 +273,18 @@ class Body extends Component {
       posts: this.state.posts + 1,
       filesList: newFilesList,
     });
+  };
+
+  updateFollow = (followid) => {
+    // console.log("update follow");
+    var idList = this.state.idList;
+    var followStatus = this.state.followStatus;
+    for (let i = 0; i < idList.length; i++) {
+      if (idList[i] == followid) {
+        followStatus[i] = !followStatus[i];
+      }
+    }
+    this.setState({ followStatus: followStatus });
   };
 
   render() {
