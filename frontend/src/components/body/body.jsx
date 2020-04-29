@@ -255,17 +255,21 @@ class Body extends Component {
   };
 
   updateFollow = (req) => {
-    console.log(req);
-    // var idList = this.state.idList;
-    // var followStatus = this.state.followStatus;
-    // for (let i = 0; i < idList.length; i++) {
-    //   if (idList[i] == req) {
-    //     followStatus[i] = !followStatus[i];
-    //   }
-    // }
-    // this.setState({ followStatus: followStatus });
-    // //update following list
-    // this.state.following.filter((item) => item != req);
+    console.log(req.id);
+    var idList = this.state.idList;
+    var followStatus = this.state.followStatus;
+    for (let i = 0; i < idList.length; i++) {
+      if (idList[i] == req.id) {
+        followStatus[i] = !followStatus[i];
+      }
+    }
+    this.setState({ followStatus: followStatus });
+    //update following list
+    if (req.action == "follow") {
+      this.state.following.push(req.id);
+    } else {
+      this.state.following.filter((item) => item != req.id);
+    }
   };
 
   render() {
