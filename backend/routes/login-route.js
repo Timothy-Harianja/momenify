@@ -14,7 +14,7 @@ router.get("/session", (req, res) => {
       req.session.logoNumber = result.logo;
 
       return res.json({
-        userId: result._id,
+        userId: req.session.userId,
         logoNumber: result.logo,
         following: result.following,
         follower: result.follower,
