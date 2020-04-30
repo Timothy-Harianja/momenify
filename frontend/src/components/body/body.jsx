@@ -67,8 +67,12 @@ class Body extends Component {
               })
               .then((followerResult) => {
                 this.setState({
-                  followerListInfo: followerResult.data.followerResult,
-                  followList: followerResult.data.followerResult,
+                  followerListInfo: followerResult.data.followerResult.filter(
+                    (x) => !!x
+                  ),
+                  followList: followerResult.data.followerResult.filter(
+                    (x) => !!x
+                  ),
                 });
               });
           }
@@ -79,7 +83,9 @@ class Body extends Component {
               })
               .then((followingResult) => {
                 this.setState({
-                  followingListInfo: followingResult.data.followingResult,
+                  followingListInfo: followingResult.data.followingResult.filter(
+                    (x) => !!x
+                  ),
                 });
               });
           }
