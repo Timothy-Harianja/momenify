@@ -12,13 +12,15 @@ router.get("/session", (req, res) => {
     if (result != null) {
       req.session.username = result.nickname;
       req.session.logoNumber = result.logo;
-      console.log("session: your following list", result.following);
+
       return res.json({
         userId: req.session.userId,
         logoNumber: result.logo,
         following: result.following,
+        follower: result.follower,
         email: result.email,
         username: result.nickname,
+        uniqueID: result.uniqueID,
         success: true,
       });
     }

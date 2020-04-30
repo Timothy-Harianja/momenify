@@ -41,6 +41,7 @@ class ProfilePage extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
+      uniqueIDList: [],
     };
   }
 
@@ -78,6 +79,7 @@ class ProfilePage extends Component {
           hashtagList: res.data.hashtagList,
           loadStatus: true,
           filesList: res.data.filesList,
+          uniqueIDList: res.data.uniqueIDList,
         });
       })
       .catch((err) => {
@@ -163,6 +165,7 @@ class ProfilePage extends Component {
                   : this.state.usernameList[i]
               }
               id={this.state.idList[i]}
+              uniqueID={this.state.uniqueIDList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}

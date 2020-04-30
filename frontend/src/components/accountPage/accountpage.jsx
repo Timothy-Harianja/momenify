@@ -21,7 +21,7 @@ class AccountPage extends Component {
   componentDidMount() {
     axios.get("/api/loginRoute/session").then((res) => {
       this.setState({
-        userId: res.data.userId,
+        userId: res.data.uniqueID,
         userEmail: res.data.email,
         userNickname: res.data.username,
         currentLogo: res.data.logoNumber,

@@ -74,7 +74,7 @@ class App extends Component {
             <Route path="/resetconfirmation" component={ResetConfirmation} />
 
             <Route path="/about-us" component={AboutUs} />
-            <Route path="/contact-us" component={ContactUs}/>
+            <Route path="/contact-us" component={ContactUs} />
             <Route path="/term-of-use" component={TermOfUse} />
             <Route path="/careers" component={Career} />
             <Route

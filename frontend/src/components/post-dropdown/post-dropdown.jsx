@@ -10,7 +10,6 @@ class PostDropdown extends React.Component {
   };
 
   follow = () => {
-    console.log("followStatus: ", this.props.followStatus);
     if (this.props.id != null) {
       axios
         .post("/api/followChangeRoute/follow", { userid: this.props.id })

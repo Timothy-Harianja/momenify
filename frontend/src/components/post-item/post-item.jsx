@@ -92,15 +92,25 @@ class PostItem extends React.Component {
     return (
       <div className="post-item-container">
         <div className="post-item-header">
-          <img
-            className="post-item-header-profile"
-            src={this.props.profileUrl}
-          />
-          {this.props.username == "Anonymous" ? (
+          {this.props.id == null ? (
+            <img
+              className="post-item-header-profile"
+              src={this.props.profileUrl}
+            />
+          ) : (
+            <a href={"/profile/" + this.props.uniqueID}>
+              <img
+                className="post-item-header-profile"
+                src={this.props.profileUrl}
+              />
+            </a>
+          )}
+
+          {this.props.id == null ? (
             <span className="post-item-header-name">{this.props.username}</span>
           ) : (
             <a
-              href={"/profile/" + this.props.id}
+              href={"/profile/" + this.props.uniqueID}
               className="post-item-header-name"
             >
               {this.props.username}
@@ -111,7 +121,6 @@ class PostItem extends React.Component {
           ) : (
             <span> </span>
           )}
-
           <span className="post-item-header-dropdown">
             <PostDropdown
               userid={this.state.userid}
