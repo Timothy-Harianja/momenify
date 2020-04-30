@@ -14,20 +14,18 @@ class TopRightContainer extends Component {
     // get all the posts from the
     var followers = [];
     for (var i = 0; i < this.props.follow.length; i++) {
-      if (this.props.follow[i] != null) {
-        let currentFollow = this.props.follow[i];
-        let uniqueID = currentFollow[0];
-        let followName = currentFollow[1];
-        let followLogo = currentFollow[2];
-        followers.push(
-          <a href={"/profile/" + uniqueID}>
-            <div key={i} className="follower">
-              <img src={followLogo} alt="kun" className="trend-img" />
-              <span>{followName}</span>
-            </div>
-          </a>
-        );
-      }
+      let currentFollow = this.props.follow[i];
+      let uniqueID = currentFollow[0];
+      let followName = currentFollow[1];
+      let followLogo = currentFollow[2];
+      followers.push(
+        <a href={"/profile/" + uniqueID}>
+          <div key={i} className="follower">
+            <img src={followLogo} alt="kun" className="trend-img" />
+            <span>{followName}</span>
+          </div>
+        </a>
+      );
     }
     return followers;
   };
