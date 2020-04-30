@@ -87,7 +87,14 @@ let getFollow = (obj) => {
   return new Promise((resolve, reject) => {
     User.findOne({ _id: obj }, (err, result) => {
       if (err) console.log(err);
-      resolve([result.uniqueID, result.nickname, result.logo]);
+      // console.log("result.uniqueID: ", result.uniqueID);
+      // console.log("result.nickname: ", result.nickname);
+      // console.log("result.uniqueID: ", result.uniqueID);
+      if (result != null) {
+        resolve([result.uniqueID, result.nickname, result.logo]);
+      } else {
+        resolve(null);
+      }
     });
   });
 };
