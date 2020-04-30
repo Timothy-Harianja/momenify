@@ -42,8 +42,6 @@ router.post("/uploadLogo", (req, res) => {
         console.log("Error: No File Selected!");
         return res.json({ success: false });
       } else {
-        // If Success
-        // console.log("req.file: ", req.file);
         const imageLocation = req.file.location;
         // Save the file name into database into profile model
         return res.json({
@@ -83,5 +81,38 @@ router.post("/updateInfo", (req, res) => {
       if (err) console.log(err);
     }
   );
+});
+
+let getFollow = (obj) => {
+  return new Promise((resolve, reject) => {
+    User.findOne({ _id: obj }, (err, result) => {
+      if (err) console.log(err);
+      resolve([result.uniqueID, result.nickname, result.logo]);
+    });
+  });
+};
+
+let getAllFollow = (obj) => {
+  let res = new Array(obj.length);
+  for (let i = 0; i < obj.length; i++) {
+    res[i] = new Promise((resolve, reject) => {
+      getFollow(obj[i]).then((data) => {
+        resolve(data);
+      });
+    });
+  }
+  return Promise.all(res);
+};
+
+router.post("/getFollower", (req, res) => {
+  getAllFollow(req.body.followerList).then((result) => {
+    return res.json({ success: true, followerResult: result });
+  });
+});
+
+router.post("/getFollowing", (req, res) => {
+  getAllFollow(req.body.followingList).then((result) => {
+    return res.json({ success: true, followingResult: result });
+  });
 });
 module.exports = router;
