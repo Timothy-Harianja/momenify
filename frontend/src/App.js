@@ -23,6 +23,7 @@ import Message from "./components/Messenger/index.js";
 import Career from "./components/career/career.jsx";
 import ContactUs from "./components/contact-us/contact-us.jsx";
 import AccountPage from "./components/accountPage/accountpage.jsx";
+import ContactUS from "./components/contact-us/contact-us.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {
@@ -53,7 +54,7 @@ class App extends Component {
             <Route path="/forgetPassword" component={forgetPassword} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/hashtag" component={HastagPage} />
-
+            <Route path="/contact-us" component={ContactUS} />
             <Route
               path="/signup"
               component={Signup}

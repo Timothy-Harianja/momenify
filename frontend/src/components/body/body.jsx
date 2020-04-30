@@ -368,7 +368,7 @@ class Body extends Component {
               </div>
               <div className="box-bottom box">
                 <a href="/about-us">About</a>
-                <a href="/privacy">Privacy</a>
+                <a href="/contact-us">Contact Us</a>
                 <a href="/term-of-use">Terms of Use</a>
                 <a href="/careers">Careers</a>
               </div>
