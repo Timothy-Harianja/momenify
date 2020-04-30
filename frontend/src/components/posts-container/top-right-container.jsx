@@ -7,49 +7,39 @@ import "./container.css";
 class TopRightContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      followers: 5,
-      loading: false,
-      username: null
-    };
-  }
-
-  componentDidMount() {
-    axios.get("/api/loginRoute/session").then(res => {
-      this.setState({ username: res.data.username });
-    });
+    this.state = {};
   }
 
   showFollowers = () => {
     // get all the posts from the
     var followers = [];
-    for (var i = 0; i < this.state.followers; i++) {
+    for (var i = 0; i < this.props.follow.length; i++) {
+      let currentFollow = this.props.follow[i];
+      let uniqueID = currentFollow[0];
+      let followName = currentFollow[1];
+      let followLogo = currentFollow[2];
       followers.push(
-        <div key={i} className="follower">
-          <img src={kun} alt="kun" className="trend-img" />
-          <span>Follower {i}</span>
-        </div>
+        <a href={"/profile/" + uniqueID}>
+          <div key={i} className="follower">
+            <img src={followLogo} alt="kun" className="trend-img" />
+            <span>{followName}</span>
+          </div>
+        </a>
       );
     }
     return followers;
   };
 
-  loadMoreFollowers = () => {
-    setTimeout(() => {
-      this.setState({ followers: this.state.followers + 5 });
-    }, 2000);
-  };
-
   render() {
     return (
       <div className="top-right-container">
-        {this.state.username ? (
+        {this.props.userID ? (
           <InfiniteScroll
-            dataLength={this.state.followers}
+            dataLength={this.props.follow.length}
             next={this.loadMoreFollowers}
-            hasMore={true}
+            // hasMore={true}
             height={200}
-            loader={<span>Loading more followers...</span>}
+            // loader={<span>Loading more followers...</span>}
           >
             {this.showFollowers()}
           </InfiniteScroll>

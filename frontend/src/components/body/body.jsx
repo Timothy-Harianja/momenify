@@ -37,6 +37,9 @@ class Body extends Component {
       followStatus: [],
       following: [],
       uniqueIDList: [],
+      followerListInfo: [],
+      followingListInfo: [],
+      followList: [],
     };
   }
 
@@ -54,7 +57,32 @@ class Body extends Component {
             userId: res.data.userId,
             logoNumber: res.data.logoNumber,
             following: res.data.following,
+            follower: res.data.follower,
           });
+
+          if (this.state.follower.length > 0) {
+            axios
+              .post("/api/config/getFollower", {
+                followerList: this.state.follower,
+              })
+              .then((followerResult) => {
+                this.setState({
+                  followerListInfo: followerResult.data.followerResult,
+                  followList: followerResult.data.followerResult,
+                });
+              });
+          }
+          if (this.state.following.length > 0) {
+            axios
+              .post("/api/config/getFollowing", {
+                followingList: this.state.following,
+              })
+              .then((followingResult) => {
+                this.setState({
+                  followingListInfo: followingResult.data.followingResult,
+                });
+              });
+          }
         }
       })
       .catch((err) => {
@@ -254,6 +282,13 @@ class Body extends Component {
     }
   };
 
+  changeToFollower = () => {
+    this.setState({ followList: this.state.followerListInfo });
+  };
+
+  changeToFollowing = () => {
+    this.setState({ followList: this.state.followingListInfo });
+  };
   render() {
     return (
       <div className="body">
@@ -287,10 +322,20 @@ class Body extends Component {
                     alt="kun"
                     id="side-profile"
                   />
-                  <button id="follower">Followers</button>
-                  <button id="following">Following</button>
+                  <button id="follower" onClick={() => this.changeToFollower()}>
+                    {this.state.followerListInfo.length} Followers
+                  </button>
+                  <button
+                    id="following"
+                    onClick={() => this.changeToFollowing()}
+                  >
+                    {this.state.followingListInfo.length} Following
+                  </button>
                 </div>
-                <TopRightContainer />
+                <TopRightContainer
+                  follow={this.state.followList}
+                  userID={this.state.userId}
+                />
               </div>
               <div className="box middle">
                 <div id="trending-hashtag">
