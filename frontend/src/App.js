@@ -24,6 +24,7 @@ import Career from "./components/career/career.jsx";
 import ContactUs from "./components/contact-us/contact-us.jsx";
 import AccountPage from "./components/accountPage/accountpage.jsx";
 import ContactUS from "./components/contact-us/contact-us.jsx";
+import { Thanks } from "./components/others/thanks.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {
@@ -55,6 +56,7 @@ class App extends Component {
             <Route path="/profile" component={ProfilePage} />
             <Route path="/hashtag" component={HastagPage} />
             <Route path="/contact-us" component={ContactUS} />
+
             <Route
               path="/signup"
               component={Signup}
@@ -68,6 +70,7 @@ class App extends Component {
               // )}
             />
             <Route path="/confirmation" component={Confirmation} />
+            <Route path="/thanks" component={Thanks} />
             <Route path="/active" component={Active} />
 
             <Route path="/newpassword" component={newPassword} />
