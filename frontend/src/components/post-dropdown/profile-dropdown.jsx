@@ -6,8 +6,6 @@ class ProfileDropDown extends React.Component {
   state = {};
 
   render() {
-    console.log("current post id: ", this.props.postid);
-
     return (
       <Dropdown classname="dropdown">
         <div
