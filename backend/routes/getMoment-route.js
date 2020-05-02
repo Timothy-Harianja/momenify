@@ -56,7 +56,7 @@ router.get("/profilePage", (req, res) => {
   let postDateList = [];
   let hashtagList = [];
   let filesList = [];
-  let uniqueIDList = [];
+
   Post.find({ uniqueID: token }, (err, posts) => {
     if (err) {
       console.log(err);
@@ -91,7 +91,6 @@ router.get("/profilePage", (req, res) => {
         postDateList.push(posts[i].postTime);
         hashtagList.push(posts[i].hashtagList);
         filesList.push(posts[i].fileLocation);
-        uniqueIDList.push(posts[i].uniqueID);
       }
       return res.json({
         idList: idList,
@@ -105,7 +104,7 @@ router.get("/profilePage", (req, res) => {
         postDateList: postDateList,
         hashtagList: hashtagList,
         filesList: filesList,
-        uniqueIDList: uniqueIDList,
+        uniqueID: token,
       });
     }
   }).sort({ postDate: -1 });

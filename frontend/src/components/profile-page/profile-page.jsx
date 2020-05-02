@@ -41,7 +41,8 @@ class ProfilePage extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
-      uniqueIDList: [],
+      uniqueID: null,
+      owner: null,
     };
   }
 
@@ -52,6 +53,7 @@ class ProfilePage extends Component {
         this.setState({
           userId: res.data.userId,
           logoNumber: res.data.logoNumber,
+          owner: res.data.uniqueID,
         });
       })
       .catch((err) => {
@@ -79,7 +81,7 @@ class ProfilePage extends Component {
           hashtagList: res.data.hashtagList,
           loadStatus: true,
           filesList: res.data.filesList,
-          uniqueIDList: res.data.uniqueIDList,
+          uniqueID: res.data.uniqueID,
         });
       })
       .catch((err) => {
@@ -165,7 +167,7 @@ class ProfilePage extends Component {
                   : this.state.usernameList[i]
               }
               id={this.state.idList[i]}
-              uniqueID={this.state.uniqueIDList[i]}
+              uniqueID={this.state.uniqueID}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
@@ -185,12 +187,18 @@ class ProfilePage extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              own={this.state.owner == this.state.uniqueID}
+              deletePost={(e) => this.deletePost(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+  deletePost = (req) => {
+    console.log("delete post clicked!");
+    console.log("req: ", req);
   };
 
   loadMorePosts = () => {
