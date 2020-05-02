@@ -26,22 +26,24 @@ class ProfilePage extends Component {
     this.state = {
       userId: null,
       posts: 0,
-      idList: [],
+      idList: null,
       moments: [],
-      usernameList: [],
+      usernameList: null,
       postidList: [],
       loadingFeedback: "",
       likeStatus: [],
       numofLike: [],
       message: [],
-      userLogo: [],
+      userLogo: null,
       commentList: [],
       postDateList: [],
       hashtagList: [],
       topTrendList: [],
       loadStatus: false,
       filesList: [],
-      uniqueIDList: [],
+      uniqueID: null,
+      owner: null,
+      deleteID: null,
     };
   }
 
@@ -52,6 +54,7 @@ class ProfilePage extends Component {
         this.setState({
           userId: res.data.userId,
           logoNumber: res.data.logoNumber,
+          owner: res.data.uniqueID,
         });
       })
       .catch((err) => {
@@ -60,7 +63,6 @@ class ProfilePage extends Component {
     axios
       .get("/api/getRoute/profilePage")
       .then((res) => {
-        console.log("res: ", res);
         this.setState({
           loadingFeedback:
             res.data.allMoments.length > 3 ? "Loading Posts..." : "",
@@ -79,7 +81,7 @@ class ProfilePage extends Component {
           hashtagList: res.data.hashtagList,
           loadStatus: true,
           filesList: res.data.filesList,
-          uniqueIDList: res.data.uniqueIDList,
+          uniqueID: res.data.uniqueID,
         });
       })
       .catch((err) => {
@@ -150,6 +152,7 @@ class ProfilePage extends Component {
     let list = [one, two, three, four, five];
     return list[parseInt(num)];
   };
+
   showPosts = () => {
     // get all the posts from the
     var posts = [];
@@ -160,20 +163,20 @@ class ProfilePage extends Component {
           <div key={i} className="post">
             <PostItem
               username={
-                this.state.usernameList[i] == undefined
+                this.state.usernameList == undefined
                   ? " Anonymous"
-                  : this.state.usernameList[i]
+                  : this.state.usernameList
               }
-              id={this.state.idList[i]}
-              uniqueID={this.state.uniqueIDList[i]}
+              id={this.state.idList}
+              uniqueID={this.state.uniqueID}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
               imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
               profileUrl={
-                this.state.usernameList[i] == undefined
+                this.state.usernameList == undefined
                   ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
-                  : this.state.userLogo[i]
+                  : this.state.userLogo
               }
               postid={this.state.postidList[i]}
               position={i}
@@ -185,12 +188,28 @@ class ProfilePage extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              own={this.state.owner == this.state.uniqueID}
+              deletePost={() => this.deletePost()}
+              deleteID={(e) => this.deleteID(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+  deletePost = () => {
+    axios
+      .post("/api/config/deletePost", { deleteID: this.state.deleteID })
+      .then((res) => {
+        if (res.data.success) {
+          this.componentDidMount();
+        }
+      });
+  };
+
+  deleteID = (req) => {
+    this.setState({ deleteID: req.deleteID });
   };
 
   loadMorePosts = () => {

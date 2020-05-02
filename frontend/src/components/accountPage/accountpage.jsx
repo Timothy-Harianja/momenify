@@ -63,6 +63,9 @@ class AccountPage extends Component {
   submitHandler = (e) => {
     e.preventDefault();
   };
+  logout = () => {
+    axios.post("/api/loginRoute/logout").then((res) => {});
+  };
 
   onChange = (e) => {
     if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
@@ -240,6 +243,17 @@ class AccountPage extends Component {
             </div>
           )}
         </form>
+        <br></br>
+        <div class="text-center">
+          <Button
+            variant="danger"
+            style={{ width: "150px" }}
+            href="/"
+            onClick={() => this.logout()}
+          >
+            Log Out
+          </Button>
+        </div>
       </div>
     );
   }

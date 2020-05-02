@@ -42,12 +42,14 @@ class Header extends Component {
   state = {
     userId: null,
     postExpire: null,
+    uniqueID: null,
   };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then((res) => {
       this.setState({
         userId: res.data.userId,
         postExpire: res.data.postInterval,
+        uniqueID: res.data.uniqueID,
       });
     });
   }
@@ -87,54 +89,39 @@ class Header extends Component {
                         />
                         <path d="M5 8a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" />
                       </svg>
+                      {/* <span class="badge">0</span> */}
                     </Nav.Link>
                   </Nav.Item>
 
                   <Nav.Item>
                     <Nav.Link href="/accountpage">
                       <svg
-                        class="bi bi-people-circle"
+                        class="bi bi-gear-wide-connected"
                         width="2em"
                         height="2em"
                         viewBox="0 0 16 16"
                         fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 008 15a6.987 6.987 0 005.468-2.63z" />
                         <path
                           fill-rule="evenodd"
-                          d="M8 9a3 3 0 100-6 3 3 0 000 6z"
+                          d="M9.928 1.723c-.243-.97-1.62-.97-1.863 0l-.072.286a.96.96 0 01-1.622.435l-.204-.212c-.695-.718-1.889-.03-1.614.932l.08.283a.96.96 0 01-1.186 1.187l-.283-.081c-.961-.275-1.65.919-.932 1.614l.212.204a.96.96 0 01-.435 1.622l-.286.072c-.97.242-.97 1.62 0 1.863l.286.071a.96.96 0 01.435 1.622l-.212.205c-.718.695-.03 1.888.932 1.613l.283-.08a.96.96 0 011.187 1.187l-.081.283c-.275.96.919 1.65 1.614.931l.204-.211a.96.96 0 011.622.434l.072.286c.242.97 1.62.97 1.863 0l.071-.286a.96.96 0 011.622-.434l.205.212c.695.718 1.888.029 1.613-.932l-.08-.283a.96.96 0 011.187-1.188l.283.081c.96.275 1.65-.918.931-1.613l-.211-.205A.96.96 0 0115.983 10l.286-.071c.97-.243.97-1.62 0-1.863l-.286-.072a.96.96 0 01-.434-1.622l.212-.204c.718-.695.029-1.889-.932-1.614l-.283.08a.96.96 0 01-1.188-1.186l.081-.283c.275-.961-.918-1.65-1.613-.932l-.205.212A.96.96 0 0110 2.009l-.071-.286zm-.932 12.27a4.998 4.998 0 100-9.994 4.998 4.998 0 000 9.995z"
                           clip-rule="evenodd"
                         />
                         <path
                           fill-rule="evenodd"
-                          d="M8 1a7 7 0 100 14A7 7 0 008 1zM0 8a8 8 0 1116 0A8 8 0 010 8z"
+                          d="M8.372 8.996L5.598 5.298l.8-.6 2.848 3.798h4.748v1H9.246l-2.849 3.798-.8-.6 2.775-3.698z"
                           clip-rule="evenodd"
                         />
                       </svg>
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link href="/" onClick={() => this.logout()}>
-                      <svg
-                        class="bi bi-power"
-                        width="2em"
-                        height="2em"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M5.578 4.437a5 5 0 104.922.044l.5-.866a6 6 0 11-5.908-.053l.486.875z"
-                          clip-rule="evenodd"
-                        />
-                        <path
-                          fill-rule="evenodd"
-                          d="M7.5 8V1h1v7h-1z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
+                    <Nav.Link href={"/profile/" + this.state.uniqueID}>
+                      <img
+                        className="post-item-header-profile2"
+                        src="https://momenify.s3.amazonaws.com/52328B23-C891-4315-B4D0-CF5C4474E55B-1588217730310.jpeg"
+                      />
                     </Nav.Link>
                   </Nav.Item>
                 </Nav>
