@@ -131,14 +131,10 @@ class PostItem extends React.Component {
           <span className="post-item-header-dropdown">
             {this.props.own ? (
               <ProfileDropDown
-                // userid={this.state.userid}
-                // followStatus={this.props.followStatus}
-
-                // id={this.props.id}
-                // userId={this.props.userId}
                 deletePost={() => this.props.deletePost()}
                 deleteID={(e) => this.props.deleteID(e)}
                 postid={this.props.postid}
+                position={this.props.position}
               ></ProfileDropDown>
             ) : (
               <PostDropdown

@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../user");
 const Post = require("../postMoment");
+const Hashtag = require("../hashtag");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
@@ -176,8 +177,48 @@ router.post("/career", (req, res) => {
 });
 
 router.post("/deletePost", (req, res) => {
+  console.log("req: ", req.body);
   Post.deleteOne({ _id: req.body.deleteID }, (err, result) => {
     if (err) console.log(err);
+    if (result != null) {
+      let hashtags = req.body.hashtags;
+      for (let i = 0; i < hashtags.length; i++) {
+        Hashtag.findOne({ hashtag: hashtags[i] }, (err, result2) => {
+          let newCount = result2.count - 1;
+          let id = result2._id;
+          let newPostList = result2.postList;
+          newPostList = newPostList.filter((item) => item != req.body.deleteID);
+          if (newCount == 0) {
+            Hashtag.deleteOne({ _id: id }, (err) => {
+              if (err) console.log(err);
+            });
+          } else {
+            Hashtag.findOneAndUpdate(
+              { _id: id },
+              { count: newCount, postList: newPostList },
+              (err) => {
+                if (err) console.log(err);
+              }
+            );
+          }
+        });
+      }
+    }
+
+    if (req.body.key != null) {
+      let key = "";
+      let url = req.body.key;
+      for (let i = url.length - 1; i >= 0; i--) {
+        if (url.charAt(i) == "/") break;
+        if (url.charAt(i) == "%") {
+          key = " " + key;
+        } else {
+          key = url.charAt(i) + key;
+        }
+      }
+      console.log("key: ", key);
+    }
+
     return res.json({ success: true, message: "deleted" });
   });
 });

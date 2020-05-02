@@ -44,6 +44,7 @@ class ProfilePage extends Component {
       uniqueID: null,
       owner: null,
       deleteID: null,
+      position: null,
     };
   }
 
@@ -200,7 +201,11 @@ class ProfilePage extends Component {
   };
   deletePost = () => {
     axios
-      .post("/api/config/deletePost", { deleteID: this.state.deleteID })
+      .post("/api/config/deletePost", {
+        deleteID: this.state.deleteID,
+        hashtags: this.state.hashtagList[this.state.position],
+        key: this.state.filesList[this.state.position],
+      })
       .then((res) => {
         if (res.data.success) {
           this.componentDidMount();
@@ -209,7 +214,7 @@ class ProfilePage extends Component {
   };
 
   deleteID = (req) => {
-    this.setState({ deleteID: req.deleteID });
+    this.setState({ deleteID: req.deleteID, position: req.position });
   };
 
   loadMorePosts = () => {
