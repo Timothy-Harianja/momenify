@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../user");
 const Post = require("../postMoment");
+const Hashtag = require("../hashtag");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
@@ -173,5 +174,50 @@ router.post("/career", (req, res) => {
   };
   transporter.sendMail(note);
   return res.json({ success: true, message: "submitted" });
+});
+
+router.post("/deletePost", (req, res) => {
+  if (req.body.key != null) {
+    Post.findOne({ _id: req.body.deleteID }, (err, key) => {
+      var params = {
+        Bucket: "momenify",
+        Key: key.objectKey,
+      };
+
+      s3.deleteObject(params, function (err, data) {
+        if (err) console.log(err, err.stack);
+      });
+    });
+  }
+
+  Post.deleteOne({ _id: req.body.deleteID }, (err, result) => {
+    if (err) console.log(err);
+    if (result != null) {
+      let hashtags = req.body.hashtags;
+      for (let i = 0; i < hashtags.length; i++) {
+        Hashtag.findOne({ hashtag: hashtags[i] }, (err, result2) => {
+          let newCount = result2.count - 1;
+          let id = result2._id;
+          let newPostList = result2.postList;
+          newPostList = newPostList.filter((item) => item != req.body.deleteID);
+          if (newCount == 0) {
+            Hashtag.deleteOne({ _id: id }, (err) => {
+              if (err) console.log(err);
+            });
+          } else {
+            Hashtag.findOneAndUpdate(
+              { _id: id },
+              { count: newCount, postList: newPostList },
+              (err) => {
+                if (err) console.log(err);
+              }
+            );
+          }
+        });
+      }
+    }
+
+    return res.json({ success: true, message: "deleted" });
+  });
 });
 module.exports = router;

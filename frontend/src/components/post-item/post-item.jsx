@@ -2,7 +2,7 @@ import React from "react";
 import "./post-item.css";
 import Button from "react-bootstrap/Button";
 import PostDropdown from "../post-dropdown/post-dropdown";
-
+import ProfileDropDown from "../post-dropdown/profile-dropdown";
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
@@ -82,11 +82,7 @@ class PostItem extends React.Component {
           loop
           preload="metadata"
           src={file + "#t=0.1"}
-        >
-          {/* <source src={file + "#t=0.1"} /> */}
-          {/* <source src={file} type="video/ogg" />
-          <source src={file} type="video/mov" /> */}
-        </video>
+        ></video>
       );
     }
     return "unkown";
@@ -175,14 +171,24 @@ class PostItem extends React.Component {
             <span> </span>
           )}
           <span className="post-item-header-dropdown">
-            <PostDropdown
-              // userid={this.props.id}
-              // changeFollowStatus={(e) => this.changeFollowStatus(e)}
-              followStatus={this.props.followStatus}
-              updateFollow={(e) => this.props.updateFollow(e)}
-              id={this.props.id}
-              userId={this.props.userId}
-            ></PostDropdown>
+        
+            {this.props.own ? (
+              <ProfileDropDown
+                deletePost={() => this.props.deletePost()}
+                deleteID={(e) => this.props.deleteID(e)}
+                postid={this.props.postid}
+                position={this.props.position}
+              ></ProfileDropDown>
+            ) : (
+              <PostDropdown
+                userid={this.state.userid}
+                // changeFollowStatus={(e) => this.changeFollowStatus(e)}
+                followStatus={this.props.followStatus}
+                updateFollow={(e) => this.props.updateFollow(e)}
+                id={this.props.id}
+                userId={this.props.userId}
+              ></PostDropdown>
+            )}
           </span>
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
