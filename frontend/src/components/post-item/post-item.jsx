@@ -136,8 +136,9 @@ class PostItem extends React.Component {
 
                 // id={this.props.id}
                 // userId={this.props.userId}
-                deletePost={(e) => this.props.deletePost(e)}
-                position={this.props.position}
+                deletePost={() => this.props.deletePost()}
+                deleteID={(e) => this.props.deleteID(e)}
+                postid={this.props.postid}
               ></ProfileDropDown>
             ) : (
               <PostDropdown
@@ -147,7 +148,6 @@ class PostItem extends React.Component {
                 updateFollow={(e) => this.props.updateFollow(e)}
                 id={this.props.id}
                 userId={this.props.userId}
-                position={this.props.position}
               ></PostDropdown>
             )}
           </span>

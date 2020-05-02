@@ -43,6 +43,7 @@ class ProfilePage extends Component {
       filesList: [],
       uniqueID: null,
       owner: null,
+      deleteID: null,
     };
   }
 
@@ -188,7 +189,8 @@ class ProfilePage extends Component {
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
               own={this.state.owner == this.state.uniqueID}
-              deletePost={(e) => this.deletePost(e)}
+              deletePost={() => this.deletePost()}
+              deleteID={(e) => this.deleteID(e)}
             />
           </div>
         );
@@ -196,9 +198,20 @@ class ProfilePage extends Component {
     }
     return posts;
   };
-  deletePost = (req) => {
-    console.log("delete post clicked!");
-    console.log("req: ", req);
+  deletePost = () => {
+    console.log("delete post id: ", this.state.deleteID);
+    axios
+      .post("/api/config/deletePost", { deleteID: this.state.deleteID })
+      .then((res) => {
+        console.log("res: ", res);
+        if (res.data.success) {
+        }
+      });
+  };
+
+  deleteID = (req) => {
+    console.log("delete id: ", req);
+    this.setState({ deleteID: req.deleteID });
   };
 
   loadMorePosts = () => {

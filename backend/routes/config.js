@@ -174,4 +174,12 @@ router.post("/career", (req, res) => {
   transporter.sendMail(note);
   return res.json({ success: true, message: "submitted" });
 });
+
+router.post("/deletePost", (req, res) => {
+  console.log("req: ", req.body);
+  Post.deleteOne({ _id: req.body.deleteID }, (err, result) => {
+    if (err) console.log(err);
+    return res.json({ success: true, message: "deleted" });
+  });
+});
 module.exports = router;

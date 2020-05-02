@@ -1,23 +1,12 @@
 import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import "./post-dropdown.css";
-import axios from "axios";
 
 class ProfileDropDown extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // followStatus: false,
-      // userId: this.props.userId,
-    };
-  }
-  delete = (obj) => {
-    console.log("delete: ", obj);
-    this.props.deletePost({ postid: this.props.position });
-  };
+  state = {};
 
   render() {
-    console.log("current post id: ", this.props.position);
+    console.log("current post id: ", this.props.postid);
 
     return (
       <Dropdown classname="dropdown">
@@ -69,7 +58,7 @@ class ProfileDropDown extends React.Component {
                     onClick={() => {
                       document.getElementById("deletemodal").style.display =
                         "none";
-                      this.delete();
+                      this.props.deletePost();
                     }}
                   >
                     Delete
@@ -116,6 +105,7 @@ class ProfileDropDown extends React.Component {
           <Dropdown.Item
             onClick={() => {
               document.getElementById("deletemodal").style.display = "block";
+              this.props.deleteID({ deleteID: this.props.postid });
             }}
           >
             <svg class="svg-icon" viewBox="0 0 20 20">
