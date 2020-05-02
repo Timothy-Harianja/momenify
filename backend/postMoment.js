@@ -13,6 +13,7 @@ const PostSchema = new Schema({
   hashtagList: [],
   fileLocation: String,
   uniqueID: String,
+  objectKey: String,
 });
 
 module.exports = mongoose.model("Moment", PostSchema);

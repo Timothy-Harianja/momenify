@@ -40,6 +40,7 @@ class Body extends Component {
       followerListInfo: [],
       followingListInfo: [],
       followList: [],
+      boolHideList: [],
     };
   }
 
@@ -119,6 +120,7 @@ class Body extends Component {
           this.state.followStatus.push(
             this.state.following.includes(res.data.idList[i]) ? true : false
           );
+          this.state.boolHideList.push(true);
         }
 
         this.setState({
@@ -205,8 +207,8 @@ class Body extends Component {
                   ? "Anonymous"
                   : this.state.usernameList[i]
               }
-              userId={this.state.userId}
-              id={this.state.idList[i]}
+              userId={this.state.userId} //user's id
+              id={this.state.idList[i]} //comment's user's id
               uniqueID={this.state.uniqueIDList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
@@ -228,6 +230,9 @@ class Body extends Component {
               file={this.state.filesList[i]}
               followStatus={this.state.followStatus[i]}
               updateFollow={(e) => this.updateFollow(e)}
+              splitPosition={this.getSplitPosition(this.state.moments[i])}
+              boolHide={this.state.boolHideList[i]}
+              changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
             />
           </div>
         );
@@ -251,6 +256,7 @@ class Body extends Component {
     let newFilesList = [newPost.file, ...this.state.filesList];
     let newFollowStatus = [false, ...this.state.followStatus];
     let newUniqueIDList = [newPost.uniqueID, ...this.state.uniqueIDList];
+    let newBoolHideList = [true, ...this.state.boolHideList];
 
     this.setState({
       idList: newIDList,
@@ -268,6 +274,7 @@ class Body extends Component {
       filesList: newFilesList,
       followStatus: newFollowStatus,
       uniqueIDList: newUniqueIDList,
+      boolHideList: newBoolHideList,
     });
   };
 
@@ -294,6 +301,31 @@ class Body extends Component {
 
   changeToFollowing = () => {
     this.setState({ followList: this.state.followingListInfo });
+  };
+
+  getSplitPosition = (text) => {
+    var edgeLength = 300;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+
+    if (textLength <= edgeLength) {
+      return 0;
+    }
+    var retVal = 300;
+    var shortText = text.slice(0, 300);
+    if ((shortText.match(/\n/g) || []).length >= 4) {
+      //find the position of the 4th happened \n
+      var spl = shortText.split("\n");
+      retVal =
+        spl[0].length + spl[1].length + spl[2].length + spl[3].length + 3;
+      // retVal = shortText.indexOf("\n", shortText.indexOf("\n") + 4) - 1;
+    }
+    return retVal;
+  };
+
+  changeBoolReadAll = (position) => {
+    var newBoolHideList = this.state.boolHideList;
+    newBoolHideList[position] = !newBoolHideList[position];
+    this.setState({ boolHideList: newBoolHideList });
   };
   render() {
     return (

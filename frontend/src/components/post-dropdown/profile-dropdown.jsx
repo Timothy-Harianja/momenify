@@ -103,7 +103,10 @@ class ProfileDropDown extends React.Component {
           <Dropdown.Item
             onClick={() => {
               document.getElementById("deletemodal").style.display = "block";
-              this.props.deleteID({ deleteID: this.props.postid });
+              this.props.deleteID({
+                deleteID: this.props.postid,
+                position: this.props.position,
+              });
             }}
           >
             <svg class="svg-icon" viewBox="0 0 20 20">

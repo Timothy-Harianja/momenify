@@ -11,9 +11,12 @@ class PostItem extends React.Component {
       commentInputBox: false,
       commentNumber: 3,
       commentText: null,
-      postid: this.props.postid,
-      position: this.props.position,
-      userid: this.props.id,
+      // showingPost: "",
+      // postText1: "",
+      // postText2: "",
+      readMore: "Read all",
+      splitPosition: 300,
+      restText: false,
     };
   }
 
@@ -79,23 +82,62 @@ class PostItem extends React.Component {
           loop
           preload="metadata"
           src={file + "#t=0.1"}
-        >
-          {/* <source src={file + "#t=0.1"} /> */}
-          {/* <source src={file} type="video/ogg" />
-          <source src={file} type="video/mov" /> */}
-        </video>
+        ></video>
       );
     }
     return "unkown";
   };
+  formatPostText = (text) => {
+    var rowLen = text.replace(/ /g, "\u00a0").split("\n").length;
 
-  // changeFollowStatus = (newStatus) => {
-  //   this.setState({ followStatus: newStatus });
-  //   console.log("changed follow status");
-  // };
+    return text
+      .replace(/ /g, "\u00a0")
+      .split("\n")
+      .map((message, i) => {
+        if (rowLen === i + 1) {
+          //the last one: no <br/>
+          return <span>{message}</span>;
+        }
+
+        return (
+          <span>
+            {message} <br />
+          </span>
+        );
+      });
+  };
+
+  longPostText = () => {
+    var edgeLength = 300;
+    var text = this.props.text;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+    return textLength > edgeLength;
+  };
+
+  PostText = () => {
+    return this.longPostText() ? (
+      <div>
+        {this.formatPostText(
+          this.props.text.slice(0, this.props.splitPosition)
+        )}
+        {this.props.boolHide
+          ? null
+          : this.formatPostText(
+              this.props.text.slice(this.props.splitPosition)
+            )}
+        <div
+          className="show-more-footer-comment"
+          onClick={() => this.props.changeBoolReadAll(this.props.position)}
+        >
+          {this.props.boolHide ? <span> Read all</span> : <span> Hide </span>}
+        </div>
+      </div>
+    ) : (
+      <div> {this.formatPostText(this.props.text)}</div>
+    );
+  };
+
   render() {
-    //console.log("filename: ", this.props.file);
-    // console.log("owner of this post: ", this.props.own);
     return (
       <div className="post-item-container">
         <div className="post-item-header">
@@ -129,16 +171,13 @@ class PostItem extends React.Component {
             <span> </span>
           )}
           <span className="post-item-header-dropdown">
+        
             {this.props.own ? (
               <ProfileDropDown
-                // userid={this.state.userid}
-                // followStatus={this.props.followStatus}
-
-                // id={this.props.id}
-                // userId={this.props.userId}
                 deletePost={() => this.props.deletePost()}
                 deleteID={(e) => this.props.deleteID(e)}
                 postid={this.props.postid}
+                position={this.props.position}
               ></ProfileDropDown>
             ) : (
               <PostDropdown
@@ -154,15 +193,7 @@ class PostItem extends React.Component {
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
         <div className="post-item-description">
-          {this.props.text
-            .replace(/ /g, "\u00a0")
-            .split("\n")
-            .map((message) => {
-              if (message.length == 0) {
-                return <div> &nbsp;</div>;
-              }
-              return <div>{message}</div>;
-            })}
+          <this.PostText></this.PostText>
         </div>
 
         {this.props.file != null ? (
@@ -236,8 +267,8 @@ class PostItem extends React.Component {
                     commentNumber: this.state.commentNumber + 1,
                   });
                   this.props.giveComment({
-                    postid: this.state.postid,
-                    position: this.state.position,
+                    postid: this.props.postid,
+                    position: this.props.position,
                     postComment: this.state.commentText,
                   });
                   this.state.commentText = null;
