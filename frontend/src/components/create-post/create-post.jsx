@@ -69,7 +69,6 @@ class CreatePost extends Component {
             !uploadResult.data.success &&
             uploadResult.data.message == "file too large"
           ) {
-            console.log("error: ", uploadResult.data.message);
             this.setState({
               error:
                 "file is larger than 50MB, please compress it before upload.",
@@ -80,11 +79,11 @@ class CreatePost extends Component {
             this.setState({ postmessage: null, fileName: null, files: null });
           } else {
             json.fileLocation = uploadResult.data.imageLocation;
+            json.fileKey = uploadResult.data.key;
             axios.post("/api/postRoute/postMoment", json).then((res) => {
               if (res.data.success) {
                 this.setState({ message: res.data.message });
-                //past post information to body , then pass to post container
-                //     console.log("res: ", res.data.postId);
+
                 if (this.state.hashtagList.length > 0) {
                   axios
                     .post("/api/postRoute/postHashtag", {
@@ -96,7 +95,6 @@ class CreatePost extends Component {
                       console.log(res);
                     });
                 }
-                //   console.log("uploadResult.data", uploadResult.data);
 
                 this.props.addNewPost({
                   postDate: currentTime(),
@@ -142,18 +140,13 @@ class CreatePost extends Component {
     switch (e.target.name) {
       case "selectedFile":
         if (e.target.files.length > 0 && e.target.files[0].size <= 50000000) {
-          //   console.log("input files:", e.target.files[0]);
-
           this.setState({
             fileName: "You have selected: " + e.target.files[0].name,
             files: e.target.files[0],
           });
-
-          // this.setState({ files: formData });
         } else {
           alert("Please select a file that is less than 50MB!");
         }
-        // console.log("files,", this.state.files);
 
         break;
       default:

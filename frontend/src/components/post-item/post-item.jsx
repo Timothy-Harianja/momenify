@@ -79,23 +79,13 @@ class PostItem extends React.Component {
           loop
           preload="metadata"
           src={file + "#t=0.1"}
-        >
-          {/* <source src={file + "#t=0.1"} /> */}
-          {/* <source src={file} type="video/ogg" />
-          <source src={file} type="video/mov" /> */}
-        </video>
+        ></video>
       );
     }
     return "unkown";
   };
 
-  // changeFollowStatus = (newStatus) => {
-  //   this.setState({ followStatus: newStatus });
-  //   console.log("changed follow status");
-  // };
   render() {
-    //console.log("filename: ", this.props.file);
-    // console.log("owner of this post: ", this.props.own);
     return (
       <div className="post-item-container">
         <div className="post-item-header">

@@ -177,7 +177,19 @@ router.post("/career", (req, res) => {
 });
 
 router.post("/deletePost", (req, res) => {
-  console.log("req: ", req.body);
+  if (req.body.key != null) {
+    Post.findOne({ _id: req.body.deleteID }, (err, key) => {
+      var params = {
+        Bucket: "momenify",
+        Key: key.objectKey,
+      };
+
+      s3.deleteObject(params, function (err, data) {
+        if (err) console.log(err, err.stack);
+      });
+    });
+  }
+
   Post.deleteOne({ _id: req.body.deleteID }, (err, result) => {
     if (err) console.log(err);
     if (result != null) {
@@ -203,20 +215,6 @@ router.post("/deletePost", (req, res) => {
           }
         });
       }
-    }
-
-    if (req.body.key != null) {
-      let key = "";
-      let url = req.body.key;
-      for (let i = url.length - 1; i >= 0; i--) {
-        if (url.charAt(i) == "/") break;
-        if (url.charAt(i) == "%") {
-          key = " " + key;
-        } else {
-          key = url.charAt(i) + key;
-        }
-      }
-      console.log("key: ", key);
     }
 
     return res.json({ success: true, message: "deleted" });
