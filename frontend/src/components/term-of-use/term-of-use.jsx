@@ -5,6 +5,7 @@ class TermOfUse extends Component {
   render() {
     return (
       <div className="term-of-use">
+        <br></br>
         <h1 id="header">Terms of Use</h1>
         <h4 id="h4">
           This term of use indicate Momenify's rules and policies, and the
@@ -70,8 +71,6 @@ class TermOfUse extends Component {
 
         <hr></hr>
         <h1 id="header">Privacy Policy</h1>
-
-        <body id="body">Last updated May 2, 2020</body>
 
         <body id="body">
           Momenify respects the privacy of our users. This Privacy Policy
@@ -363,6 +362,7 @@ class TermOfUse extends Component {
           If you have questions or comments about this page, please contact us
           at <a href="contact-us">Contact Us Page</a>.
         </body>
+        <body id="body">Last updated May 2, 2020</body>
       </div>
     );
   }

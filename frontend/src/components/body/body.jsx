@@ -37,6 +37,7 @@ class Body extends Component {
       visitedList: [],
       followStatus: [],
       following: [],
+      follower: [],
       uniqueIDList: [],
       followerListInfo: [],
       followingListInfo: [],
@@ -61,6 +62,7 @@ class Body extends Component {
             uniqueID: res.data.uniqueID,
             logoNumber: res.data.logoNumber,
             following: res.data.following,
+            follower: res.data.follower,
           });
 
           if (this.state.follower.length > 0) {
@@ -417,7 +419,7 @@ class Body extends Component {
               <div className="box-bottom box">
                 <a href="/about-us">About</a>
                 <a href="/contact-us">Contact Us</a>
-                <a href="/term-of-use">Terms of Use</a>
+                <a href="/policy">Policy</a>
                 <a href="/careers">Careers</a>
               </div>
               <p style={{ color: "grey" }}> Momenify © 2020</p>
