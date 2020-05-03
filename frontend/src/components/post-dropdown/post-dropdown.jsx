@@ -4,10 +4,13 @@ import "./post-dropdown.css";
 import axios from "axios";
 
 class PostDropdown extends React.Component {
-  state = {
-    // followStatus: false,
-    // userId: this.props.userId,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      reportMessage: "",
+      sendMessage: "",
+    };
+  }
 
   follow = () => {
     if (this.props.id != null) {
@@ -36,9 +39,135 @@ class PostDropdown extends React.Component {
     }
   };
 
+  reportConfig = (e) => {
+    if (e.message.trim().length > 0) {
+      document.getElementById("reportsubmit").removeAttribute("disabled");
+    } else {
+      document.getElementById("reportsubmit").setAttribute("disabled", true);
+    }
+    this.setState({ reportMessage: e.message });
+  };
+
   render() {
     return (
       <Dropdown classname="dropdown">
+        <div
+          class="modal"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+          tabindex="-1"
+          id="confirmreport"
+          role="dialog"
+          onClick={() => {
+            window.onclick = function (event) {
+              if (
+                event.target == this.document.getElementById("confirmreport")
+              ) {
+                this.document.getElementById("confirmreport").style.display =
+                  "none";
+              }
+            };
+          }}
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="modalcontent">
+              <div class="modal-header">
+                <h5 class="modal-title">Report</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    document.getElementById("confirmreport").style.display =
+                      "none";
+                  }}
+                >
+                  <span class="close">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Thanks for letting us know!</p>
+                <p>
+                  Your feedback is important in helping us keep the community
+                  safe. Our team will take a look into the post.
+                </p>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <button
+                    className="btn btn-primary"
+                    id="reportclose"
+                    type="button"
+                    onClick={(e) => {
+                      document.getElementById("confirmreport").style.display =
+                        "none";
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="modal"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+          tabindex="-1"
+          id="confirmmessage"
+          role="dialog"
+          onClick={() => {
+            window.onclick = function (event) {
+              if (
+                event.target == this.document.getElementById("confirmmessage")
+              ) {
+                this.document.getElementById("confirmmessage").style.display =
+                  "none";
+              }
+            };
+          }}
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="modalcontent">
+              <div class="modal-header">
+                <h5 class="modal-title">Message</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    document.getElementById("confirmmessage").style.display =
+                      "none";
+                  }}
+                >
+                  <span class="close">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Your message has been successfully sent.</p>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <button
+                    className="btn btn-primary"
+                    id="messageclose"
+                    type="button"
+                    onClick={(e) => {
+                      document.getElementById("confirmmessage").style.display =
+                        "none";
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           class="modal"
           aria-labelledby="exampleModalCenterTitle"
@@ -53,6 +182,10 @@ class PostDropdown extends React.Component {
               ) {
                 this.document.getElementById("messagemodal").style.display =
                   "none";
+                this.document.getElementById("messageinput").value = "";
+                this.document
+                  .getElementById("messagesubmit")
+                  .setAttribute("disabled", true);
               }
             };
           }}
@@ -86,12 +219,15 @@ class PostDropdown extends React.Component {
                 <div>
                   <button
                     id="messagesubmit"
+                    disabled
                     type="submit"
                     className="btn btn-primary"
                     onClick={(e) => {
                       document.getElementById("messageinput").value = "";
                       document.getElementById("messagemodal").style.display =
                         "none";
+                      document.getElementById("confirmmessage").style.display =
+                        "block";
                     }}
                   >
                     Send
@@ -114,6 +250,10 @@ class PostDropdown extends React.Component {
               if (event.target == this.document.getElementById("reportmodal")) {
                 this.document.getElementById("reportmodal").style.display =
                   "none";
+                this.document.getElementById("reportinput").value = "";
+                this.document
+                  .getElementById("reportsubmit")
+                  .setAttribute("disabled", true);
               }
             };
           }}
@@ -141,18 +281,38 @@ class PostDropdown extends React.Component {
                   id="reportinput"
                   name="reportnput"
                   placeholder="Reason to report this user/post"
+                  onChange={(e) =>
+                    // this.props.setReport({ message: e.target.value })
+                    this.reportConfig({ message: e.target.value })
+                  }
                 />
               </div>
               <div class="modal-footer">
                 <div>
                   <button
                     id="reportsubmit"
+                    // disabled
                     type="submit"
                     className="btn btn-primary"
                     onClick={(e) => {
-                      document.getElementById("reportinput").value = "";
-                      document.getElementById("reportmodal").style.display =
-                        "none";
+                      if (this.state.reportMessage.trim().length > 0) {
+                        setTimeout(() => {
+                          document.getElementById("reportinput").value = "";
+                          document.getElementById("reportmodal").style.display =
+                            "none";
+                          document.getElementById(
+                            "confirmreport"
+                          ).style.display = "block";
+                          this.props.reportPost({
+                            message: this.state.reportMessage,
+                          });
+                        }, 500);
+                        setTimeout(() => {
+                          this.setState({ reportMessage: "" });
+                        }, 1000);
+                      } else {
+                        alert("Report message cannot be empty!");
+                      }
                     }}
                   >
                     Submit
@@ -266,37 +426,42 @@ class PostDropdown extends React.Component {
             </svg>
             <span>Message</span>
           </Dropdown.Item>
-          <Dropdown.Item
-            onClick={() => {
-              document.getElementById("reportmodal").style.display = "block";
-            }}
-          >
-            <svg
-              class="bi bi-x-circle"
-              width="1em"
-              height="1em"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
+          {!this.props.owned || this.props.userId == null ? (
+            <Dropdown.Item
+              onClick={() => {
+                document.getElementById("reportmodal").style.display = "block";
+                this.props.reportID({ id: this.props.postid });
+              }}
             >
-              <path
-                fill-rule="evenodd"
-                d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z"
-                clip-rule="evenodd"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z"
-                clip-rule="evenodd"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <span>Report</span>
-          </Dropdown.Item>
+              <svg
+                class="bi bi-x-circle"
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z"
+                  clip-rule="evenodd"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z"
+                  clip-rule="evenodd"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>Report</span>
+            </Dropdown.Item>
+          ) : (
+            <div></div>
+          )}
         </Dropdown.Menu>
       </Dropdown>
     );

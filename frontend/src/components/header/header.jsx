@@ -43,6 +43,7 @@ class Header extends Component {
     userId: null,
     postExpire: null,
     uniqueID: null,
+    logo: null,
   };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then((res) => {
@@ -50,18 +51,19 @@ class Header extends Component {
         userId: res.data.userId,
         postExpire: res.data.postInterval,
         uniqueID: res.data.uniqueID,
+        logo: res.data.logoNumber,
       });
     });
   }
 
-  logout = () => {
-    axios.post("/api/loginRoute/logout").then((res) => {});
-  };
   render() {
     return (
       <Styles>
         <Navbar expand="lg">
-          <Navbar.Brand href="/">Momenify</Navbar.Brand>
+          <Navbar.Brand href="/">
+            {/* Momenify */}
+            <img src={require("./Momenify.png")}></img>
+          </Navbar.Brand>
 
           <Form className="form-center mobileResponsive">
             <FormControl type="text" placeholder="Search" className="" />
@@ -120,7 +122,7 @@ class Header extends Component {
                     <Nav.Link href={"/profile/" + this.state.uniqueID}>
                       <img
                         className="post-item-header-profile2"
-                        src="https://momenify.s3.amazonaws.com/52328B23-C891-4315-B4D0-CF5C4474E55B-1588217730310.jpeg"
+                        src={this.state.logo}
                       />
                     </Nav.Link>
                   </Nav.Item>

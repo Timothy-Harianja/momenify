@@ -17,6 +17,7 @@ class Body extends Component {
     super(props);
     this.state = {
       userId: null,
+      uniqueID: null,
       posts: 0,
       idList: [],
       moments: [],
@@ -41,6 +42,7 @@ class Body extends Component {
       followingListInfo: [],
       followList: [],
       boolHideList: [],
+      reportID: null,
     };
   }
 
@@ -56,6 +58,7 @@ class Body extends Component {
         if (res.data.success) {
           this.setState({
             userId: res.data.userId,
+            uniqueID: res.data.uniqueID,
             logoNumber: res.data.logoNumber,
             following: res.data.following,
             follower: res.data.follower,
@@ -233,12 +236,26 @@ class Body extends Component {
               splitPosition={this.getSplitPosition(this.state.moments[i])}
               boolHide={this.state.boolHideList[i]}
               changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
+              owned={this.state.uniqueID == this.state.uniqueIDList[i]}
+              reportPost={(e) => this.reportPost(e)}
+              reportID={(e) => this.reportID(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  reportID = (e) => {
+    this.setState({ reportID: e.id });
+  };
+
+  reportPost = (req) => {
+    axios.post("/api/config/reportPost", {
+      message: req.message,
+      reportID: this.state.reportID,
+    });
   };
 
   addNewPost = (newPost) => {
