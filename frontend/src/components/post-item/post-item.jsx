@@ -60,7 +60,6 @@ class PostItem extends React.Component {
   CheckMediaType = (file) => {
     let imageType = ["png", "jpg", "gif", "jpeg"];
     let videoType = ["mp4", "mov", "ogg"];
-    // console.log("file.length", file.length);
     const fileType = file.substring(file.length - 3, file.length).toLowerCase();
     const fileTypeCornerCase = file
       .substring(file.length - 4, file.length)
@@ -171,7 +170,6 @@ class PostItem extends React.Component {
             <span> </span>
           )}
           <span className="post-item-header-dropdown">
-        
             {this.props.own ? (
               <ProfileDropDown
                 deletePost={() => this.props.deletePost()}
@@ -181,12 +179,15 @@ class PostItem extends React.Component {
               ></ProfileDropDown>
             ) : (
               <PostDropdown
-                userid={this.state.userid}
                 // changeFollowStatus={(e) => this.changeFollowStatus(e)}
+                postid={this.props.postid}
                 followStatus={this.props.followStatus}
                 updateFollow={(e) => this.props.updateFollow(e)}
                 id={this.props.id}
                 userId={this.props.userId}
+                owned={this.props.owned}
+                reportPost={(e) => this.props.reportPost(e)}
+                reportID={(e) => this.props.reportID(e)}
               ></PostDropdown>
             )}
           </span>

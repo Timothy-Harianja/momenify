@@ -216,8 +216,36 @@ router.post("/deletePost", (req, res) => {
         });
       }
     }
-
     return res.json({ success: true, message: "deleted" });
   });
+});
+
+router.post("/reportPost", (req, res) => {
+  Post.findOne({ _id: req.body.reportID }, (err, result) => {
+    if (err) console.log(err);
+    if (result != null) {
+      let newReportCount = result.reportCount + 1;
+      Post.findOneAndUpdate(
+        { _id: req.body.reportID },
+        { reportCount: newReportCount },
+        (err) => {
+          if (err) console.log(err);
+        }
+      );
+    }
+  });
+  note = {
+    from: "themomenify@gmail.com",
+    to: "jchen293@buffalo.edu",
+    subject: "Someone reported a post",
+    text:
+      "Post ID: " +
+      req.body.reportID +
+      "\n" +
+      "report message: " +
+      req.body.message,
+  };
+  transporter.sendMail(note);
+  return res.json({ success: true, message: "submitted" });
 });
 module.exports = router;

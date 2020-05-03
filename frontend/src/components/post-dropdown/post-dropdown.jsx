@@ -4,10 +4,13 @@ import "./post-dropdown.css";
 import axios from "axios";
 
 class PostDropdown extends React.Component {
-  state = {
-    // followStatus: false,
-    // userId: this.props.userId,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      reportMessage: "",
+      sendMessage: "",
+    };
+  }
 
   follow = () => {
     if (this.props.id != null) {
@@ -36,11 +39,19 @@ class PostDropdown extends React.Component {
     }
   };
 
+  reportConfig = (e) => {
+    if (e.message.trim().length > 0) {
+      document.getElementById("reportsubmit").removeAttribute("disabled");
+    } else {
+      document.getElementById("reportsubmit").setAttribute("disabled", true);
+    }
+    this.setState({ reportMessage: e.message });
+  };
+
   render() {
     return (
       <Dropdown classname="dropdown">
-
-<div
+        <div
           class="modal"
           aria-labelledby="exampleModalCenterTitle"
           aria-hidden="true"
@@ -76,11 +87,15 @@ class PostDropdown extends React.Component {
                 </button>
               </div>
               <div class="modal-body">
-                <p>Your report has been successfully submitted.</p>
+                <p>Thanks for letting us know!</p>
+                <p>
+                  Your feedback is important in helping us keep the community
+                  safe. Our team will take a look into the post.
+                </p>
               </div>
               <div class="modal-footer">
                 <div>
-                <button
+                  <button
                     className="btn btn-primary"
                     id="reportclose"
                     type="button"
@@ -97,9 +112,7 @@ class PostDropdown extends React.Component {
           </div>
         </div>
 
-
-
-<div
+        <div
           class="modal"
           aria-labelledby="exampleModalCenterTitle"
           aria-hidden="true"
@@ -139,7 +152,7 @@ class PostDropdown extends React.Component {
               </div>
               <div class="modal-footer">
                 <div>
-                <button
+                  <button
                     className="btn btn-primary"
                     id="messageclose"
                     type="button"
@@ -169,6 +182,10 @@ class PostDropdown extends React.Component {
               ) {
                 this.document.getElementById("messagemodal").style.display =
                   "none";
+                this.document.getElementById("messageinput").value = "";
+                this.document
+                  .getElementById("messagesubmit")
+                  .setAttribute("disabled", true);
               }
             };
           }}
@@ -202,6 +219,7 @@ class PostDropdown extends React.Component {
                 <div>
                   <button
                     id="messagesubmit"
+                    disabled
                     type="submit"
                     className="btn btn-primary"
                     onClick={(e) => {
@@ -232,6 +250,10 @@ class PostDropdown extends React.Component {
               if (event.target == this.document.getElementById("reportmodal")) {
                 this.document.getElementById("reportmodal").style.display =
                   "none";
+                this.document.getElementById("reportinput").value = "";
+                this.document
+                  .getElementById("reportsubmit")
+                  .setAttribute("disabled", true);
               }
             };
           }}
@@ -259,20 +281,38 @@ class PostDropdown extends React.Component {
                   id="reportinput"
                   name="reportnput"
                   placeholder="Reason to report this user/post"
+                  onChange={(e) =>
+                    // this.props.setReport({ message: e.target.value })
+                    this.reportConfig({ message: e.target.value })
+                  }
                 />
               </div>
               <div class="modal-footer">
                 <div>
                   <button
                     id="reportsubmit"
+                    // disabled
                     type="submit"
                     className="btn btn-primary"
                     onClick={(e) => {
-                      document.getElementById("reportinput").value = "";
-                      document.getElementById("reportmodal").style.display =
-                        "none";
-                        document.getElementById("confirmreport").style.display =
-                        "block";
+                      if (this.state.reportMessage.trim().length > 0) {
+                        setTimeout(() => {
+                          document.getElementById("reportinput").value = "";
+                          document.getElementById("reportmodal").style.display =
+                            "none";
+                          document.getElementById(
+                            "confirmreport"
+                          ).style.display = "block";
+                          this.props.reportPost({
+                            message: this.state.reportMessage,
+                          });
+                        }, 500);
+                        setTimeout(() => {
+                          this.setState({ reportMessage: "" });
+                        }, 1000);
+                      } else {
+                        alert("Report message cannot be empty!");
+                      }
                     }}
                   >
                     Submit
@@ -386,37 +426,42 @@ class PostDropdown extends React.Component {
             </svg>
             <span>Message</span>
           </Dropdown.Item>
-          <Dropdown.Item
-            onClick={() => {
-              document.getElementById("reportmodal").style.display = "block";
-            }}
-          >
-            <svg
-              class="bi bi-x-circle"
-              width="1em"
-              height="1em"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
+          {!this.props.owned || this.props.userId == null ? (
+            <Dropdown.Item
+              onClick={() => {
+                document.getElementById("reportmodal").style.display = "block";
+                this.props.reportID({ id: this.props.postid });
+              }}
             >
-              <path
-                fill-rule="evenodd"
-                d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z"
-                clip-rule="evenodd"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z"
-                clip-rule="evenodd"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <span>Report</span>
-          </Dropdown.Item>
+              <svg
+                class="bi bi-x-circle"
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z"
+                  clip-rule="evenodd"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z"
+                  clip-rule="evenodd"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span>Report</span>
+            </Dropdown.Item>
+          ) : (
+            <div></div>
+          )}
         </Dropdown.Menu>
       </Dropdown>
     );
