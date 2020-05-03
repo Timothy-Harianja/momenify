@@ -369,15 +369,19 @@ class Body extends Component {
             <div className="wrapper">
               <div className="box top">
                 <div>
-                  <img
-                    src={
-                      this.state.userId == null
-                        ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
-                        : this.state.logoNumber
-                    }
-                    alt="kun"
-                    id="side-profile"
-                  />
+                  {this.state.userId == null ? (
+                    <img
+                      src={
+                        "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                      }
+                      id="side-profile"
+                    />
+                  ) : (
+                    <a href={"/profile/" + this.state.uniqueID}>
+                      <img src={this.state.logoNumber} id="side-profile" />
+                    </a>
+                  )}
+
                   <button id="follower" onClick={() => this.changeToFollower()}>
                     {this.state.followerListInfo.length} Followers
                   </button>

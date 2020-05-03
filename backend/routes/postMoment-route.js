@@ -173,7 +173,7 @@ router.post("/giveLike", (req, res) => {
 
 router.post("/postMoment", (req, res) => {
   let postMoment = new Post();
-  let postCookieTime = new Date().getTime() + 12 * 60 * 60 * 1000;
+  let postCookieTime = new Date().getTime() + 24 * 60 * 60 * 1000;
 
   if (
     req.session.postCookie == null ||
