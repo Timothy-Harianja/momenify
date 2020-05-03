@@ -39,6 +39,122 @@ class PostDropdown extends React.Component {
   render() {
     return (
       <Dropdown classname="dropdown">
+
+<div
+          class="modal"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+          tabindex="-1"
+          id="confirmreport"
+          role="dialog"
+          onClick={() => {
+            window.onclick = function (event) {
+              if (
+                event.target == this.document.getElementById("confirmreport")
+              ) {
+                this.document.getElementById("confirmreport").style.display =
+                  "none";
+              }
+            };
+          }}
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="modalcontent">
+              <div class="modal-header">
+                <h5 class="modal-title">Report</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    document.getElementById("confirmreport").style.display =
+                      "none";
+                  }}
+                >
+                  <span class="close">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Your report has been successfully submitted.</p>
+              </div>
+              <div class="modal-footer">
+                <div>
+                <button
+                    className="btn btn-primary"
+                    id="reportclose"
+                    type="button"
+                    onClick={(e) => {
+                      document.getElementById("confirmreport").style.display =
+                        "none";
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+<div
+          class="modal"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="true"
+          tabindex="-1"
+          id="confirmmessage"
+          role="dialog"
+          onClick={() => {
+            window.onclick = function (event) {
+              if (
+                event.target == this.document.getElementById("confirmmessage")
+              ) {
+                this.document.getElementById("confirmmessage").style.display =
+                  "none";
+              }
+            };
+          }}
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="modalcontent">
+              <div class="modal-header">
+                <h5 class="modal-title">Message</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    document.getElementById("confirmmessage").style.display =
+                      "none";
+                  }}
+                >
+                  <span class="close">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Your message has been successfully sent.</p>
+              </div>
+              <div class="modal-footer">
+                <div>
+                <button
+                    className="btn btn-primary"
+                    id="messageclose"
+                    type="button"
+                    onClick={(e) => {
+                      document.getElementById("confirmmessage").style.display =
+                        "none";
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div
           class="modal"
           aria-labelledby="exampleModalCenterTitle"
@@ -92,6 +208,8 @@ class PostDropdown extends React.Component {
                       document.getElementById("messageinput").value = "";
                       document.getElementById("messagemodal").style.display =
                         "none";
+                      document.getElementById("confirmmessage").style.display =
+                        "block";
                     }}
                   >
                     Send
@@ -153,6 +271,8 @@ class PostDropdown extends React.Component {
                       document.getElementById("reportinput").value = "";
                       document.getElementById("reportmodal").style.display =
                         "none";
+                        document.getElementById("confirmreport").style.display =
+                        "block";
                     }}
                   >
                     Submit

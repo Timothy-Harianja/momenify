@@ -89,7 +89,7 @@
 #modalcontent{
   border-radius: 8px;
   border-style: solid;
-  border-width: thick;
+  border-width: 2.5px;
   border-color: rgba(227, 235, 253, 0.8);
 }
 
