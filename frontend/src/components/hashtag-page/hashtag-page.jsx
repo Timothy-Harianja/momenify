@@ -1,23 +1,9 @@
 import React, { Component } from "react";
 import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
-import anonymous from "../posts-container/anonymous.png";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
-import logo1 from "../images/logo1.png";
-import logo2 from "../images/logo2.png";
-import logo3 from "../images/logo3.png";
-import logo4 from "../images/logo4.png";
-import logo5 from "../images/logo5.png";
-import logo6 from "../images/logo6.png";
-import logo7 from "../images/logo7.png";
-import logo8 from "../images/logo1.png";
-import logo9 from "../images/logo9.png";
-import one from "../images/one.png";
-import two from "../images/two.png";
-import three from "../images/three.png";
-import four from "../images/four.png";
-import five from "../images/five.png";
+
 import "./hashtag-page.css";
 
 class HashtagPage extends Component {
@@ -36,6 +22,7 @@ class HashtagPage extends Component {
       numofLike: [],
       message: [],
       userLogo: [],
+      uniqueIDList: [],
       commentList: [],
       postDateList: [],
       hashtagList: [],
@@ -80,6 +67,7 @@ class HashtagPage extends Component {
             hashtagName: res.data.hashtagName,
             loadStatus: true,
             filesList: res.data.filesList,
+            uniqueIDList: res.data.uniqueIDList,
           });
           for (let i = 0; i < res.data.allMoments.length; i++) {
             this.state.followStatus.push(
@@ -90,8 +78,6 @@ class HashtagPage extends Component {
                 : false
             );
             this.state.boolHideList.push(true);
-            // console.log(this.state.followStatus);
-            // console.log(this.state.boolHideList);
             this.setState({ testBool: true });
           }
         });
@@ -152,15 +138,6 @@ class HashtagPage extends Component {
       });
   };
 
-  getLogo = (num) => {
-    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
-    return list[parseInt(num) - 1];
-  };
-
-  getNumberLogo = (num) => {
-    let list = [one, two, three, four, five];
-    return list[parseInt(num)];
-  };
   showPosts = () => {
     // get all the posts from the
     var posts = [];
@@ -196,6 +173,7 @@ class HashtagPage extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              uniqueID={this.state.uniqueIDList[i]}
               followStatus={this.state.followStatus[i]}
               updateFollow={(e) => this.updateFollow(e)}
               splitPosition={this.getSplitPosition(this.state.moments[i])}
@@ -270,11 +248,8 @@ class HashtagPage extends Component {
         <br></br>
         <div className="tagName">
           <h2>{this.state.hashtagName}</h2>
-          {this.state.posts > 0 ? (
-            <h3>{this.state.moments.length} &nbsp;moments</h3>
-          ) : (
-            <h3>No hashtags found</h3>
-          )}
+
+          <h3>{this.state.moments.length} &nbsp;moments</h3>
         </div>
         <div className="hashtag-home-page">
           <div className="hashtag-main-posts-container">
