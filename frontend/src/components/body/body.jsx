@@ -37,6 +37,7 @@ class Body extends Component {
       visitedList: [],
       followStatus: [],
       following: [],
+      follower: [],
       uniqueIDList: [],
       followerListInfo: [],
       followingListInfo: [],
@@ -368,15 +369,19 @@ class Body extends Component {
             <div className="wrapper">
               <div className="box top">
                 <div>
-                  <img
-                    src={
-                      this.state.userId == null
-                        ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
-                        : this.state.logoNumber
-                    }
-                    alt="kun"
-                    id="side-profile"
-                  />
+                  {this.state.userId == null ? (
+                    <img
+                      src={
+                        "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                      }
+                      id="side-profile"
+                    />
+                  ) : (
+                    <a href={"/profile/" + this.state.uniqueID}>
+                      <img src={this.state.logoNumber} id="side-profile" />
+                    </a>
+                  )}
+
                   <button id="follower" onClick={() => this.changeToFollower()}>
                     {this.state.followerListInfo.length} Followers
                   </button>
@@ -418,7 +423,7 @@ class Body extends Component {
               <div className="box-bottom box">
                 <a href="/about-us">About</a>
                 <a href="/contact-us">Contact Us</a>
-                <a href="/term-of-use">Terms of Use</a>
+                <a href="/policy">Policy</a>
                 <a href="/careers">Careers</a>
               </div>
               <p style={{ color: "grey" }}> Momenify © 2020</p>

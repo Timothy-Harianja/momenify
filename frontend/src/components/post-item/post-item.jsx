@@ -191,6 +191,7 @@ class PostItem extends React.Component {
               ></PostDropdown>
             )}
           </span>
+
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
         <div className="post-item-description">
@@ -211,11 +212,11 @@ class PostItem extends React.Component {
           </span>
           <div className="post-item-footer-stats">
             <span className="post-item-footer-number-like">
-              Number of likes: {this.props.numofLike}
+              Likes: {this.props.numofLike}
             </span>
             {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
             <span className="post-item-footer-number-comment">
-              Number of comments: {this.props.commentsCount}
+              Comments: {this.props.commentsCount}
             </span>
           </div>
 
@@ -230,7 +231,7 @@ class PostItem extends React.Component {
                 })
               }
             >
-              Like
+              <img src={require("./like.png")}></img>
             </Button>
 
             <Button
@@ -241,7 +242,7 @@ class PostItem extends React.Component {
               onClick={this.focusCommentInput}
               /* onClick={this.showCommentInputBox} */
             >
-              Comment
+              <img src={require("./comment.png")}></img>
             </Button>
           </div>
           <div className="post-item-footer-comment">

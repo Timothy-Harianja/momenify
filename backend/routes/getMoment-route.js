@@ -7,10 +7,6 @@ function makeTime() {
   return new Date().getTime();
 }
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 function getToken(res) {
   let s = "";
   for (let i = res.length; i >= 0; i--) {
@@ -84,6 +80,7 @@ router.get("/profilePage", (req, res) => {
         momentsList.push(posts[i].postmessage);
         // usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
         // idList.push(posts[i].userId);
+
         postidList.push(posts[i]._id);
         numofLike.push(posts[i].likeList.length);
         // logoList.push(posts[i].nickname == null ? 0 : posts[i].userLogo);
@@ -93,7 +90,7 @@ router.get("/profilePage", (req, res) => {
         filesList.push(posts[i].fileLocation);
       }
       return res.json({
-        idList: posts[0].userId,
+        ProfileUserId: posts[0].userId,
         allMoments: momentsList,
         allUsername: posts[0].nickname,
         allPostid: postidList,
@@ -135,6 +132,7 @@ router.get("/hashtagPage", (req, res) => {
     let postDateList = [];
     let hashtagList = [];
     let filesList = [];
+    let uniqueID = [];
     if (hashtags == null || hashtags.length == 0) {
       return res.json({
         hashtagName: "#" + token.toLowerCase(),
@@ -144,6 +142,7 @@ router.get("/hashtagPage", (req, res) => {
         allPostid: postidList,
         numofLike: numofLike,
         momentLength: 0,
+        uniqueID: uniqueID,
         logoList: logoList,
         commentList: commentList,
         postDateList: postDateList,
@@ -164,6 +163,7 @@ router.get("/hashtagPage", (req, res) => {
           postDateList.push(result[i].postTime);
           hashtagList.push(result[i].hashtagList);
           filesList.push(result[i].fileLocation);
+          uniqueID.push(result[i].uniqueID);
         }
 
         return res.json({
@@ -179,6 +179,7 @@ router.get("/hashtagPage", (req, res) => {
           postDateList: postDateList,
           hashtagList: hashtagList,
           filesList: filesList,
+          uniqueIDList: uniqueID,
         });
       });
     }
