@@ -176,8 +176,6 @@ class ProfilePage extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
-    console.log("this.state.followStatus", this.state.followStatus);
-    console.log("this.state.followStatus", this.state.boolHideList);
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
