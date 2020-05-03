@@ -48,6 +48,7 @@ class ProfilePage extends Component {
       following: [],
       followStatus: false,
       boolHideList: [],
+      testBool: false,
     };
   }
 
@@ -100,6 +101,7 @@ class ProfilePage extends Component {
             for (let i = 0; i < res.data.allMoments.length; i++) {
               this.state.boolHideList.push(true);
             }
+            this.setState({ testBool: true });
           })
           .catch((err) => {
             console.log(err);
