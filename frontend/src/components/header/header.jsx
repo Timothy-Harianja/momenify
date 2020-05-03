@@ -60,7 +60,10 @@ class Header extends Component {
     return (
       <Styles>
         <Navbar expand="lg">
-          <Navbar.Brand href="/">Momenify</Navbar.Brand>
+          <Navbar.Brand href="/">
+            {/* Momenify */}
+            <img src={require("./Momenify.png")}></img>
+          </Navbar.Brand>
 
           <Form className="form-center mobileResponsive">
             <FormControl type="text" placeholder="Search" className="" />
