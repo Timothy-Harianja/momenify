@@ -84,6 +84,7 @@ router.get("/profilePage", (req, res) => {
         momentsList.push(posts[i].postmessage);
         // usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
         // idList.push(posts[i].userId);
+
         postidList.push(posts[i]._id);
         numofLike.push(posts[i].likeList.length);
         // logoList.push(posts[i].nickname == null ? 0 : posts[i].userLogo);
@@ -93,7 +94,7 @@ router.get("/profilePage", (req, res) => {
         filesList.push(posts[i].fileLocation);
       }
       return res.json({
-        idList: posts[0].userId,
+        ProfileUserId: posts[0].userId,
         allMoments: momentsList,
         allUsername: posts[0].nickname,
         allPostid: postidList,

@@ -58,7 +58,6 @@ class Body extends Component {
             userId: res.data.userId,
             logoNumber: res.data.logoNumber,
             following: res.data.following,
-            follower: res.data.follower,
           });
 
           if (this.state.follower.length > 0) {

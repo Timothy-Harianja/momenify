@@ -42,38 +42,60 @@ class HashtagPage extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
+      following: [],
+      followStatus: [],
+      boolHideList: [],
+      testBool: false,
     };
   }
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then((res) => {
-      this.setState({
-        userId: res.data.userId,
-        logoNumber: res.data.logoNumber,
+    axios
+      .get("/api/loginRoute/session")
+      .then((res) => {
+        this.setState({
+          userId: res.data.userId,
+          logoNumber: res.data.logoNumber,
+          following: res.data.following,
+        });
+      })
+      .then(() => {
+        axios.get("/api/getRoute/hashtagPage").then((res) => {
+          this.setState({
+            loadingFeedback:
+              res.data.allMoments.length > 3 ? "Loading Posts..." : "",
+            posts:
+              res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
+            idList: res.data.idList,
+            moments: res.data.allMoments,
+            usernameList: res.data.allUsername,
+            postidList: res.data.allPostid,
+            likeStatus: Array(res.data.momentLength).fill(false),
+            numofLike: res.data.numofLike,
+            message: Array(res.data.momentLength).fill(""),
+            userLogo: res.data.logoList,
+            commentList: res.data.commentList,
+            postDateList: res.data.postDateList,
+            hashtagList: res.data.hashtagList,
+            hashtagName: res.data.hashtagName,
+            loadStatus: true,
+            filesList: res.data.filesList,
+          });
+          for (let i = 0; i < res.data.allMoments.length; i++) {
+            this.state.followStatus.push(
+              this.state.following === undefined
+                ? false
+                : this.state.following.includes(res.data.idList[i])
+                ? true
+                : false
+            );
+            this.state.boolHideList.push(true);
+            // console.log(this.state.followStatus);
+            // console.log(this.state.boolHideList);
+            this.setState({ testBool: true });
+          }
+        });
       });
-    });
-
-    axios.get("/api/getRoute/hashtagPage").then((res) => {
-      this.setState({
-        loadingFeedback:
-          res.data.allMoments.length > 3 ? "Loading Posts..." : "",
-        posts: res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-        idList: res.data.idList,
-        moments: res.data.allMoments,
-        usernameList: res.data.allUsername,
-        postidList: res.data.allPostid,
-        likeStatus: Array(res.data.momentLength).fill(false),
-        numofLike: res.data.numofLike,
-        message: Array(res.data.momentLength).fill(""),
-        userLogo: res.data.logoList,
-        commentList: res.data.commentList,
-        postDateList: res.data.postDateList,
-        hashtagList: res.data.hashtagList,
-        hashtagName: res.data.hashtagName,
-        loadStatus: true,
-        filesList: res.data.filesList,
-      });
-    });
   }
 
   giveComment = (comment) => {
@@ -142,6 +164,7 @@ class HashtagPage extends Component {
   showPosts = () => {
     // get all the posts from the
     var posts = [];
+    // console.log("this happens last, ", this.state.testBool);
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
@@ -173,6 +196,11 @@ class HashtagPage extends Component {
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
               file={this.state.filesList[i]}
+              followStatus={this.state.followStatus[i]}
+              updateFollow={(e) => this.updateFollow(e)}
+              splitPosition={this.getSplitPosition(this.state.moments[i])}
+              boolHide={this.state.boolHideList[i]}
+              changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
             />
           </div>
         );
@@ -196,6 +224,46 @@ class HashtagPage extends Component {
     }
   };
 
+  updateFollow = (req) => {
+    var idList = this.state.idList;
+    var followStatus = this.state.followStatus;
+    for (let i = 0; i < idList.length; i++) {
+      if (idList[i] == req.id) {
+        followStatus[i] = !followStatus[i];
+      }
+    }
+    this.setState({ followStatus: followStatus });
+    //update following list
+    if (req.action == "follow") {
+      this.state.following.push(req.id);
+    } else {
+      this.state.following.filter((item) => item != req.id);
+    }
+  };
+  getSplitPosition = (text) => {
+    var edgeLength = 300;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+
+    if (textLength <= edgeLength) {
+      return 0;
+    }
+    var retVal = 300;
+    var shortText = text.slice(0, 300);
+    if ((shortText.match(/\n/g) || []).length >= 4) {
+      //find the position of the 4th happened \n
+      var spl = shortText.split("\n");
+      retVal =
+        spl[0].length + spl[1].length + spl[2].length + spl[3].length + 3;
+      // retVal = shortText.indexOf("\n", shortText.indexOf("\n") + 4) - 1;
+    }
+    return retVal;
+  };
+
+  changeBoolReadAll = (position) => {
+    var newBoolHideList = this.state.boolHideList;
+    newBoolHideList[position] = !newBoolHideList[position];
+    this.setState({ boolHideList: newBoolHideList });
+  };
   render() {
     return (
       <div className="hashtag-body">

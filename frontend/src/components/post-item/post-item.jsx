@@ -171,7 +171,6 @@ class PostItem extends React.Component {
             <span> </span>
           )}
           <span className="post-item-header-dropdown">
-        
             {this.props.own ? (
               <ProfileDropDown
                 deletePost={() => this.props.deletePost()}

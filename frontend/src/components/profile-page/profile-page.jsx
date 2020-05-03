@@ -26,7 +26,7 @@ class ProfilePage extends Component {
     this.state = {
       userId: null,
       posts: 0,
-      idList: null,
+      ProfileUserId: null,
       moments: [],
       usernameList: null,
       postidList: [],
@@ -45,6 +45,9 @@ class ProfilePage extends Component {
       owner: null,
       deleteID: null,
       position: null,
+      following: [],
+      followStatus: false,
+      boolHideList: [],
     };
   }
 
@@ -56,37 +59,51 @@ class ProfilePage extends Component {
           userId: res.data.userId,
           logoNumber: res.data.logoNumber,
           owner: res.data.uniqueID,
+          following: res.data.following,
         });
       })
       .catch((err) => {
         console.log(err);
-      });
-    axios
-      .get("/api/getRoute/profilePage")
-      .then((res) => {
-        this.setState({
-          loadingFeedback:
-            res.data.allMoments.length > 3 ? "Loading Posts..." : "",
-          posts:
-            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-          idList: res.data.idList,
-          moments: res.data.allMoments,
-          usernameList: res.data.allUsername,
-          postidList: res.data.allPostid,
-          likeStatus: Array(res.data.momentLength).fill(false),
-          numofLike: res.data.numofLike,
-          message: Array(res.data.momentLength).fill(""),
-          userLogo: res.data.logoList,
-          commentList: res.data.commentList,
-          postDateList: res.data.postDateList,
-          hashtagList: res.data.hashtagList,
-          loadStatus: true,
-          filesList: res.data.filesList,
-          uniqueID: res.data.uniqueID,
-        });
       })
-      .catch((err) => {
-        console.log(err);
+      .then(() => {
+        axios
+          .get("/api/getRoute/profilePage")
+          .then((res) => {
+            this.setState({
+              loadingFeedback:
+                res.data.allMoments.length > 3 ? "Loading Posts..." : "",
+              posts:
+                res.data.allMoments.length >= 3
+                  ? 3
+                  : res.data.allMoments.length,
+              ProfileUserId: res.data.ProfileUserId,
+              moments: res.data.allMoments,
+              usernameList: res.data.allUsername,
+              postidList: res.data.allPostid,
+              likeStatus: Array(res.data.momentLength).fill(false),
+              numofLike: res.data.numofLike,
+              message: Array(res.data.momentLength).fill(""),
+              userLogo: res.data.logoList,
+              commentList: res.data.commentList,
+              postDateList: res.data.postDateList,
+              hashtagList: res.data.hashtagList,
+              loadStatus: true,
+              filesList: res.data.filesList,
+              uniqueID: res.data.uniqueID,
+              followStatus:
+                this.state.following === undefined
+                  ? false
+                  : this.state.following.includes(res.data.ProfileUserId)
+                  ? true
+                  : false,
+            });
+            for (let i = 0; i < res.data.allMoments.length; i++) {
+              this.state.boolHideList.push(true);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       });
   }
 
@@ -168,7 +185,7 @@ class ProfilePage extends Component {
                   ? " Anonymous"
                   : this.state.usernameList
               }
-              id={this.state.idList}
+              id={this.state.ProfileUserId}
               uniqueID={this.state.uniqueID}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
@@ -192,6 +209,11 @@ class ProfilePage extends Component {
               own={this.state.owner == this.state.uniqueID}
               deletePost={() => this.deletePost()}
               deleteID={(e) => this.deleteID(e)}
+              followStatus={this.state.followStatus}
+              updateFollow={(e) => this.updateFollow(e)}
+              splitPosition={this.getSplitPosition(this.state.moments[i])}
+              boolHide={this.state.boolHideList[i]}
+              changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
             />
           </div>
         );
@@ -232,6 +254,40 @@ class ProfilePage extends Component {
     }
   };
 
+  updateFollow = (req) => {
+    this.setState({ followStatus: !this.state.followStatus });
+    //update following list
+    if (req.action == "follow") {
+      this.state.following.push(req.id);
+    } else {
+      this.state.following.filter((item) => item != req.id);
+    }
+  };
+
+  getSplitPosition = (text) => {
+    var edgeLength = 300;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+
+    if (textLength <= edgeLength) {
+      return 0;
+    }
+    var retVal = 300;
+    var shortText = text.slice(0, 300);
+    if ((shortText.match(/\n/g) || []).length >= 4) {
+      //find the position of the 4th happened \n
+      var spl = shortText.split("\n");
+      retVal =
+        spl[0].length + spl[1].length + spl[2].length + spl[3].length + 3;
+      // retVal = shortText.indexOf("\n", shortText.indexOf("\n") + 4) - 1;
+    }
+    return retVal;
+  };
+
+  changeBoolReadAll = (position) => {
+    var newBoolHideList = this.state.boolHideList;
+    newBoolHideList[position] = !newBoolHideList[position];
+    this.setState({ boolHideList: newBoolHideList });
+  };
   render() {
     return (
       <div className="profile-body">
