@@ -49,38 +49,24 @@ let post = {
 };
 router.post("/upload", (req, res) => {
   profileImgUpload(req, res, (error) => {
-    console.log("requestOkokok", req.file);
-    // console.log("error", error);
     if (error) {
       console.log("errors", error);
       return res.json({ success: false, message: "file too large" });
     } else {
       // If File not found
       if (req.file === undefined) {
-        console.log("Error: No File Selected!");
         return res.json({ success: false });
       } else {
         // If Success
-        // console.log("req.file: ", req.file);
-        const imageLocation = req.file.location;
         // Save the file name into database into profile model
         return res.json({
           success: true,
-          imageLocation: imageLocation,
+          key: req.file.key,
+          imageLocation: req.file.location,
         });
       }
     }
   });
-  // console.log("params", req.params);
-  // upload(req, res, (err) => {
-  //   if (err) {
-  //     console.log(err);
-  //     return res.json({ success: false });
-  //   } else {
-  //     console.log("req.file", req.file);
-  //     return res.json({ success: true, files: req.file });
-  //   }
-  // });
 });
 
 router.post("/postHashtag", (req, res) => {
@@ -187,7 +173,7 @@ router.post("/giveLike", (req, res) => {
 
 router.post("/postMoment", (req, res) => {
   let postMoment = new Post();
-  let postCookieTime = new Date().getTime() + 12 * 60 * 60 * 1000;
+  let postCookieTime = new Date().getTime() + 24 * 60 * 60 * 1000;
 
   if (
     req.session.postCookie == null ||
@@ -209,6 +195,9 @@ router.post("/postMoment", (req, res) => {
   postMoment.userLogo = req.body.userLogo;
   postMoment.uniqueID = req.body.uniqueID;
   postMoment.fileLocation = req.body.fileLocation;
+  postMoment.objectKey = req.body.fileKey;
+  postMoment.reportCount = 0;
+  postMoment.visible = true;
 
   if (req.session.userId) {
     postMoment.save((err, newPost) => {

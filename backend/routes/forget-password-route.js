@@ -40,7 +40,6 @@ router.post("/forgetPassword", (req, res) => {
           console.log(err);
           return res.json({ success: false });
         } else {
-          console.log("req: ", req);
           tokenLink = req.headers.origin + "/newpassword/" + fp.token;
           mail = {
             from: "Momenify account password reset",
@@ -57,7 +56,6 @@ router.post("/forgetPassword", (req, res) => {
         }
       });
     } else {
-      console.log("user doesn't exist");
       return res.json({ success: false });
     }
   });
@@ -87,10 +85,8 @@ async function hashPassword(password) {
 }
 
 router.post("/newPassword", (req, res) => {
-  console.log("emailLogin");
   var tokenLink = req.headers.referer;
   token = getToken(tokenLink);
-  console.log("token, ", token);
 
   FP.findOne({ token: token }, (err1, fp) => {
     if (err1) {
@@ -98,7 +94,6 @@ router.post("/newPassword", (req, res) => {
       return res.json({ success: false });
     } else if (fp != null) {
       var time = new Date().getTime();
-      console.log("current time: ", time);
       if (fp.tokenExpire > time) {
         //user login and delete current fp
         var email = fp.email;
@@ -108,7 +103,6 @@ router.post("/newPassword", (req, res) => {
             return res.json({ success: false });
           }
         }).then((result) => {
-          console.log("result after delete fp; ", result);
           User.findOne({ email: email }, (err3, user) => {
             if (err3) {
               console.log("err3: ", err3);
@@ -117,7 +111,6 @@ router.post("/newPassword", (req, res) => {
               //change passoword
               hashPassword(req.body.newPassword).then((result) => {
                 user.password = result;
-                console.log("new passsword set )))))))))))),", result);
                 user.save((err5) => {
                   if (err5) {
                     console.log("error 5, ", err5);
@@ -129,7 +122,6 @@ router.post("/newPassword", (req, res) => {
               });
             } else {
               //user not exist
-              console.log("user not exist during the email login process");
               return res.json({ success: false });
             }
           });
@@ -143,11 +135,9 @@ router.post("/newPassword", (req, res) => {
             return res.json({ success: false });
           }
         });
-        console.log("expired, delete fp");
         return res.json({ success: false });
       }
     } else {
-      console.log("fp doesn't exist");
       return res.json({ success: false });
     }
   });

@@ -10,8 +10,8 @@ class AccountPage extends Component {
     userEmail: null,
     userNickname: null,
     oldPassword: null,
-    newPassword: null,
-    confirmPassword: null,
+    newPassword: "",
+    confirmPassword: "",
     message: null,
     userLogo: null,
     currentLogo: null,
@@ -20,6 +20,9 @@ class AccountPage extends Component {
   };
   componentDidMount() {
     axios.get("/api/loginRoute/session").then((res) => {
+      if (res.data.uniqueID == null || res.data.email == null) {
+        this.props.history.push("/login");
+      }
       this.setState({
         userId: res.data.uniqueID,
         userEmail: res.data.email,
@@ -38,7 +41,10 @@ class AccountPage extends Component {
   };
 
   tryReset = (obj) => {
-    var confirmNewP = this.state.newPassword === this.state.confirmPassword;
+    var confirmNewP =
+      this.state.newPassword === this.state.confirmPassword &&
+      this.state.newPassword.length >= 8 &&
+      this.state.confirmPassword.length >= 8;
 
     if (confirmNewP) {
       axios
@@ -47,21 +53,34 @@ class AccountPage extends Component {
           if (res.data.success) {
             this.setState({
               message: "password has resetted",
+              newPassword: "",
+              confirmaPassword: "",
+              oldPassword: null,
             });
+            document.getElementById("currentpassword").value = "";
+            document.getElementById("newpassword").value = "";
+            document.getElementById("confirmpassword").value = "";
           } else {
-            this.setState({ message: " old password is incorrect" });
+            this.setState({ message: "old password is incorrect" });
           }
         })
         .catch((err) => {
           console.log("error of catch:", err);
         });
-    } else {
+    } else if (this.state.newPassword !== this.state.confirmPassword) {
       this.setState({ message: "new password doesn't match" });
+    } else {
+      this.setState({
+        message: "new password must have more than 8 characters",
+      });
     }
   };
 
   submitHandler = (e) => {
     e.preventDefault();
+  };
+  logout = () => {
+    axios.post("/api/loginRoute/logout").then((res) => {});
   };
 
   onChange = (e) => {
@@ -127,6 +146,7 @@ class AccountPage extends Component {
           <div className="form-group">
             <label>Nickname</label>
             <input
+              id="color"
               className="form-control"
               value={this.state.userNickname}
               onChange={(e) => this.setState({ userNickname: e.target.value })}
@@ -196,6 +216,7 @@ class AccountPage extends Component {
             <FormLabel>Current Password </FormLabel>
             <FormControl
               //   value={password}
+              id="currentpassword"
               onChange={(e) => this.setState({ oldPassword: e.target.value })}
               type="password"
             />
@@ -204,6 +225,7 @@ class AccountPage extends Component {
             <FormLabel>New Password </FormLabel>
             <FormControl
               //   value={password}
+              id="newpassword"
               onChange={(e) => this.setState({ newPassword: e.target.value })}
               type="password"
             />
@@ -212,6 +234,7 @@ class AccountPage extends Component {
             <FormLabel>Confirm New Password </FormLabel>
             <FormControl
               //   value={password}
+              id="confirmpassword"
               onChange={(e) =>
                 this.setState({ confirmPassword: e.target.value })
               }
@@ -240,6 +263,17 @@ class AccountPage extends Component {
             </div>
           )}
         </form>
+        <br></br>
+        <div class="text-center">
+          <Button
+            variant="danger"
+            style={{ width: "150px" }}
+            href="/"
+            onClick={() => this.logout()}
+          >
+            Log Out
+          </Button>
+        </div>
       </div>
     );
   }

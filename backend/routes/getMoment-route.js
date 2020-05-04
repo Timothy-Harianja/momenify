@@ -7,10 +7,6 @@ function makeTime() {
   return new Date().getTime();
 }
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 function getToken(res) {
   let s = "";
   for (let i = res.length; i >= 0; i--) {
@@ -24,7 +20,7 @@ function getToken(res) {
 
 let getTag = (hashtag) => {
   return new Promise((resolve, reject) => {
-    Post.findOne({ _id: hashtag }, (err, moments) => {
+    Post.findOne({ _id: hashtag, visible: true }, (err, moments) => {
       if (err) reject(err);
       resolve(moments);
     });
@@ -33,9 +29,11 @@ let getTag = (hashtag) => {
 
 let getAllTag = (hashtags) => {
   let res = new Array(hashtags[0].postList.length);
-  for (let i = 0; i < hashtags[0].postList.length; i++) {
+  let allHashtags = hashtags[0].postList;
+  allHashtags = allHashtags.reverse();
+  for (let i = 0; i < allHashtags.length; i++) {
     res[i] = new Promise((resolve, reject) => {
-      getTag(hashtags[0].postList[i]).then((data) => {
+      getTag(allHashtags[i]).then((data) => {
         resolve(data);
       });
     });
@@ -56,7 +54,8 @@ router.get("/profilePage", (req, res) => {
   let postDateList = [];
   let hashtagList = [];
   let filesList = [];
-  let uniqueIDList = [];
+  let visibleList = [];
+
   Post.find({ uniqueID: token }, (err, posts) => {
     if (err) {
       console.log(err);
@@ -78,37 +77,40 @@ router.get("/profilePage", (req, res) => {
         postDateList: postDateList,
         hashtagList: hashtagList,
         filesList: filesList,
+        visibleList: visibleList,
       });
     } else {
       for (let i = 0; i < posts.length; i++) {
         momentsList.push(posts[i].postmessage);
-        usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
-        idList.push(posts[i].userId);
+        // usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
+        // idList.push(posts[i].userId);
+
         postidList.push(posts[i]._id);
         numofLike.push(posts[i].likeList.length);
-        logoList.push(posts[i].nickname == null ? 0 : posts[i].userLogo);
+        // logoList.push(posts[i].nickname == null ? 0 : posts[i].userLogo);
         commentList.push(posts[i].commentList);
         postDateList.push(posts[i].postTime);
         hashtagList.push(posts[i].hashtagList);
         filesList.push(posts[i].fileLocation);
-        uniqueIDList.push(posts[i].uniqueID);
+        visibleList.push(posts[i].visible);
       }
       return res.json({
-        idList: idList,
+        ProfileUserId: posts[0].userId,
         allMoments: momentsList,
-        allUsername: usernameList,
+        allUsername: posts[0].nickname,
         allPostid: postidList,
         numofLike: numofLike,
         momentLength: posts.length,
-        logoList: logoList,
+        logoList: posts[0].userLogo,
         commentList: commentList,
         postDateList: postDateList,
         hashtagList: hashtagList,
         filesList: filesList,
-        uniqueIDList: uniqueIDList,
+        uniqueID: token,
+        visibleList: visibleList,
       });
     }
-  }).sort({ postDate: -1 });
+  });
 });
 
 router.get("/hashtagPage", (req, res) => {
@@ -136,6 +138,7 @@ router.get("/hashtagPage", (req, res) => {
     let postDateList = [];
     let hashtagList = [];
     let filesList = [];
+    let uniqueID = [];
     if (hashtags == null || hashtags.length == 0) {
       return res.json({
         hashtagName: "#" + token.toLowerCase(),
@@ -145,6 +148,7 @@ router.get("/hashtagPage", (req, res) => {
         allPostid: postidList,
         numofLike: numofLike,
         momentLength: 0,
+        uniqueID: uniqueID,
         logoList: logoList,
         commentList: commentList,
         postDateList: postDateList,
@@ -153,18 +157,21 @@ router.get("/hashtagPage", (req, res) => {
     } else {
       getAllTag(hashtags).then((result) => {
         for (let i = 0; i < result.length; i++) {
-          momentsList.push(result[i].postmessage);
-          usernameList.push(
-            result[i].nickname == null ? null : result[i].nickname
-          );
-          idList.push(result[i].userId);
-          postidList.push(result[i]._id);
-          numofLike.push(result[i].likeList.length);
-          logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
-          commentList.push(result[i].commentList);
-          postDateList.push(result[i].postTime);
-          hashtagList.push(result[i].hashtagList);
-          filesList.push(result[i].fileLocation);
+          if (result[i] != null) {
+            momentsList.push(result[i].postmessage);
+            usernameList.push(
+              result[i].nickname == null ? null : result[i].nickname
+            );
+            idList.push(result[i].userId);
+            postidList.push(result[i]._id);
+            numofLike.push(result[i].likeList.length);
+            logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
+            commentList.push(result[i].commentList);
+            postDateList.push(result[i].postTime);
+            hashtagList.push(result[i].hashtagList);
+            filesList.push(result[i].fileLocation);
+            uniqueID.push(result[i].uniqueID);
+          }
         }
 
         return res.json({
@@ -180,6 +187,7 @@ router.get("/hashtagPage", (req, res) => {
           postDateList: postDateList,
           hashtagList: hashtagList,
           filesList: filesList,
+          uniqueIDList: uniqueID,
         });
       });
     }
@@ -217,6 +225,7 @@ router.post("/getMoment", (req, res) => {
     [
       {
         $match: {
+          visible: true,
           _id: {
             $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
           },

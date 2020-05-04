@@ -26,9 +26,6 @@ router.post("/resetPassword", (req, res) => {
         match
       ) {
         if (match && user.activation) {
-          console.log("old password matches");
-
-          console.log(req.body.newPassword);
           hashPassword(req.body.newPassword).then((result) => {
             user.password = result;
             user.save((error) => {
@@ -36,17 +33,14 @@ router.post("/resetPassword", (req, res) => {
                 console.log(error);
                 return err;
               }
-              console.log("changed password success");
               return res.json({ success: true });
             });
           });
         } else {
-          console.log("old password incorrect");
           return res.json({ success: false });
         }
       });
     } else {
-      console.log("user not found");
       return res.json({ success: false });
     }
   });

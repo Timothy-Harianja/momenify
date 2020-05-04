@@ -13,6 +13,9 @@ const PostSchema = new Schema({
   hashtagList: [],
   fileLocation: String,
   uniqueID: String,
+  objectKey: String,
+  reportCount: Number,
+  visible: Boolean,
 });
 
 module.exports = mongoose.model("Moment", PostSchema);

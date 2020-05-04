@@ -2,7 +2,7 @@ import React from "react";
 import "./post-item.css";
 import Button from "react-bootstrap/Button";
 import PostDropdown from "../post-dropdown/post-dropdown";
-
+import ProfileDropDown from "../post-dropdown/profile-dropdown";
 class PostItem extends React.Component {
   constructor(props) {
     super(props);
@@ -10,10 +10,13 @@ class PostItem extends React.Component {
     this.state = {
       commentInputBox: false,
       commentNumber: 3,
-      commentText: null,
-      postid: this.props.postid,
-      position: this.props.position,
-      userid: this.props.id,
+      commentText: "",
+      // showingPost: "",
+      // postText1: "",
+      // postText2: "",
+      readMore: "Read all",
+      splitPosition: 300,
+      restText: false,
     };
   }
 
@@ -55,12 +58,17 @@ class PostItem extends React.Component {
   };
 
   CheckMediaType = (file) => {
-    let imageType = ["png", "jpg", "gif"];
+    let imageType = ["png", "jpg", "gif", "jpeg"];
     let videoType = ["mp4", "mov", "ogg"];
-    // console.log("file.length", file.length);
     const fileType = file.substring(file.length - 3, file.length).toLowerCase();
-    // console.log(fileType);
-    if (imageType.includes(fileType)) {
+    const fileTypeCornerCase = file
+      .substring(file.length - 4, file.length)
+      .toLowerCase();
+
+    if (
+      imageType.includes(fileType) ||
+      imageType.includes(fileTypeCornerCase)
+    ) {
       return <img className="post-item-main-image" src={file} alt="" />;
     }
     if (videoType.includes(fileType)) {
@@ -73,22 +81,92 @@ class PostItem extends React.Component {
           loop
           preload="metadata"
           src={file + "#t=0.1"}
-        >
-          {/* <source src={file + "#t=0.1"} /> */}
-          {/* <source src={file} type="video/ogg" />
-          <source src={file} type="video/mov" /> */}
-        </video>
+        ></video>
       );
     }
     return "unkown";
   };
+  formatPostText = (text) => {
+    var rowLen = text.replace(/ /g, "\u00a0").split("\n").length;
 
-  // changeFollowStatus = (newStatus) => {
-  //   this.setState({ followStatus: newStatus });
-  //   console.log("changed follow status");
-  // };
+    return text
+      .replace(/ /g, "\u00a0")
+      .split("\n")
+      .map((message, i) => {
+        if (rowLen === i + 1) {
+          //the last one: no <br/>
+          return <span>{message}</span>;
+        }
+
+        return (
+          <span>
+            {message} <br />
+          </span>
+        );
+      });
+  };
+
+  longPostText = () => {
+    var edgeLength = 300;
+    var text = this.props.text;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+    return textLength > edgeLength;
+  };
+
+  PostText = () => {
+    return this.longPostText() ? (
+      <div>
+        {this.formatPostText(
+          this.props.text.slice(0, this.props.splitPosition)
+        )}
+        {this.props.boolHide
+          ? null
+          : this.formatPostText(
+              this.props.text.slice(this.props.splitPosition)
+            )}
+        <div
+          className="show-more-footer-comment"
+          onClick={() => this.props.changeBoolReadAll(this.props.position)}
+        >
+          {this.props.boolHide ? <span> Read all</span> : <span> Hide </span>}
+        </div>
+      </div>
+    ) : (
+      <div> {this.formatPostText(this.props.text)}</div>
+    );
+  };
+
+  commentOnChange = (e) => {
+    if (e.comment.trim().length > 0) {
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).style.color = "rgb(0,149,246)";
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).disabled = false;
+    } else {
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).style.color = "rgb(184,223,252)";
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).disabled = true;
+    }
+    this.setState({ commentText: e.comment });
+  };
+
+  componentDidMount() {
+    if (this.state.commentText.trim().length < 1) {
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).style.color = "rgb(184,223,252)";
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).disabled = true;
+    }
+  }
+
   render() {
-    //console.log("filename: ", this.props.file);
     return (
       <div className="post-item-container">
         <div className="post-item-header">
@@ -121,28 +199,45 @@ class PostItem extends React.Component {
           ) : (
             <span> </span>
           )}
+          {this.props.own && this.props.visible ? (
+            <span className="post-item-follow">-Public</span>
+          ) : (
+            <span></span>
+          )}
+          {this.props.own && !this.props.visible ? (
+            <span className="post-item-follow">-Private</span>
+          ) : (
+            <span></span>
+          )}
           <span className="post-item-header-dropdown">
-            <PostDropdown
-              userid={this.state.userid}
-              // changeFollowStatus={(e) => this.changeFollowStatus(e)}
-              followStatus={this.props.followStatus}
-              updateFollow={(e) => this.props.updateFollow(e)}
-              id={this.props.id}
-              userId={this.props.userId}
-            ></PostDropdown>
+            {this.props.own ? (
+              <ProfileDropDown
+                deletePost={() => this.props.deletePost()}
+                deleteID={(e) => this.props.deleteID(e)}
+                postid={this.props.postid}
+                position={this.props.position}
+                visible={this.props.visible}
+                changeVisible={(e) => this.props.changeVisible(e)}
+              ></ProfileDropDown>
+            ) : (
+              <PostDropdown
+                // changeFollowStatus={(e) => this.changeFollowStatus(e)}
+                postid={this.props.postid}
+                followStatus={this.props.followStatus}
+                updateFollow={(e) => this.props.updateFollow(e)}
+                id={this.props.id}
+                userId={this.props.userId}
+                owned={this.props.owned}
+                reportPost={(e) => this.props.reportPost(e)}
+                reportID={(e) => this.props.reportID(e)}
+              ></PostDropdown>
+            )}
           </span>
+
           <span className="post-item-header-date">{this.props.postDate}</span>
         </div>
         <div className="post-item-description">
-          {this.props.text
-            .replace(/ /g, "\u00a0")
-            .split("\n")
-            .map((message) => {
-              if (message.length == 0) {
-                return <div> &nbsp;</div>;
-              }
-              return <div>{message}</div>;
-            })}
+          <this.PostText></this.PostText>
         </div>
 
         {this.props.file != null ? (
@@ -159,11 +254,11 @@ class PostItem extends React.Component {
           </span>
           <div className="post-item-footer-stats">
             <span className="post-item-footer-number-like">
-              Number of likes: {this.props.numofLike}
+              Likes: {this.props.numofLike}
             </span>
             {/* <div>{likeStatus ? "" : "you already liked"}</div> */}
             <span className="post-item-footer-number-comment">
-              Number of comments: {this.props.commentsCount}
+              Comments: {this.props.commentsCount}
             </span>
           </div>
 
@@ -178,7 +273,7 @@ class PostItem extends React.Component {
                 })
               }
             >
-              Like
+              <img src={require("./like.png")}></img>
             </Button>
 
             <Button
@@ -189,7 +284,7 @@ class PostItem extends React.Component {
               onClick={this.focusCommentInput}
               /* onClick={this.showCommentInputBox} */
             >
-              Comment
+              <img src={require("./comment.png")}></img>
             </Button>
           </div>
           <div className="post-item-footer-comment">
@@ -198,29 +293,46 @@ class PostItem extends React.Component {
             ></this.CommentSection>
           </div>
           <div className="post-item-footer-comment-box">
-            <form onSubmit={this.submitHandler} id="submitform">
+            <form
+              onSubmit={this.submitHandler}
+              id={"submitform" + this.props.position}
+            >
               <input
                 ref={this.commentInput}
-                onChange={(e) => this.setState({ commentText: e.target.value })}
+                // onChange={(e) => this.setState({ commentText: e.target.value })}
+                onChange={(e) =>
+                  this.commentOnChange({ comment: e.target.value })
+                }
                 className="comment-box"
                 type="text"
-                id="commentInputBox"
+                id={"commentInputBox" + this.props.position}
                 required
               ></input>
               <input
                 className="comment-post"
                 type="reset"
                 value="POST"
+                id={"commentsubmit" + this.props.position}
+                style={{ color: "rgb(184,223,252)" }}
                 onClick={() => {
                   this.setState({
                     commentNumber: this.state.commentNumber + 1,
                   });
                   this.props.giveComment({
-                    postid: this.state.postid,
-                    position: this.state.position,
+                    postid: this.props.postid,
+                    position: this.props.position,
                     postComment: this.state.commentText,
                   });
-                  this.state.commentText = null;
+                  this.state.commentText = "";
+                  document.getElementById(
+                    "commentsubmit" + this.props.position
+                  ).style.color = "rgb(184,223,252)";
+                  document.getElementById(
+                    "commentsubmit" + this.props.position
+                  ).disabled = true;
+                  document.getElementById(
+                    "commentInputBox" + this.props.position
+                  ).value = "";
                 }}
               ></input>
             </form>

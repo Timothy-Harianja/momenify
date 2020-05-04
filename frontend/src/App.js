@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Header from "./components/header/header.jsx";
-import Body from "./components/body/body.jsx";
 import ProfilePage from "./components/profile-page/profile-page";
 import HastagPage from "./components/hashtag-page/hashtag-page";
 import Active from "./components/active/active.jsx";
 import newPassword from "./components/active/newPassword.jsx";
 import axios from "axios";
-import { NavLink } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./components/body/body.jsx";
 import Login from "./components/login/login.jsx";
@@ -23,16 +21,13 @@ import Message from "./components/Messenger/index.js";
 import Career from "./components/career/career.jsx";
 import ContactUs from "./components/contact-us/contact-us.jsx";
 import AccountPage from "./components/accountPage/accountpage.jsx";
+import ContactUS from "./components/contact-us/contact-us.jsx";
+import { Thanks } from "./components/others/thanks.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {
   state = {
     userId: null,
-  };
-
-  setBody = (obj) => {
-    console.log("clicked");
-    this.setState({ body: obj });
   };
 
   componentDidMount() {
@@ -53,20 +48,11 @@ class App extends Component {
             <Route path="/forgetPassword" component={forgetPassword} />
             <Route path="/profile" component={ProfilePage} />
             <Route path="/hashtag" component={HastagPage} />
+            <Route path="/contact-us" component={ContactUS} />
 
-            <Route
-              path="/signup"
-              component={Signup}
-              // render={props => (
-              //   <Signup
-              //     {...props}
-              //     setConfirmationContent={e => {
-              //       this.setConfirmationContent(e);
-              //     }}
-              //   />
-              // )}
-            />
+            <Route path="/signup" component={Signup} />
             <Route path="/confirmation" component={Confirmation} />
+            <Route path="/thanks" component={Thanks} />
             <Route path="/active" component={Active} />
 
             <Route path="/newpassword" component={newPassword} />
@@ -75,15 +61,17 @@ class App extends Component {
 
             <Route path="/about-us" component={AboutUs} />
             <Route path="/contact-us" component={ContactUs} />
-            <Route path="/term-of-use" component={TermOfUse} />
+            <Route path="/policy" component={TermOfUse} />
             <Route path="/careers" component={Career} />
             <Route
               path="/message"
-              component={this.state.userId != undefined ? Message : Login}
+              component={Message}
+              // component={this.state.userId != undefined ? Message : Login}
             />
             <Route
               path="/accountpage"
-              component={this.state.userId != undefined ? AccountPage : Login}
+              component={AccountPage}
+              // component={this.state.userId != undefined ? AccountPage : Login}
             />
 
             <Route component={NoMatch} />
@@ -91,10 +79,6 @@ class App extends Component {
         </Router>
         {this.state.body}
       </React.Fragment>
-      // <div style={{ backgroundColor: "white" }}>
-
-      //   {this.state.active}
-      // </div>
     );
   }
 }

@@ -129,7 +129,7 @@
   position: relative;
   float: right;
   /* background-color: rgba(227, 235, 253) !important; */
-  background-color: white !important;
+  background-color: #fafafa !important;
   color: black !important;
   font-weight: bold !important;
   border: none !important;
@@ -137,7 +137,7 @@
 }
 
 .post-item-footer-comment-button:hover {
-  background-color: rgba(227, 235, 253) !important;
+  background-color: #fafafa !important;
 }
 
 .post-item-footer-like-button {
@@ -146,7 +146,7 @@
   position: relative;
   float: left;
   /* background-color: rgba(227, 235, 253) !important; */
-  background-color: white !important;
+  background-color: #fafafa !important;
   color: black !important;
   font-weight: bold !important;
   border: none !important;
@@ -154,7 +154,7 @@
 }
 
 .post-item-footer-like-button:hover {
-  background-color: rgba(227, 235, 253) !important;
+  background-color: #fafafa !important;
 }
 
 .post-item-footer-comment {
@@ -176,6 +176,7 @@
 
 .comment-box {
   width: 90%;
+  background-color: #fafafa;
   height: 50px;
   border: none;
   border-top: 1px solid #e1e1e1;
@@ -185,11 +186,11 @@
 .comment-post {
   width: 10%;
   height: 50px;
-  background-color: white;
+  background-color: #fafafa;
   border: none;
   border-top: 1px solid #e1e1e1;
   word-wrap: break-word;
-  color: #007bff;
+  /* color: #007bff; */
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }

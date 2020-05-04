@@ -17,6 +17,7 @@ class Body extends Component {
     super(props);
     this.state = {
       userId: null,
+      uniqueID: null,
       posts: 0,
       idList: [],
       moments: [],
@@ -36,10 +37,13 @@ class Body extends Component {
       visitedList: [],
       followStatus: [],
       following: [],
+      follower: [],
       uniqueIDList: [],
       followerListInfo: [],
       followingListInfo: [],
       followList: [],
+      boolHideList: [],
+      reportID: null,
     };
   }
 
@@ -55,6 +59,7 @@ class Body extends Component {
         if (res.data.success) {
           this.setState({
             userId: res.data.userId,
+            uniqueID: res.data.uniqueID,
             logoNumber: res.data.logoNumber,
             following: res.data.following,
             follower: res.data.follower,
@@ -119,6 +124,7 @@ class Body extends Component {
           this.state.followStatus.push(
             this.state.following.includes(res.data.idList[i]) ? true : false
           );
+          this.state.boolHideList.push(true);
         }
 
         this.setState({
@@ -205,8 +211,8 @@ class Body extends Component {
                   ? "Anonymous"
                   : this.state.usernameList[i]
               }
-              userId={this.state.userId}
-              id={this.state.idList[i]}
+              userId={this.state.userId} //user's id
+              id={this.state.idList[i]} //comment's user's id
               uniqueID={this.state.uniqueIDList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
@@ -228,12 +234,29 @@ class Body extends Component {
               file={this.state.filesList[i]}
               followStatus={this.state.followStatus[i]}
               updateFollow={(e) => this.updateFollow(e)}
+              splitPosition={this.getSplitPosition(this.state.moments[i])}
+              boolHide={this.state.boolHideList[i]}
+              changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
+              owned={this.state.uniqueID == this.state.uniqueIDList[i]}
+              reportPost={(e) => this.reportPost(e)}
+              reportID={(e) => this.reportID(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  reportID = (e) => {
+    this.setState({ reportID: e.id });
+  };
+
+  reportPost = (req) => {
+    axios.post("/api/config/reportPost", {
+      message: req.message,
+      reportID: this.state.reportID,
+    });
   };
 
   addNewPost = (newPost) => {
@@ -251,6 +274,7 @@ class Body extends Component {
     let newFilesList = [newPost.file, ...this.state.filesList];
     let newFollowStatus = [false, ...this.state.followStatus];
     let newUniqueIDList = [newPost.uniqueID, ...this.state.uniqueIDList];
+    let newBoolHideList = [true, ...this.state.boolHideList];
 
     this.setState({
       idList: newIDList,
@@ -268,6 +292,7 @@ class Body extends Component {
       filesList: newFilesList,
       followStatus: newFollowStatus,
       uniqueIDList: newUniqueIDList,
+      boolHideList: newBoolHideList,
     });
   };
 
@@ -295,6 +320,31 @@ class Body extends Component {
   changeToFollowing = () => {
     this.setState({ followList: this.state.followingListInfo });
   };
+
+  getSplitPosition = (text) => {
+    var edgeLength = 300;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+
+    if (textLength <= edgeLength) {
+      return 0;
+    }
+    var retVal = 300;
+    var shortText = text.slice(0, 300);
+    if ((shortText.match(/\n/g) || []).length >= 4) {
+      //find the position of the 4th happened \n
+      var spl = shortText.split("\n");
+      retVal =
+        spl[0].length + spl[1].length + spl[2].length + spl[3].length + 3;
+      // retVal = shortText.indexOf("\n", shortText.indexOf("\n") + 4) - 1;
+    }
+    return retVal;
+  };
+
+  changeBoolReadAll = (position) => {
+    var newBoolHideList = this.state.boolHideList;
+    newBoolHideList[position] = !newBoolHideList[position];
+    this.setState({ boolHideList: newBoolHideList });
+  };
   render() {
     return (
       <div className="body">
@@ -319,15 +369,19 @@ class Body extends Component {
             <div className="wrapper">
               <div className="box top">
                 <div>
-                  <img
-                    src={
-                      this.state.userId == null
-                        ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
-                        : this.state.logoNumber
-                    }
-                    alt="kun"
-                    id="side-profile"
-                  />
+                  {this.state.userId == null ? (
+                    <img
+                      src={
+                        "https://momenify.s3.us-east-2.amazonaws.com/default.png"
+                      }
+                      id="side-profile"
+                    />
+                  ) : (
+                    <a href={"/profile/" + this.state.uniqueID}>
+                      <img src={this.state.logoNumber} id="side-profile" />
+                    </a>
+                  )}
+
                   <button id="follower" onClick={() => this.changeToFollower()}>
                     {this.state.followerListInfo.length} Followers
                   </button>
@@ -368,8 +422,8 @@ class Body extends Component {
               </div>
               <div className="box-bottom box">
                 <a href="/about-us">About</a>
-                <a href="/privacy">Privacy</a>
-                <a href="/term-of-use">Terms of Use</a>
+                <a href="/contact-us">Contact Us</a>
+                <a href="/policy">Policy</a>
                 <a href="/careers">Careers</a>
               </div>
               <p style={{ color: "grey" }}> Momenify © 2020</p>

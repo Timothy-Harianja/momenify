@@ -26,22 +26,31 @@ class ProfilePage extends Component {
     this.state = {
       userId: null,
       posts: 0,
-      idList: [],
+      ProfileUserId: null,
       moments: [],
-      usernameList: [],
+      usernameList: null,
       postidList: [],
       loadingFeedback: "",
       likeStatus: [],
       numofLike: [],
       message: [],
-      userLogo: [],
+      userLogo: null,
       commentList: [],
       postDateList: [],
       hashtagList: [],
       topTrendList: [],
       loadStatus: false,
       filesList: [],
-      uniqueIDList: [],
+      visibleList: [],
+      uniqueID: null,
+      owner: null,
+      deleteID: null,
+      position: null,
+      following: [],
+      followStatus: false,
+      boolHideList: [],
+      testBool: false,
+      own: false,
     };
   }
 
@@ -52,38 +61,55 @@ class ProfilePage extends Component {
         this.setState({
           userId: res.data.userId,
           logoNumber: res.data.logoNumber,
+          owner: res.data.uniqueID,
+          following: res.data.following,
         });
       })
       .catch((err) => {
         console.log(err);
-      });
-    axios
-      .get("/api/getRoute/profilePage")
-      .then((res) => {
-        console.log("res: ", res);
-        this.setState({
-          loadingFeedback:
-            res.data.allMoments.length > 3 ? "Loading Posts..." : "",
-          posts:
-            res.data.allMoments.length >= 3 ? 3 : res.data.allMoments.length,
-          idList: res.data.idList,
-          moments: res.data.allMoments,
-          usernameList: res.data.allUsername,
-          postidList: res.data.allPostid,
-          likeStatus: Array(res.data.momentLength).fill(false),
-          numofLike: res.data.numofLike,
-          message: Array(res.data.momentLength).fill(""),
-          userLogo: res.data.logoList,
-          commentList: res.data.commentList,
-          postDateList: res.data.postDateList,
-          hashtagList: res.data.hashtagList,
-          loadStatus: true,
-          filesList: res.data.filesList,
-          uniqueIDList: res.data.uniqueIDList,
-        });
       })
-      .catch((err) => {
-        console.log(err);
+      .then(() => {
+        axios
+          .get("/api/getRoute/profilePage")
+          .then((res) => {
+            this.setState({
+              loadingFeedback:
+                res.data.allMoments.length > 3 ? "Loading Posts..." : "",
+              posts:
+                res.data.allMoments.length >= 3
+                  ? 3
+                  : res.data.allMoments.length,
+              ProfileUserId: res.data.ProfileUserId,
+              moments: res.data.allMoments,
+              usernameList: res.data.allUsername,
+              postidList: res.data.allPostid,
+              likeStatus: Array(res.data.momentLength).fill(false),
+              numofLike: res.data.numofLike,
+              message: Array(res.data.momentLength).fill(""),
+              userLogo: res.data.logoList,
+              commentList: res.data.commentList,
+              postDateList: res.data.postDateList,
+              hashtagList: res.data.hashtagList,
+              visibleList: res.data.visibleList,
+              loadStatus: true,
+              filesList: res.data.filesList,
+              uniqueID: res.data.uniqueID,
+              own: res.data.uniqueID == this.state.owner,
+              followStatus:
+                this.state.following === undefined
+                  ? false
+                  : this.state.following.includes(res.data.ProfileUserId)
+                  ? true
+                  : false,
+            });
+            for (let i = 0; i < res.data.allMoments.length; i++) {
+              this.state.boolHideList.push(true);
+            }
+            this.setState({ testBool: true });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       });
   }
 
@@ -141,15 +167,6 @@ class ProfilePage extends Component {
       });
   };
 
-  getLogo = (num) => {
-    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
-    return list[parseInt(num) - 1];
-  };
-
-  getNumberLogo = (num) => {
-    let list = [one, two, three, four, five];
-    return list[parseInt(num)];
-  };
   showPosts = () => {
     // get all the posts from the
     var posts = [];
@@ -160,20 +177,20 @@ class ProfilePage extends Component {
           <div key={i} className="post">
             <PostItem
               username={
-                this.state.usernameList[i] == undefined
+                this.state.usernameList == undefined
                   ? " Anonymous"
-                  : this.state.usernameList[i]
+                  : this.state.usernameList
               }
-              id={this.state.idList[i]}
-              uniqueID={this.state.uniqueIDList[i]}
+              id={this.state.ProfileUserId}
+              uniqueID={this.state.uniqueID}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
               likeStatus={this.state.message[i]}
               imageUrl="https://images.unsplash.com/photo-1501529301789-b48c1975542a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80"
               profileUrl={
-                this.state.usernameList[i] == undefined
+                this.state.usernameList == undefined
                   ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
-                  : this.state.userLogo[i]
+                  : this.state.userLogo
               }
               postid={this.state.postidList[i]}
               position={i}
@@ -184,13 +201,70 @@ class ProfilePage extends Component {
               numofLike={this.state.numofLike[i]}
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
+              visible={this.state.visibleList[i]}
               file={this.state.filesList[i]}
+              own={this.state.own}
+              deletePost={() => this.deletePost()}
+              deleteID={(e) => this.deleteID(e)}
+              followStatus={this.state.followStatus}
+              updateFollow={(e) => this.updateFollow(e)}
+              splitPosition={this.getSplitPosition(this.state.moments[i])}
+              boolHide={this.state.boolHideList[i]}
+              changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
+              changeVisible={(e) => this.changeVisible(e)}
+              reportPost={(e) => this.reportPost(e)}
+              reportID={(e) => this.reportID(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  reportID = (e) => {
+    this.setState({ reportID: e.id });
+  };
+
+  reportPost = (req) => {
+    axios.post("/api/config/reportPost", {
+      message: req.message,
+      reportID: this.state.reportID,
+    });
+  };
+
+  changeVisible = (e) => {
+    axios
+      .post("/api/config/changeVisible", {
+        postid: e.changeID,
+        visible: !this.state.visibleList[e.position],
+      })
+      .then((res) => {
+        if (res.data.success) {
+          let newVisibleList = this.state.visibleList;
+          newVisibleList[e.position] = !newVisibleList[e.position];
+          this.setState({ visibleList: newVisibleList });
+        } else {
+          alert("something went wrong!");
+        }
+      });
+  };
+  deletePost = () => {
+    axios
+      .post("/api/config/deletePost", {
+        deleteID: this.state.deleteID,
+        hashtags: this.state.hashtagList[this.state.position],
+        key: this.state.filesList[this.state.position],
+      })
+      .then((res) => {
+        if (res.data.success) {
+          this.componentDidMount();
+        }
+      });
+  };
+
+  deleteID = (req) => {
+    this.setState({ deleteID: req.deleteID, position: req.position });
   };
 
   loadMorePosts = () => {
@@ -208,6 +282,40 @@ class ProfilePage extends Component {
     }
   };
 
+  updateFollow = (req) => {
+    this.setState({ followStatus: !this.state.followStatus });
+    //update following list
+    if (req.action == "follow") {
+      this.state.following.push(req.id);
+    } else {
+      this.state.following.filter((item) => item != req.id);
+    }
+  };
+
+  getSplitPosition = (text) => {
+    var edgeLength = 300;
+    var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
+
+    if (textLength <= edgeLength) {
+      return 0;
+    }
+    var retVal = 300;
+    var shortText = text.slice(0, 300);
+    if ((shortText.match(/\n/g) || []).length >= 4) {
+      //find the position of the 4th happened \n
+      var spl = shortText.split("\n");
+      retVal =
+        spl[0].length + spl[1].length + spl[2].length + spl[3].length + 3;
+      // retVal = shortText.indexOf("\n", shortText.indexOf("\n") + 4) - 1;
+    }
+    return retVal;
+  };
+
+  changeBoolReadAll = (position) => {
+    var newBoolHideList = this.state.boolHideList;
+    newBoolHideList[position] = !newBoolHideList[position];
+    this.setState({ boolHideList: newBoolHideList });
+  };
   render() {
     return (
       <div className="profile-body">

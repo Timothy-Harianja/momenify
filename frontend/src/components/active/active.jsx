@@ -27,7 +27,9 @@ class Active extends Component {
     return (
       <div id="active-body">
         <div id="top-text">
-          By clicking the button, you agree the policy of using our webpage
+          By clicking the button, you agree the{" "}
+          <a href="term-of-use">terms of use and privacy </a>of using our
+          webpage
         </div>
         <Button id="active-button" type="submit" onClick={() => this.confirm()}>
           Activate
