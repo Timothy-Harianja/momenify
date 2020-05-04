@@ -20,7 +20,7 @@ function getToken(res) {
 
 let getTag = (hashtag) => {
   return new Promise((resolve, reject) => {
-    Post.findOne({ _id: hashtag }, (err, moments) => {
+    Post.findOne({ _id: hashtag, visible: true }, (err, moments) => {
       if (err) reject(err);
       resolve(moments);
     });
@@ -29,9 +29,11 @@ let getTag = (hashtag) => {
 
 let getAllTag = (hashtags) => {
   let res = new Array(hashtags[0].postList.length);
-  for (let i = 0; i < hashtags[0].postList.length; i++) {
+  let allHashtags = hashtags[0].postList;
+  allHashtags = allHashtags.reverse();
+  for (let i = 0; i < allHashtags.length; i++) {
     res[i] = new Promise((resolve, reject) => {
-      getTag(hashtags[0].postList[i]).then((data) => {
+      getTag(allHashtags[i]).then((data) => {
         resolve(data);
       });
     });
@@ -108,7 +110,7 @@ router.get("/profilePage", (req, res) => {
         visibleList: visibleList,
       });
     }
-  }).sort({ postDate: -1 });
+  });
 });
 
 router.get("/hashtagPage", (req, res) => {
@@ -155,19 +157,21 @@ router.get("/hashtagPage", (req, res) => {
     } else {
       getAllTag(hashtags).then((result) => {
         for (let i = 0; i < result.length; i++) {
-          momentsList.push(result[i].postmessage);
-          usernameList.push(
-            result[i].nickname == null ? null : result[i].nickname
-          );
-          idList.push(result[i].userId);
-          postidList.push(result[i]._id);
-          numofLike.push(result[i].likeList.length);
-          logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
-          commentList.push(result[i].commentList);
-          postDateList.push(result[i].postTime);
-          hashtagList.push(result[i].hashtagList);
-          filesList.push(result[i].fileLocation);
-          uniqueID.push(result[i].uniqueID);
+          if (result[i] != null) {
+            momentsList.push(result[i].postmessage);
+            usernameList.push(
+              result[i].nickname == null ? null : result[i].nickname
+            );
+            idList.push(result[i].userId);
+            postidList.push(result[i]._id);
+            numofLike.push(result[i].likeList.length);
+            logoList.push(result[i].nickname == null ? 0 : result[i].userLogo);
+            commentList.push(result[i].commentList);
+            postDateList.push(result[i].postTime);
+            hashtagList.push(result[i].hashtagList);
+            filesList.push(result[i].fileLocation);
+            uniqueID.push(result[i].uniqueID);
+          }
         }
 
         return res.json({

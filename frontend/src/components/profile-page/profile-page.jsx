@@ -212,12 +212,25 @@ class ProfilePage extends Component {
               boolHide={this.state.boolHideList[i]}
               changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
               changeVisible={(e) => this.changeVisible(e)}
+              reportPost={(e) => this.reportPost(e)}
+              reportID={(e) => this.reportID(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  reportID = (e) => {
+    this.setState({ reportID: e.id });
+  };
+
+  reportPost = (req) => {
+    axios.post("/api/config/reportPost", {
+      message: req.message,
+      reportID: this.state.reportID,
+    });
   };
 
   changeVisible = (e) => {

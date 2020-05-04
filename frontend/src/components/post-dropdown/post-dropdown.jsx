@@ -426,7 +426,7 @@ class PostDropdown extends React.Component {
             </svg>
             <span>Message</span>
           </Dropdown.Item>
-          {!this.props.owned || this.props.userId == null ? (
+          {!this.props.owned ? (
             <Dropdown.Item
               onClick={() => {
                 document.getElementById("reportmodal").style.display = "block";
