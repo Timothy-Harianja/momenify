@@ -146,6 +146,7 @@ class AccountPage extends Component {
           <div className="form-group">
             <label>Nickname</label>
             <input
+              id="color"
               className="form-control"
               value={this.state.userNickname}
               onChange={(e) => this.setState({ userNickname: e.target.value })}

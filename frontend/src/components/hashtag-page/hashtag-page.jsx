@@ -33,6 +33,7 @@ class HashtagPage extends Component {
       followStatus: [],
       boolHideList: [],
       testBool: false,
+      uniqueID: null,
     };
   }
 
@@ -44,6 +45,7 @@ class HashtagPage extends Component {
           userId: res.data.userId,
           logoNumber: res.data.logoNumber,
           following: res.data.following,
+          uniqueID: res.data.uniqueID,
         });
       })
       .then(() => {
@@ -145,6 +147,7 @@ class HashtagPage extends Component {
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
+        console.log("own: ", this.state.uniqueID == this.state.uniqueIDList[i]);
         posts.push(
           <div key={i} className="post">
             <PostItem
@@ -179,12 +182,26 @@ class HashtagPage extends Component {
               splitPosition={this.getSplitPosition(this.state.moments[i])}
               boolHide={this.state.boolHideList[i]}
               changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
+              owned={this.state.uniqueID == this.state.uniqueIDList[i]}
+              reportPost={(e) => this.reportPost(e)}
+              reportID={(e) => this.reportID(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  reportID = (e) => {
+    this.setState({ reportID: e.id });
+  };
+
+  reportPost = (req) => {
+    axios.post("/api/config/reportPost", {
+      message: req.message,
+      reportID: this.state.reportID,
+    });
   };
 
   loadMorePosts = () => {

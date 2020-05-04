@@ -197,6 +197,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.fileLocation = req.body.fileLocation;
   postMoment.objectKey = req.body.fileKey;
   postMoment.reportCount = 0;
+  postMoment.visible = true;
 
   if (req.session.userId) {
     postMoment.save((err, newPost) => {

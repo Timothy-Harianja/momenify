@@ -122,6 +122,32 @@ class ProfileDropDown extends React.Component {
             </svg>
             <span>Delete</span>
           </Dropdown.Item>
+
+          {this.props.visible ? (
+            <Dropdown.Item
+              onClick={() => {
+                this.props.changeVisible({
+                  changeID: this.props.postid,
+                  position: this.props.position,
+                });
+              }}
+            >
+              <img src={require("./private.png")}></img>
+              <span>Make Private</span>
+            </Dropdown.Item>
+          ) : (
+            <Dropdown.Item
+              onClick={() => {
+                this.props.changeVisible({
+                  changeID: this.props.postid,
+                  position: this.props.position,
+                });
+              }}
+            >
+              <img src={require("./public.png")}></img>
+              <span>Make Public</span>
+            </Dropdown.Item>
+          )}
         </Dropdown.Menu>
       </Dropdown>
     );
