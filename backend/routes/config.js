@@ -8,6 +8,7 @@ const multer = require("multer");
 const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const nodemailer = require("nodemailer");
+const ObjectID = require("mongodb").ObjectID;
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -221,19 +222,13 @@ router.post("/deletePost", (req, res) => {
 });
 
 router.post("/reportPost", (req, res) => {
-  Post.findOne({ _id: req.body.reportID }, (err, result) => {
-    if (err) console.log(err);
-    if (result != null) {
-      let newReportCount = result.reportCount + 1;
-      Post.findOneAndUpdate(
-        { _id: req.body.reportID },
-        { reportCount: newReportCount },
-        (err) => {
-          if (err) console.log(err);
-        }
-      );
+  Post.updateOne(
+    { _id: ObjectID(req.body.reportID) },
+    { $inc: { reportCount: 1 } },
+    (err, result) => {
+      if (err) console.log(err);
     }
-  });
+  );
   note = {
     from: "themomenify@gmail.com",
     to: "jchen293@buffalo.edu",
@@ -247,5 +242,20 @@ router.post("/reportPost", (req, res) => {
   };
   transporter.sendMail(note);
   return res.json({ success: true, message: "submitted" });
+});
+
+router.post("/changeVisible", (req, res) => {
+  Post.updateOne(
+    { _id: ObjectID(req.body.postid) },
+    { $set: { visible: req.body.visible } },
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.json({ success: false });
+      } else {
+        return res.json({ success: true });
+      }
+    }
+  );
 });
 module.exports = router;

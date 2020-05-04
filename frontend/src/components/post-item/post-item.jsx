@@ -169,6 +169,16 @@ class PostItem extends React.Component {
           ) : (
             <span> </span>
           )}
+          {this.props.own && this.props.visible ? (
+            <span className="post-item-follow">-Public</span>
+          ) : (
+            <span></span>
+          )}
+          {this.props.own && !this.props.visible ? (
+            <span className="post-item-follow">-Private</span>
+          ) : (
+            <span></span>
+          )}
           <span className="post-item-header-dropdown">
             {this.props.own ? (
               <ProfileDropDown
@@ -176,6 +186,8 @@ class PostItem extends React.Component {
                 deleteID={(e) => this.props.deleteID(e)}
                 postid={this.props.postid}
                 position={this.props.position}
+                visible={this.props.visible}
+                changeVisible={(e) => this.props.changeVisible(e)}
               ></ProfileDropDown>
             ) : (
               <PostDropdown

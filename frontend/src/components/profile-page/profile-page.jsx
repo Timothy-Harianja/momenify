@@ -41,6 +41,7 @@ class ProfilePage extends Component {
       topTrendList: [],
       loadStatus: false,
       filesList: [],
+      visibleList: [],
       uniqueID: null,
       owner: null,
       deleteID: null,
@@ -49,6 +50,7 @@ class ProfilePage extends Component {
       followStatus: false,
       boolHideList: [],
       testBool: false,
+      own: false,
     };
   }
 
@@ -88,9 +90,11 @@ class ProfilePage extends Component {
               commentList: res.data.commentList,
               postDateList: res.data.postDateList,
               hashtagList: res.data.hashtagList,
+              visibleList: res.data.visibleList,
               loadStatus: true,
               filesList: res.data.filesList,
               uniqueID: res.data.uniqueID,
+              own: res.data.uniqueID == this.state.owner,
               followStatus:
                 this.state.following === undefined
                   ? false
@@ -163,16 +167,6 @@ class ProfilePage extends Component {
       });
   };
 
-  getLogo = (num) => {
-    let list = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9];
-    return list[parseInt(num) - 1];
-  };
-
-  getNumberLogo = (num) => {
-    let list = [one, two, three, four, five];
-    return list[parseInt(num)];
-  };
-
   showPosts = () => {
     // get all the posts from the
     var posts = [];
@@ -207,8 +201,9 @@ class ProfilePage extends Component {
               numofLike={this.state.numofLike[i]}
               hashtags={this.state.hashtagList[i]}
               comment={this.state.commentList[i]}
+              visible={this.state.visibleList[i]}
               file={this.state.filesList[i]}
-              own={this.state.owner == this.state.uniqueID}
+              own={this.state.own}
               deletePost={() => this.deletePost()}
               deleteID={(e) => this.deleteID(e)}
               followStatus={this.state.followStatus}
@@ -216,12 +211,30 @@ class ProfilePage extends Component {
               splitPosition={this.getSplitPosition(this.state.moments[i])}
               boolHide={this.state.boolHideList[i]}
               changeBoolReadAll={(position) => this.changeBoolReadAll(position)}
+              changeVisible={(e) => this.changeVisible(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  changeVisible = (e) => {
+    axios
+      .post("/api/config/changeVisible", {
+        postid: e.changeID,
+        visible: !this.state.visibleList[e.position],
+      })
+      .then((res) => {
+        if (res.data.success) {
+          let newVisibleList = this.state.visibleList;
+          newVisibleList[e.position] = !newVisibleList[e.position];
+          this.setState({ visibleList: newVisibleList });
+        } else {
+          alert("something went wrong!");
+        }
+      });
   };
   deletePost = () => {
     axios

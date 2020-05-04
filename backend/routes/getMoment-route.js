@@ -52,6 +52,7 @@ router.get("/profilePage", (req, res) => {
   let postDateList = [];
   let hashtagList = [];
   let filesList = [];
+  let visibleList = [];
 
   Post.find({ uniqueID: token }, (err, posts) => {
     if (err) {
@@ -74,6 +75,7 @@ router.get("/profilePage", (req, res) => {
         postDateList: postDateList,
         hashtagList: hashtagList,
         filesList: filesList,
+        visibleList: visibleList,
       });
     } else {
       for (let i = 0; i < posts.length; i++) {
@@ -88,6 +90,7 @@ router.get("/profilePage", (req, res) => {
         postDateList.push(posts[i].postTime);
         hashtagList.push(posts[i].hashtagList);
         filesList.push(posts[i].fileLocation);
+        visibleList.push(posts[i].visible);
       }
       return res.json({
         ProfileUserId: posts[0].userId,
@@ -102,6 +105,7 @@ router.get("/profilePage", (req, res) => {
         hashtagList: hashtagList,
         filesList: filesList,
         uniqueID: token,
+        visibleList: visibleList,
       });
     }
   }).sort({ postDate: -1 });
@@ -217,6 +221,7 @@ router.post("/getMoment", (req, res) => {
     [
       {
         $match: {
+          visible: true,
           _id: {
             $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
           },
