@@ -81,6 +81,9 @@ router.get("/profilePage", (req, res) => {
       });
     } else {
       for (let i = 0; i < posts.length; i++) {
+        if (posts[i].visible == false && req.session.uniqueID != token) {
+          continue;
+        }
         momentsList.push(posts[i].postmessage);
         // usernameList.push(posts[i].nickname == null ? null : posts[i].nickname);
         // idList.push(posts[i].userId);

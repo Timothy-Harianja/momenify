@@ -12,7 +12,7 @@ router.get("/session", (req, res) => {
     if (result != null) {
       req.session.username = result.nickname;
       req.session.logoNumber = result.logo;
-
+      req.session.uniqueID = result.uniqueID;
       return res.json({
         userId: req.session.userId,
         logoNumber: result.logo,
