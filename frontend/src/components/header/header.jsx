@@ -13,7 +13,7 @@ const Styles = styled.div`
     background-color: #ffffff; /* light blue */
     border: solid;
     border-color: lightgrey;
-    border-width:thin;
+    border-width: thin;
     /* background-color: white; */
   }
   a,
@@ -84,7 +84,8 @@ class Header extends Component {
                         width="2em"
                         height="2em"
                         viewBox="0 0 16 16"
-                        fill="currentColor"
+                        // fill="currentColor"
+
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
@@ -97,7 +98,7 @@ class Header extends Component {
                       {/* <span class="badge">0</span> */}
                     </Nav.Link>
                   </Nav.Item>
-
+                  &nbsp;&nbsp;
                   <Nav.Item>
                     <Nav.Link href="/accountpage">
                       <svg
@@ -105,7 +106,7 @@ class Header extends Component {
                         width="2em"
                         height="2em"
                         viewBox="0 0 16 16"
-                        fill="currentColor"
+                        // fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
@@ -121,6 +122,7 @@ class Header extends Component {
                       </svg>
                     </Nav.Link>
                   </Nav.Item>
+                  &nbsp;&nbsp;
                   <Nav.Item>
                     <Nav.Link href={"/profile/" + this.state.uniqueID}>
                       <img
