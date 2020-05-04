@@ -1,16 +1,22 @@
 @media all and (min-width: 280px) {
   .account {
     padding: 60px 0;
+   
   }
 
+  .account{
+    background-color: #fafafa;
+  }
   .account form {
     padding: 30px 30px;
+
     border-radius: 8px;
     border-style: solid;
     border-width: 2px;
     border-color: rgba(227, 235, 253, 1);
     margin: 0 auto;
     max-width: 320px;
+    
   }
 }
 
@@ -31,4 +37,8 @@
   background-color: white;
   border-radius: 2em;
   border-width: 0.2em;
+}
+
+#color,#currentpassword,#newpassword,#confirmpassword{
+  background-color: #fafafa;
 }
