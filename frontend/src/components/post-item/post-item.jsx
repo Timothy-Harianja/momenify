@@ -10,7 +10,7 @@ class PostItem extends React.Component {
     this.state = {
       commentInputBox: false,
       commentNumber: 3,
-      commentText: null,
+      commentText: "",
       // showingPost: "",
       // postText1: "",
       // postText2: "",
@@ -135,6 +135,36 @@ class PostItem extends React.Component {
       <div> {this.formatPostText(this.props.text)}</div>
     );
   };
+
+  commentOnChange = (e) => {
+    if (e.comment.trim().length > 0) {
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).style.color = "rgb(0,149,246)";
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).disabled = false;
+    } else {
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).style.color = "rgb(184,223,252)";
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).disabled = true;
+    }
+    this.setState({ commentText: e.comment });
+  };
+
+  componentDidMount() {
+    if (this.state.commentText.trim().length < 1) {
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).style.color = "rgb(184,223,252)";
+      document.getElementById(
+        "commentsubmit" + this.props.position
+      ).disabled = true;
+    }
+  }
 
   render() {
     return (
@@ -263,19 +293,27 @@ class PostItem extends React.Component {
             ></this.CommentSection>
           </div>
           <div className="post-item-footer-comment-box">
-            <form onSubmit={this.submitHandler} id="submitform">
+            <form
+              onSubmit={this.submitHandler}
+              id={"submitform" + this.props.position}
+            >
               <input
                 ref={this.commentInput}
-                onChange={(e) => this.setState({ commentText: e.target.value })}
+                // onChange={(e) => this.setState({ commentText: e.target.value })}
+                onChange={(e) =>
+                  this.commentOnChange({ comment: e.target.value })
+                }
                 className="comment-box"
                 type="text"
-                id="commentInputBox"
+                id={"commentInputBox" + this.props.position}
                 required
               ></input>
               <input
                 className="comment-post"
                 type="reset"
                 value="POST"
+                id={"commentsubmit" + this.props.position}
+                style={{ color: "rgb(184,223,252)" }}
                 onClick={() => {
                   this.setState({
                     commentNumber: this.state.commentNumber + 1,
@@ -285,7 +323,16 @@ class PostItem extends React.Component {
                     position: this.props.position,
                     postComment: this.state.commentText,
                   });
-                  this.state.commentText = null;
+                  this.state.commentText = "";
+                  document.getElementById(
+                    "commentsubmit" + this.props.position
+                  ).style.color = "rgb(184,223,252)";
+                  document.getElementById(
+                    "commentsubmit" + this.props.position
+                  ).disabled = true;
+                  document.getElementById(
+                    "commentInputBox" + this.props.position
+                  ).value = "";
                 }}
               ></input>
             </form>
