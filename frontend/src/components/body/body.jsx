@@ -393,7 +393,7 @@ class Body extends Component {
               <div>
                 <hr className="filter-hr"></hr>
 
-                <table style={{ width: "65%" }}>
+                <table class='alncenter' style={{ width: "65%" }}>
                   <tr>
                     <th>Upload Date:</th>
                     <th>Type:</th>
@@ -402,36 +402,36 @@ class Body extends Component {
                   </tr>
                   <tr>
                     <td>
-                      <button>Today </button>
+                      <button className="btn btn-light">Today </button>
                     </td>
                     <td>
-                      <button>Video</button>
+                      <button  className="btn btn-light">Video</button>
                     </td>
                     <td>
-                      <button>Lastest Post</button>
+                      <button  className="btn btn-light">Lastest Post</button>
                     </td>
                     <td>
-                      <button>Follower</button>
+                      <button  className="btn btn-light">Follower</button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <button>Last Week</button>
+                      <button  className="btn btn-light">Last Week</button>
                     </td>
                     <td>
-                      <button>Image</button>
+                      <button  className="btn btn-light">Image</button>
                     </td>
                     <td></td>
                     <td>
-                      <button>Following</button>
+                      <button  className="btn btn-light">Following</button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <button>Last Month</button>
+                      <button  className="btn btn-light">Last Month</button>
                     </td>
                     <td>
-                      <button>Text</button>
+                      <button  className="btn btn-light">Text</button>
                     </td>
                   </tr>
                 </table>
