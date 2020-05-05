@@ -41,6 +41,7 @@ class ProfilePage extends Component {
       commentLogo: null,
     };
   }
+  
 
   componentDidMount() {
     axios
@@ -310,6 +311,37 @@ class ProfilePage extends Component {
   render() {
     return (
       <div className="profile-body">
+        <div className ="profile-top-container">
+          {/*
+          {this.state.following}
+           */}
+          <div className="profile-top">
+            <img className="profile-pic" src={this.state.userLogo}/>
+            <div className="profile-info">
+              <div>
+                <div className="profile-username">
+                  {this.state.usernameList} 
+                </div>
+                <div className="profile-stats">
+                  <span><b>100</b> posts</span>
+                  <span><b>200</b> followers</span>
+                  <span><b>300</b> following</span>
+                </div>
+
+                <div className="profile-description">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, commodi ad distinctio quae, exercitationem impedit at laudantium voluptate est ut eos in veritatis sit dolor sint debitis recusandae molestiae iusto?
+                </div>
+                
+              </div>
+            </div>
+          </div>
+         
+          <hr className="profile-hr"></hr>
+        </div> 
+
+        
+
+
         <div className="profile-home-page">
           <div className="profile-main-posts-container">
             <PostsContainer
