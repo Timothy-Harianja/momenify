@@ -210,7 +210,7 @@ router.post("/postMoment", (req, res) => {
   if (req.session.userId) {
     postMoment.save((err, newPost) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
         return res.json({
@@ -224,21 +224,18 @@ router.post("/postMoment", (req, res) => {
     return res.json({
       success: false,
       message:
-        "You have reached the max number of posts per day as anonymous, please login to post more!",
+        "You have reached the max number of posts per day as anonymous, please login or sign up to post more!",
     });
   } else {
     req.session.postLeft--;
     postMoment.save((err, newPost) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
         return res.json({
           success: true,
-          message:
-            "Post moment success! You have " +
-            req.session.postLeft +
-            " left for today! Login to make unlimited post per day!",
+          message: "",
           postId: newPost._id,
         });
       }
