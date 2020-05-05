@@ -210,7 +210,7 @@ router.post("/postMoment", (req, res) => {
   if (req.session.userId) {
     postMoment.save((err, newPost) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
         return res.json({
@@ -230,7 +230,7 @@ router.post("/postMoment", (req, res) => {
     req.session.postLeft--;
     postMoment.save((err, newPost) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
         return res.json({
