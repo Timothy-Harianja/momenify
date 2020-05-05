@@ -92,29 +92,39 @@ router.get("/profilePage", (req, res) => {
       }
       getAllComments(newPosts).then((commentResult) => {
         commentList = commentResult;
-        for (let i = 0; i < newPosts.length; i++) {
-          momentsList.push(newPosts[i].postmessage);
-          postidList.push(newPosts[i]._id);
-          numofLike.push(newPosts[i].likeList.length);
-          postDateList.push(newPosts[i].postTime);
-          hashtagList.push(newPosts[i].hashtagList);
-          filesList.push(newPosts[i].fileLocation);
-          visibleList.push(newPosts[i].visible);
-        }
-        return res.json({
-          ProfileUserId: newPosts[0].userId,
-          allMoments: momentsList,
-          allUsername: newPosts[0].nickname,
-          allPostid: postidList,
-          numofLike: numofLike,
-          momentLength: newPosts.length,
-          logoList: newPosts[0].userLogo,
-          commentList: commentList,
-          postDateList: postDateList,
-          hashtagList: hashtagList,
-          filesList: filesList,
-          uniqueID: token,
-          visibleList: visibleList,
+        let followerCount = [];
+        let followingCount = [];
+        User.findOne({ uniqueID: token }, (err, userResult) => {
+          if (err) console.log(err);
+          followerCount = userResult.follower;
+          followingCount = userResult.following;
+          for (let i = 0; i < newPosts.length; i++) {
+            momentsList.push(newPosts[i].postmessage);
+            postidList.push(newPosts[i]._id);
+            numofLike.push(newPosts[i].likeList.length);
+            postDateList.push(newPosts[i].postTime);
+            hashtagList.push(newPosts[i].hashtagList);
+            filesList.push(newPosts[i].fileLocation);
+            visibleList.push(newPosts[i].visible);
+          }
+
+          return res.json({
+            ProfileUserId: newPosts[0].userId,
+            allMoments: momentsList,
+            allUsername: newPosts[0].nickname,
+            allPostid: postidList,
+            numofLike: numofLike,
+            momentLength: newPosts.length,
+            logoList: newPosts[0].userLogo,
+            commentList: commentList,
+            postDateList: postDateList,
+            hashtagList: hashtagList,
+            filesList: filesList,
+            uniqueID: token,
+            visibleList: visibleList,
+            followerCount: followerCount.length,
+            followingCount: followingCount.length,
+          });
         });
       });
     }

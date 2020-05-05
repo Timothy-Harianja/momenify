@@ -39,6 +39,8 @@ class ProfilePage extends Component {
       own: false,
       username: null,
       commentLogo: null,
+      followerCount: 0,
+      followingCount: 0,
     };
   }
 
@@ -62,6 +64,8 @@ class ProfilePage extends Component {
           .get("/api/getRoute/profilePage")
           .then((res) => {
             this.setState({
+              followerCount: res.data.followerCount,
+              followingCount: res.data.followingCount,
               loadingFeedback:
                 res.data.allMoments.length > 3 ? "Loading Posts..." : "",
               posts:
@@ -310,6 +314,37 @@ class ProfilePage extends Component {
   render() {
     return (
       <div className="profile-body">
+        <div className="profile-top-container">
+          {/*
+          {this.state.following}
+           */}
+          <div className="profile-top">
+            <img className="profile-pic" src={this.state.userLogo} />
+            <div className="profile-info">
+              <div>
+                <div className="profile-username">
+                  {this.state.usernameList}
+                </div>
+                <div className="profile-stats">
+                  <span>
+                    <b>{this.state.moments.length}</b> posts
+                  </span>
+                  <span>
+                    <b>{this.state.followerCount}</b> followers
+                  </span>
+                  <span>
+                    <b>{this.state.followingCount}</b> following
+                  </span>
+                </div>
+
+                <div className="profile-description"></div>
+              </div>
+            </div>
+          </div>
+
+          <hr className="profile-hr"></hr>
+        </div>
+
         <div className="profile-home-page">
           <div className="profile-main-posts-container">
             <PostsContainer
