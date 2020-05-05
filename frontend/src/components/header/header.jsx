@@ -14,6 +14,7 @@ const Styles = styled.div`
     border: solid;
     border-color: lightgrey;
     border-width: thin;
+
     /* background-color: white; */
   }
   a,
