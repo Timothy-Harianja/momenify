@@ -5,6 +5,10 @@ import hash from "./hashtag.jpeg";
 import posticon from "./posticon.png";
 import axios from "axios";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import Rodal from "rodal";
+import { Button } from "react-bootstrap";
+import "rodal/lib/rodal.css";
+import reactScrollUpButton from "react-scroll-up-button";
 function makeTime() {
   return new Date().getTime();
 }
@@ -18,22 +22,28 @@ function currentTime() {
   return month + "-" + date + "-" + year;
 }
 class CreatePost extends Component {
-  state = {
-    userId: null,
-    username: null,
-    uniqueID: null,
-    postmessage: null,
-    message: null,
-    userLogo: null,
-    fileName: "",
-    hashtag: "",
-    hashtagList: [],
-    overlayState: false,
-    files: null,
-    progress: null,
-    error: "",
-    whiteSpace: "   ",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      userId: null,
+      username: null,
+      uniqueID: null,
+      postmessage: null,
+      message: null,
+      userLogo: null,
+      fileName: "",
+      hashtag: "",
+      hashtagList: [],
+      overlayState: false,
+      files: null,
+      progress: null,
+      error: "",
+      whiteSpace: "   ",
+      empty: false,
+      reachMax: false,
+      progress: null,
+    };
+  }
 
   componentDidMount() {
     axios.get("/api/loginRoute/session").then((res) => {
@@ -44,6 +54,14 @@ class CreatePost extends Component {
         uniqueID: res.data.uniqueID,
       });
     });
+  }
+
+  show() {
+    this.setState({ empty: true, reachMax: true });
+  }
+
+  hide() {
+    this.setState({ empty: false, reachMax: false });
   }
 
   putMoment = (json) => {
@@ -58,7 +76,7 @@ class CreatePost extends Component {
         .post("/api/postRoute/upload", formData, {
           onUploadProgress: (progressEvent) => {
             this.setState({
-              message: Math.round(
+              progress: Math.round(
                 (progressEvent.loaded / progressEvent.total) * 100
               ),
             });
@@ -82,7 +100,8 @@ class CreatePost extends Component {
             json.fileKey = uploadResult.data.key;
             axios.post("/api/postRoute/postMoment", json).then((res) => {
               if (res.data.success) {
-                this.setState({ message: res.data.message });
+                this.setState({ message: res.data.message, progress: null });
+                document.getElementById("submitform").reset();
 
                 if (this.state.hashtagList.length > 0) {
                   axios
@@ -122,13 +141,22 @@ class CreatePost extends Component {
                   files: null,
                 });
               } else {
-                this.setState({ message: res.data.message });
+                this.setState({
+                  reachMax: true,
+                  progress: null,
+                  message: res.data.message,
+                });
+                document.getElementById("post").removeAttribute("disabled");
+                document.getElementById("file").removeAttribute("disabled");
+                document.getElementById("tag").removeAttribute("disabled");
+                // this.setState({ message: res.data.message });
               }
             });
           }
         });
     } else {
-      alert("Input cannot be empty");
+      this.setState({ empty: true });
+      // alert("Input cannot be empty");
     }
   };
 
@@ -231,7 +259,7 @@ class CreatePost extends Component {
                         e.preventDefault();
                       }}
                     >
-                      Clear
+                      Clear All Hashtags
                     </button>
 
                     <button
@@ -251,12 +279,13 @@ class CreatePost extends Component {
                           document.getElementById("hashtaginput").value = "";
                           document.getElementById("modal").style.display =
                             "none";
+                          this.setState({ message: null });
                         }
 
                         return false;
                       }}
                     >
-                      Submit
+                      Add
                     </button>
                   </div>
                 </div>
@@ -297,8 +326,6 @@ class CreatePost extends Component {
                 className="btn btn-light"
                 id="post"
                 onClick={() => {
-                  document.getElementById("submitform").reset();
-
                   this.putMoment({
                     postmessage: this.state.postmessage,
                     userId: this.state.userId,
@@ -316,18 +343,72 @@ class CreatePost extends Component {
                 Post
               </button>
             </div>
+            <Rodal
+              width={350}
+              visible={this.state.empty}
+              onClose={this.hide.bind(this)}
+              duration={600}
+            >
+              <div>
+                <h5>Input cannot be empty</h5>
+                <hr></hr>
+                <p>
+                  {" "}
+                  Please input something to make a post, you can also upload a
+                  image or video that is less than 50MB!
+                </p>
+                <Button
+                  style={{ marginLeft: 230, marginTop: 25 }}
+                  variant="primary"
+                  onClick={() => {
+                    this.setState({ empty: false });
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </Rodal>
 
-            {this.state.message != null && this.state.message <= 100 ? (
+            <Rodal
+              width={350}
+              visible={this.state.reachMax}
+              onClose={this.hide.bind(this)}
+              animation={"slideDown"}
+              duration={600}
+            >
+              <div>
+                <h5>You have reached the limit </h5>
+                <hr></hr>
+                <p>
+                  {" "}
+                  You have reached the max number of posts per day as anonymous,
+                  please <a href="/login">login</a> or{" "}
+                  <a href="signup"> sign up</a> to post more, as well as unlock
+                  more features!
+                </p>
+                <Button
+                  style={{ marginLeft: 230, marginTop: 5 }}
+                  variant="primary"
+                  onClick={() => {
+                    this.setState({ reachMax: false });
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </Rodal>
+
+            {this.state.progress != null && this.state.progress <= 100 ? (
               <div style={{ width: "100%" }}>
                 Uploading:
                 <ProgressBar
                   label={
-                    this.state.message == 100
+                    this.state.progress == 100
                       ? "Almost done"
-                      : this.state.message + "%"
+                      : this.state.progress + "%"
                   }
                   animated
-                  now={this.state.message}
+                  now={this.state.progress}
                 />
               </div>
             ) : (
