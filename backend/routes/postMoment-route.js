@@ -224,7 +224,7 @@ router.post("/postMoment", (req, res) => {
     return res.json({
       success: false,
       message:
-        "You have reached the max number of posts per day as anonymous, please login to post more!",
+        "You have reached the max number of posts per day as anonymous, please login or sign up to post more!",
     });
   } else {
     req.session.postLeft--;
@@ -235,10 +235,7 @@ router.post("/postMoment", (req, res) => {
       } else {
         return res.json({
           success: true,
-          message:
-            "Post moment success! You have " +
-            req.session.postLeft +
-            " left for today! Login to make unlimited post per day!",
+          message: "",
           postId: newPost._id,
         });
       }
