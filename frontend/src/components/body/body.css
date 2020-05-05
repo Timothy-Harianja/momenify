@@ -26,22 +26,21 @@
 }
 
 .filter-options-shown {
-  height: 60px;
+  height: 160px;
 }
 
 .filter span {
   margin-right: 30px;
 }
 
-.filter-container{
+.filter-container {
   margin-left: 10px;
 }
 
 .filter-hr {
-  width: 450px;
-  margin: 15px auto 5px 0px
+  width: 725px;
+  margin: 15px auto 5px 0px;
 }
-
 
 .home-page {
   display: flex;
@@ -92,12 +91,10 @@
     max-width: 732px;
     margin-right: auto;
     margin-left: auto;
-
   }
 
   .create-post-container {
     width: 100%;
-    
   }
 
   .home-page {
@@ -119,9 +116,8 @@
   }
 
   .filter-options-shown {
-    height: 70px;
+    height: 260px;
   }
-
 }
 
 .box-bottom a {
