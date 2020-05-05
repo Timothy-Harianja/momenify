@@ -73,7 +73,6 @@ class App extends Component {
               component={AccountPage}
               // component={this.state.userId != undefined ? AccountPage : Login}
             />
-
             <Route component={NoMatch} />
           </Switch>
         </Router>
