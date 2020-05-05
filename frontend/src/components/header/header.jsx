@@ -135,6 +135,9 @@ class Header extends Component {
               ) : (
                 <Nav>
                   <Nav.Item>
+                    <Nav.Link href="/about-us">Guide</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
                     <Nav.Link href="/login">Login</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
