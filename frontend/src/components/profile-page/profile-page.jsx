@@ -4,20 +4,6 @@ import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add th
 import anonymous from "../posts-container/anonymous.png";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
-import logo1 from "../images/logo1.png";
-import logo2 from "../images/logo2.png";
-import logo3 from "../images/logo3.png";
-import logo4 from "../images/logo4.png";
-import logo5 from "../images/logo5.png";
-import logo6 from "../images/logo6.png";
-import logo7 from "../images/logo7.png";
-import logo8 from "../images/logo1.png";
-import logo9 from "../images/logo9.png";
-import one from "../images/one.png";
-import two from "../images/two.png";
-import three from "../images/three.png";
-import four from "../images/four.png";
-import five from "../images/five.png";
 import "./profile-page.css";
 
 class ProfilePage extends Component {
@@ -51,6 +37,7 @@ class ProfilePage extends Component {
       boolHideList: [],
       testBool: false,
       own: false,
+      username: null,
     };
   }
 
@@ -60,9 +47,10 @@ class ProfilePage extends Component {
       .then((res) => {
         this.setState({
           userId: res.data.userId,
-          logoNumber: res.data.logoNumber,
+          userLogo: res.data.logoNumber,
           owner: res.data.uniqueID,
           following: res.data.following,
+          username: res.data.username,
         });
       })
       .catch((err) => {
@@ -115,6 +103,8 @@ class ProfilePage extends Component {
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
+      comment.userLogo = this.state.userLogo;
+      comment.nickname = this.state.username;
       axios
         .post("/api/postRoute/postComment", comment)
         .then((res) => {

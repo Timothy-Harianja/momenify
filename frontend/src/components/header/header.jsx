@@ -21,7 +21,7 @@ const Styles = styled.div`
   .navbar-light .nav-link {
     color: black;
     &:hover {
-      color: white;
+      color: grey;
     }
   }
   .navbar-brand {

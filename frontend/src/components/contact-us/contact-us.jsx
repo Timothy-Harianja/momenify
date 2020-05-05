@@ -48,6 +48,7 @@ class ContactUs extends Component {
                     required
                     type="text"
                     class="form-control"
+                    id="contactusname"
                     placeholder="Username"
                     onChange={(e) => this.setState({ name: e.target.value })}
                   />
@@ -60,6 +61,7 @@ class ContactUs extends Component {
                   <input
                     required
                     type="email"
+                    id= "contactusemail"
                     class="form-control"
                     placeholder="Email"
                     onChange={(e) => this.setState({ email: e.target.value })}

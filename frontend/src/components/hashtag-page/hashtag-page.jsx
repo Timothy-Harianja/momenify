@@ -11,6 +11,8 @@ class HashtagPage extends Component {
     super(props);
     this.state = {
       userId: null,
+      currentUserLogo: null,
+      currentUserName: null,
       posts: 0,
       hashtagName: null,
       idList: [],
@@ -46,6 +48,8 @@ class HashtagPage extends Component {
           logoNumber: res.data.logoNumber,
           following: res.data.following,
           uniqueID: res.data.uniqueID,
+          currentUserLogo: res.data.logoNumber,
+          currentUserName: res.data.username,
         });
       })
       .then(() => {
@@ -88,6 +92,8 @@ class HashtagPage extends Component {
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
+      comment.userLogo = this.state.currentUserLogo;
+      comment.nickname = this.state.currentUserName;
       axios
         .post("/api/postRoute/postComment", comment)
         .then((res) => {
@@ -147,7 +153,6 @@ class HashtagPage extends Component {
 
     if (this.state.loadStatus) {
       for (let i = 0; i < this.state.posts; i++) {
-        console.log("own: ", this.state.uniqueID == this.state.uniqueIDList[i]);
         posts.push(
           <div key={i} className="post">
             <PostItem

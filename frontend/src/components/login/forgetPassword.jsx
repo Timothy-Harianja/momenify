@@ -77,6 +77,7 @@ class forgetPassword extends Component {
               //   value={password}
               onChange={e => this.setState({ email: e.target.value })}
               type="email"
+              id="forgotpasswordemail"
             />
           </FormGroup>
 

@@ -1,11 +1,19 @@
 .contactus{
-    margin-top: 50px;
+    padding-top: 50px;
+    background-color: #fafafa;
+    padding-bottom: 70px;
 }
 
 #contactusheader{
     text-align: center;
+
+}
+
+#contactusname,#contactusemail{
+    background-color: #fafafa;
 }
 
 #contactmessage{
     height: 200px;
+    background-color: #fafafa;
 }

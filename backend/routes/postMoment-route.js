@@ -109,6 +109,7 @@ router.post("/postHashtag", (req, res) => {
     });
   }
 });
+
 router.post("/postComment", (req, res) => {
   if (!req.session.userId) {
     return res.json({
@@ -121,8 +122,9 @@ router.post("/postComment", (req, res) => {
     if (err) {
       return res.json({ success: false, message: "error finding the post" });
     }
-    let messageWithName = req.session.username + ":  " + req.body.postComment;
-    result.commentList.push(messageWithName);
+
+    let commentMessage = req.body.postComment;
+    result.commentList.push([req.session.uniqueID, commentMessage, new Date()]);
     result.save((err) => {
       if (err) {
         return res.json({
@@ -132,7 +134,13 @@ router.post("/postComment", (req, res) => {
       }
       return res.json({
         success: true,
-        message: messageWithName,
+        message: [
+          req.session.uniqueID,
+          commentMessage,
+          req.body.userLogo,
+          req.body.nickname,
+          "0m",
+        ],
       });
     });
   });
