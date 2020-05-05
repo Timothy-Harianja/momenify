@@ -51,6 +51,7 @@ class Login extends Component {
             <FormControl
               autoFocus
               type="email"
+              id="loginemail"
               //   value=""
               onChange={(e) => this.setState({ email: e.target.value })}
             />
@@ -60,6 +61,7 @@ class Login extends Component {
             <FormControl
               //   value={password}
               onChange={(e) => this.setState({ password: e.target.value })}
+              id="loginpassword"
               type="password"
             />
           </FormGroup>

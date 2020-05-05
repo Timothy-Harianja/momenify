@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import "./thanks.css"
 const Wrapper = styled.div`
   position: absolute;
   left: 0;
@@ -9,8 +10,10 @@ const Wrapper = styled.div`
   font-size: 18px;
 `;
 export const Thanks = () => (
+  <div className="thanks">
   <Wrapper>
     <h1>Thanks you!</h1>
     <h3 id="confirm">Our team will get back to you soon!</h3>
   </Wrapper>
+  </div>
 );

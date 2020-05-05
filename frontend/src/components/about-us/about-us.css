@@ -1,3 +1,6 @@
+.about-us{
+  background-color: #fafafa;
+}
 #header {
   text-align: center;
 }
@@ -8,6 +11,7 @@
   margin-right: 100px;
   margin-left: 100px;
   font-size: 120%;
+  background-color: #fafafa;
 }
 
 #h5 {

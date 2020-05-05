@@ -58,6 +58,7 @@ class EmailLogin extends Component {
             <FormLabel>New Password </FormLabel>
             <FormControl
               //   value={password}
+              id="newpassword"
               onChange={(e) => this.setState({ newPassword: e.target.value })}
               type="password"
             />
@@ -65,6 +66,7 @@ class EmailLogin extends Component {
           <FormGroup controlId="confirm-password" bsSize="large">
             <FormLabel>Confirm new Password </FormLabel>
             <FormControl
+              id="confirmnewpassword"
               //   value={password}
               onChange={(e) =>
                 this.setState({ confirmPassword: e.target.value })
