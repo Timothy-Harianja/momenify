@@ -25,7 +25,7 @@ class PostItem extends React.Component {
       <div>
         {props.message.map((message, index) =>
           index < this.state.commentNumber ? (
-            <div style={{ margin: "5px" }}>
+            <div style={{ margin: "7px" }}>
               <a href={"/profile/" + message[0]}>
                 <img className="comment-profile" src={message[2]} />
               </a>

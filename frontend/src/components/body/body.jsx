@@ -109,7 +109,6 @@ class Body extends Component {
     axios
       .post("/api/getRoute/getMoment", { visitedList: this.state.postidList })
       .then((res) => {
-        console.log("res from query: ", res);
         for (let i = 0; i < res.data.allMoments.length; i++) {
           this.state.idList.push(res.data.idList[i]);
           this.state.moments.push(res.data.allMoments[i]);
