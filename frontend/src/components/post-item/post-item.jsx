@@ -24,7 +24,22 @@ class PostItem extends React.Component {
     return (
       <div>
         {props.message.map((message, index) =>
-          index < this.state.commentNumber ? <div>{message}</div> : ""
+          index < this.state.commentNumber ? (
+            <div style={{ margin: "5px" }}>
+              <a href={"/profile/" + message[0]}>
+                <img className="comment-profile" src={message[2]} />
+              </a>
+              &nbsp;
+              <a href={"/profile/" + message[0]}>{message[3]}</a>
+              <span style={{ color: "grey", fontSize: 12 }}>
+                {"(" + message[4] + ")"}
+              </span>
+              : &nbsp;
+              {message[1]}
+            </div>
+          ) : (
+            ""
+          )
         )}
         {props.message.length > 3 &&
         this.state.commentNumber < props.message.length ? (

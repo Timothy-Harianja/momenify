@@ -18,6 +18,7 @@ class Body extends Component {
     this.state = {
       userId: null,
       uniqueID: null,
+      username: null,
       posts: 0,
       idList: [],
       moments: [],
@@ -58,6 +59,7 @@ class Body extends Component {
       .then((res) => {
         if (res.data.success) {
           this.setState({
+            username: res.data.username,
             userId: res.data.userId,
             uniqueID: res.data.uniqueID,
             logoNumber: res.data.logoNumber,
@@ -107,6 +109,7 @@ class Body extends Component {
     axios
       .post("/api/getRoute/getMoment", { visitedList: this.state.postidList })
       .then((res) => {
+        console.log("res from query: ", res);
         for (let i = 0; i < res.data.allMoments.length; i++) {
           this.state.idList.push(res.data.idList[i]);
           this.state.moments.push(res.data.allMoments[i]);
@@ -142,6 +145,8 @@ class Body extends Component {
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
+      comment.userLogo = this.state.logoNumber;
+      comment.nickname = this.state.username;
       axios
         .post("/api/postRoute/postComment", comment)
         .then((res) => {
