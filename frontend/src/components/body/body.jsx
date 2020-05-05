@@ -44,6 +44,7 @@ class Body extends Component {
       followList: [],
       boolHideList: [],
       reportID: null,
+      filterClass: "filter-options"
     };
   }
 
@@ -345,6 +346,15 @@ class Body extends Component {
     newBoolHideList[position] = !newBoolHideList[position];
     this.setState({ boolHideList: newBoolHideList });
   };
+
+  showFilter = () => {
+    if (this.state.filterClass == "filter-options") {
+      this.setState({filterClass: "filter-options filter-options-shown"})
+    } else {
+      this.setState({filterClass: "filter-options"})
+    }
+  }
+
   render() {
     return (
       <div className="body">
@@ -353,6 +363,26 @@ class Body extends Component {
             <CreatePost addNewPost={(newPost) => this.addNewPost(newPost)} />
           </div>
         </div>
+
+        <div className="filter">
+          <div className="filter-container"> 
+            <div>
+              <span className="filter-button" onClick={this.showFilter}>FILTER</span>
+            </div>
+            <div className={this.state.filterClass}>
+              <div>
+                <hr className="filter-hr"></hr>
+                <span>Following</span>
+                <span>Upload date</span>
+                <span>Videos</span>
+                <span>Pictures</span>
+                <span>Text only</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+       
 
         <div className="home-page">
           <div className="main-posts-container">
