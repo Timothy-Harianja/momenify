@@ -38,6 +38,7 @@ class ProfilePage extends Component {
       testBool: false,
       own: false,
       username: null,
+      commentLogo: null,
     };
   }
 
@@ -47,7 +48,7 @@ class ProfilePage extends Component {
       .then((res) => {
         this.setState({
           userId: res.data.userId,
-          userLogo: res.data.logoNumber,
+          commentLogo: res.data.logoNumber,
           owner: res.data.uniqueID,
           following: res.data.following,
           username: res.data.username,
@@ -103,7 +104,7 @@ class ProfilePage extends Component {
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
-      comment.userLogo = this.state.userLogo;
+      comment.userLogo = this.state.commentLogo;
       comment.nickname = this.state.username;
       axios
         .post("/api/postRoute/postComment", comment)
