@@ -1,14 +1,18 @@
 @media all and (min-width: 280px) {
   .Login {
     padding: 80px 0;
-    
+    background-color: #fafafa;
   }
 
+.Login{
+  background-color: #fafafa;
+  padding-bottom: 300px;
+}
 
   .Login form {
     
     padding: 30px 30px;
-  
+    background-color: #fafafa;
     border-radius: 8px;
     border-style: solid;
     border-width: 2px;
@@ -23,4 +27,9 @@
   text-align: center;
   margin-top: 10%;
   color: red;
+}
+
+#loginemail,#loginpassword{
+  background-color: #fafafa;
+  
 }
