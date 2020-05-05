@@ -371,18 +371,76 @@ class Body extends Component {
         <div className="filter">
           <div className="filter-container">
             <div>
+              <svg
+                class="bi bi-filter-left"
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2 10.5a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zm0-3a.5.5 0 01.5-.5h11a.5.5 0 010 1h-11a.5.5 0 01-.5-.5z"
+                  clip-rule="evenodd"
+                />
+              </svg>
               <span className="filter-button" onClick={this.showFilter}>
-                FILTER(Coming soon!)
+                FILTER(Coming Soon)
               </span>
             </div>
             <div className={this.state.filterClass}>
               <div>
                 <hr className="filter-hr"></hr>
+
+                <table style={{ width: "65%" }}>
+                  <tr>
+                    <th>Upload Date:</th>
+                    <th>Type:</th>
+                    <th>Sort By:</th>
+                    <th>Friendship:</th>
+                  </tr>
+                  <tr>
+                    <td>
+                      <button>Today </button>
+                    </td>
+                    <td>
+                      <button>Video</button>
+                    </td>
+                    <td>
+                      <button>Lastest Post</button>
+                    </td>
+                    <td>
+                      <button>Follower</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <button>Last Week</button>
+                    </td>
+                    <td>
+                      <button>Image</button>
+                    </td>
+                    <td></td>
+                    <td>
+                      <button>Following</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <button>Last Month</button>
+                    </td>
+                    <td>
+                      <button>Text</button>
+                    </td>
+                  </tr>
+                </table>
+                {/* <span>Upload date</span>
                 <span>Following</span>
-                <span>Upload date</span>
+
                 <span>Videos</span>
                 <span>Pictures</span>
-                <span>Text only</span>
+                <span>Text only</span> */}
               </div>
             </div>
           </div>
