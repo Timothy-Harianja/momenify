@@ -45,7 +45,7 @@ class Body extends Component {
       followList: [],
       boolHideList: [],
       reportID: null,
-      filterClass: "filter-options"
+      filterClass: "filter-options",
     };
   }
 
@@ -353,11 +353,11 @@ class Body extends Component {
 
   showFilter = () => {
     if (this.state.filterClass == "filter-options") {
-      this.setState({filterClass: "filter-options filter-options-shown"})
+      this.setState({ filterClass: "filter-options filter-options-shown" });
     } else {
-      this.setState({filterClass: "filter-options"})
+      this.setState({ filterClass: "filter-options" });
     }
-  }
+  };
 
   render() {
     return (
@@ -369,9 +369,11 @@ class Body extends Component {
         </div>
 
         <div className="filter">
-          <div className="filter-container"> 
+          <div className="filter-container">
             <div>
-              <span className="filter-button" onClick={this.showFilter}>FILTER</span>
+              <span className="filter-button" onClick={this.showFilter}>
+                FILTER(Coming soon!)
+              </span>
             </div>
             <div className={this.state.filterClass}>
               <div>
@@ -384,9 +386,7 @@ class Body extends Component {
               </div>
             </div>
           </div>
-
         </div>
-       
 
         <div className="home-page">
           <div className="main-posts-container">

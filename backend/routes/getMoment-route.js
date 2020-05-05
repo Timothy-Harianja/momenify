@@ -118,7 +118,7 @@ router.get("/profilePage", (req, res) => {
         });
       });
     }
-  });
+  }).sort({ postDate: -1 });
 });
 
 router.get("/hashtagPage", (req, res) => {
