@@ -90,7 +90,7 @@ router.get("/profilePage", (req, res) => {
           }
         }
       }
-      getAllComments(posts).then((commentResult) => {
+      getAllComments(newPosts).then((commentResult) => {
         commentList = commentResult;
         for (let i = 0; i < newPosts.length; i++) {
           momentsList.push(newPosts[i].postmessage);
@@ -164,25 +164,31 @@ router.get("/hashtagPage", (req, res) => {
       });
     } else {
       getAllTag(hashtags).then((result) => {
-        getAllComments(result).then((commentResult) => {
+        let finalResult = []; // removed the private post
+        for (let j = 0; j < result.length; j++) {
+          if (result[j] != null) {
+            finalResult.push(result[j]);
+          }
+        }
+        getAllComments(finalResult).then((commentResult) => {
           commentList = commentResult;
-          for (let i = 0; i < result.length; i++) {
-            if (result[i] != null) {
-              momentsList.push(result[i].postmessage);
+          for (let i = 0; i < finalResult.length; i++) {
+            if (finalResult[i] != null) {
+              momentsList.push(finalResult[i].postmessage);
               usernameList.push(
-                result[i].nickname == null ? null : result[i].nickname
+                finalResult[i].nickname == null ? null : finalResult[i].nickname
               );
-              idList.push(result[i].userId);
-              postidList.push(result[i]._id);
-              numofLike.push(result[i].likeList.length);
+              idList.push(finalResult[i].userId);
+              postidList.push(finalResult[i]._id);
+              numofLike.push(finalResult[i].likeList.length);
               logoList.push(
-                result[i].nickname == null ? 0 : result[i].userLogo
+                finalResult[i].nickname == null ? 0 : finalResult[i].userLogo
               );
 
-              postDateList.push(result[i].postTime);
-              hashtagList.push(result[i].hashtagList);
-              filesList.push(result[i].fileLocation);
-              uniqueID.push(result[i].uniqueID);
+              postDateList.push(finalResult[i].postTime);
+              hashtagList.push(finalResult[i].hashtagList);
+              filesList.push(finalResult[i].fileLocation);
+              uniqueID.push(finalResult[i].uniqueID);
             }
           }
 
