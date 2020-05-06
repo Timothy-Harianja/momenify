@@ -59,10 +59,17 @@ router.post("/upload", (req, res) => {
       } else {
         // If Success
         // Save the file name into database into profile model
+        let imageType = ["png", "jpg", "gif", "jpeg"];
+        let videoType = ["mp4", "mov", "ogg"];
+        let fileExt = req.file.key.split(".").pop().toLowerCase();
+        let fileType = "text";
+        if (imageType.includes(fileExt)) fileType = "image";
+        if (videoType.includes(fileExt)) fileType = "video";
         return res.json({
           success: true,
           key: req.file.key,
           imageLocation: req.file.location,
+          fileType: fileType,
         });
       }
     }
@@ -206,6 +213,7 @@ router.post("/postMoment", (req, res) => {
   postMoment.objectKey = req.body.fileKey;
   postMoment.reportCount = 0;
   postMoment.visible = true;
+  postMoment.fileType = req.body.fileType == null ? "text" : req.body.fileType;
 
   if (req.session.userId) {
     postMoment.save((err, newPost) => {

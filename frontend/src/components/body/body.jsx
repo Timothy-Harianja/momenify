@@ -46,6 +46,7 @@ class Body extends Component {
       boolHideList: [],
       reportID: null,
       filterClass: "filter-options",
+      filter: null,
     };
   }
 
@@ -108,7 +109,10 @@ class Body extends Component {
   }
   queryPost = () => {
     axios
-      .post("/api/getRoute/getMoment", { visitedList: this.state.postidList })
+      .post("/api/getRoute/getMoment", {
+        visitedList: this.state.postidList,
+        filter: this.state.filter,
+      })
       .then((res) => {
         for (let i = 0; i < res.data.allMoments.length; i++) {
           this.state.idList.push(res.data.idList[i]);
@@ -351,11 +355,36 @@ class Body extends Component {
     this.setState({ boolHideList: newBoolHideList });
   };
 
-  showFilter = () => {
+  showFilter = (obj) => {
     if (this.state.filterClass == "filter-options") {
       this.setState({ filterClass: "filter-options filter-options-shown" });
     } else {
       this.setState({ filterClass: "filter-options" });
+    }
+    if (obj.filter != null) {
+      this.setState(
+        {
+          filter: obj.filter,
+          posts: 0,
+          idList: [],
+          moments: [],
+          usernameList: [],
+          postidList: [],
+          likeStatus: [],
+          numofLike: [],
+          userLogo: [],
+          commentList: [],
+          postDate: [],
+          hashtagList: [],
+          filesList: [],
+          uniqueIDList: [],
+          followStatus: [],
+          boolHideList: [],
+        },
+        () => {
+          this.queryPost();
+        }
+      );
     }
   };
 
@@ -402,7 +431,7 @@ class Body extends Component {
                   <tr>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "today" })}
                         className="btn btn-light"
                       >
                         Today{" "}
@@ -410,7 +439,7 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "video" })}
                         className="btn btn-light"
                       >
                         Video
@@ -418,17 +447,17 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "latest" })}
                         className="btn btn-light"
                       >
-                        Lastest Post
+                        Latest Post
                       </button>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "week" })}
                         className="btn btn-light"
                       >
                         Last Week
@@ -436,7 +465,7 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "image" })}
                         className="btn btn-light"
                       >
                         Image
@@ -444,7 +473,7 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "following" })}
                         className="btn btn-light"
                       >
                         Following
@@ -454,7 +483,7 @@ class Body extends Component {
                   <tr>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "month" })}
                         className="btn btn-light"
                       >
                         Last Month
@@ -462,7 +491,7 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={this.showFilter}
+                        onClick={() => this.showFilter({ filter: "text" })}
                         className="btn btn-light"
                       >
                         Text

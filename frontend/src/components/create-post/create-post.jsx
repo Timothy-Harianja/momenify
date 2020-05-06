@@ -98,6 +98,7 @@ class CreatePost extends Component {
           } else {
             json.fileLocation = uploadResult.data.imageLocation;
             json.fileKey = uploadResult.data.key;
+            json.fileType = uploadResult.data.fileType;
             axios.post("/api/postRoute/postMoment", json).then((res) => {
               if (res.data.success) {
                 this.setState({ message: res.data.message, progress: null });

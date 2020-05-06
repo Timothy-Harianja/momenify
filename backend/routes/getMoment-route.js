@@ -305,14 +305,32 @@ let getAllComments = (obj) => {
 };
 
 router.post("/getMoment", (req, res) => {
-  let days = 1000 * 60 * 60 * 24 * 7;
+  let days = 1000 * 60 * 60 * 24 * 10;
   let visitedPost = req.body.visitedList;
+  console.log("filter: ", req.body.filter);
+  let type = ["image", "text", "video"];
+  let filter = req.body.filter;
+  if (filter != null) {
+    if (filter == "image" || filter == "video" || filter == "text") {
+      type = [filter];
+    } else if (filter == "today") {
+      days = 1000 * 60 * 60 * 24;
+    } else if (filter == "week") {
+      days = 1000 * 60 * 60 * 24 * 7;
+    } else if (filter == "month") {
+      days = 1000 * 60 * 60 * 24 * 30;
+    }
+  }
+
+  console.log("type: ", type);
+  console.log("day: ", days);
 
   Post.aggregate(
     [
       {
         $match: {
           visible: true,
+          fileType: { $in: type.map((i) => i) },
           _id: {
             $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
           },
