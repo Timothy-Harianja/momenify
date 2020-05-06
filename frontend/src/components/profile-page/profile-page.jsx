@@ -311,17 +311,30 @@ class ProfilePage extends Component {
     newBoolHideList[position] = !newBoolHideList[position];
     this.setState({ boolHideList: newBoolHideList });
   };
+
   render() {
+    window.onload = function () {
+      document.getElementById("reload").click();
+    };
     return (
       <div className="profile-body">
         <div className="profile-top-container">
           {/*
           {this.state.following}
            */}
+
           <div className="profile-top">
             <img className="profile-pic" src={this.state.userLogo} />
             <div className="profile-info">
               <div>
+                <button
+                  id="reload"
+                  style={{ visibility: "hidden" }}
+                  onClick={() => this.componentDidMount()}
+                >
+                  {" "}
+                  reload
+                </button>
                 <div className="profile-username">
                   {this.state.usernameList}
                 </div>

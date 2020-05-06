@@ -45,6 +45,7 @@ let getAllTag = (hashtags) => {
 router.get("/profilePage", (req, res) => {
   let tokenLink = req.headers.referer;
   token = getToken(tokenLink);
+
   let idList = [];
   let momentsList = [];
   let usernameList = [];

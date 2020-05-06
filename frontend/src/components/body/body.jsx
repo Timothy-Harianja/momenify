@@ -393,45 +393,80 @@ class Body extends Component {
               <div>
                 <hr className="filter-hr"></hr>
 
-                <table class='alncenter' style={{ width: "65%" }}>
+                <table class="alncenter" style={{ width: "65%" }}>
                   <tr>
                     <th>Upload Date:</th>
                     <th>Type:</th>
                     <th>Sort By:</th>
-                    <th>Friendship:</th>
                   </tr>
                   <tr>
                     <td>
-                      <button className="btn btn-light">Today </button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Today{" "}
+                      </button>
                     </td>
                     <td>
-                      <button  className="btn btn-light">Video</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Video
+                      </button>
                     </td>
                     <td>
-                      <button  className="btn btn-light">Lastest Post</button>
-                    </td>
-                    <td>
-                      <button  className="btn btn-light">Follower</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Lastest Post
+                      </button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <button  className="btn btn-light">Last Week</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Last Week
+                      </button>
                     </td>
                     <td>
-                      <button  className="btn btn-light">Image</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Image
+                      </button>
                     </td>
-                    <td></td>
                     <td>
-                      <button  className="btn btn-light">Following</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Following
+                      </button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <button  className="btn btn-light">Last Month</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Last Month
+                      </button>
                     </td>
                     <td>
-                      <button  className="btn btn-light">Text</button>
+                      <button
+                        onClick={this.showFilter}
+                        className="btn btn-light"
+                      >
+                        Text
+                      </button>
                     </td>
                   </tr>
                 </table>
