@@ -47,6 +47,7 @@ class Body extends Component {
       reportID: null,
       filterClass: "filter-options",
       filter: null,
+      filterStatus: "random",
     };
   }
 
@@ -112,6 +113,7 @@ class Body extends Component {
       .post("/api/getRoute/getMoment", {
         visitedList: this.state.postidList,
         filter: this.state.filter,
+        following: this.state.following,
       })
       .then((res) => {
         for (let i = 0; i < res.data.allMoments.length; i++) {
@@ -362,29 +364,34 @@ class Body extends Component {
       this.setState({ filterClass: "filter-options" });
     }
     if (obj.filter != null) {
-      this.setState(
-        {
-          filter: obj.filter,
-          posts: 0,
-          idList: [],
-          moments: [],
-          usernameList: [],
-          postidList: [],
-          likeStatus: [],
-          numofLike: [],
-          userLogo: [],
-          commentList: [],
-          postDate: [],
-          hashtagList: [],
-          filesList: [],
-          uniqueIDList: [],
-          followStatus: [],
-          boolHideList: [],
-        },
-        () => {
-          this.queryPost();
-        }
-      );
+      if (obj.filter == "following" && this.state.userId == null) {
+        alert("You need to login to see the posts from your following list");
+      } else {
+        this.setState(
+          {
+            filterStatus: obj.filter,
+            filter: obj.filter,
+            posts: 0,
+            idList: [],
+            moments: [],
+            usernameList: [],
+            postidList: [],
+            likeStatus: [],
+            numofLike: [],
+            userLogo: [],
+            commentList: [],
+            postDate: [],
+            hashtagList: [],
+            filesList: [],
+            uniqueIDList: [],
+            followStatus: [],
+            boolHideList: [],
+          },
+          () => {
+            this.queryPost();
+          }
+        );
+      }
     }
   };
 
@@ -415,7 +422,7 @@ class Body extends Component {
                 />
               </svg>
               <span className="filter-button" onClick={this.showFilter}>
-                FILTER(Coming Soon)
+                FILTER({this.state.filterStatus})
               </span>
             </div>
             <div className={this.state.filterClass}>
@@ -447,10 +454,10 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={() => this.showFilter({ filter: "latest" })}
+                        onClick={() => this.showFilter({ filter: "following" })}
                         className="btn btn-light"
                       >
-                        Latest Post
+                        Following
                       </button>
                     </td>
                   </tr>
@@ -469,14 +476,6 @@ class Body extends Component {
                         className="btn btn-light"
                       >
                         Image
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => this.showFilter({ filter: "following" })}
-                        className="btn btn-light"
-                      >
-                        Following
                       </button>
                     </td>
                   </tr>
@@ -499,12 +498,6 @@ class Body extends Component {
                     </td>
                   </tr>
                 </table>
-                {/* <span>Upload date</span>
-                <span>Following</span>
-
-                <span>Videos</span>
-                <span>Pictures</span>
-                <span>Text only</span> */}
               </div>
             </div>
           </div>

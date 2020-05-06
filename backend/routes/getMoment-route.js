@@ -307,9 +307,9 @@ let getAllComments = (obj) => {
 router.post("/getMoment", (req, res) => {
   let days = 1000 * 60 * 60 * 24 * 10;
   let visitedPost = req.body.visitedList;
-  console.log("filter: ", req.body.filter);
   let type = ["image", "text", "video"];
   let filter = req.body.filter;
+  let following = [];
   if (filter != null) {
     if (filter == "image" || filter == "video" || filter == "text") {
       type = [filter];
@@ -319,86 +319,166 @@ router.post("/getMoment", (req, res) => {
       days = 1000 * 60 * 60 * 24 * 7;
     } else if (filter == "month") {
       days = 1000 * 60 * 60 * 24 * 30;
+    } else if (filter == "following") {
+      following = req.body.following;
     }
   }
 
-  console.log("type: ", type);
-  console.log("day: ", days);
-
-  Post.aggregate(
-    [
-      {
-        $match: {
-          visible: true,
-          fileType: { $in: type.map((i) => i) },
-          _id: {
-            $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
-          },
-          postDate: {
-            $gte: makeTime() - days,
+  if (filter == "following") {
+    Post.aggregate(
+      [
+        {
+          $match: {
+            visible: true,
+            fileType: { $in: type.map((i) => i) },
+            userId: { $in: following.map((i) => i) },
+            _id: {
+              $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
+            },
+            postDate: {
+              $gte: makeTime() - days,
+            },
           },
         },
-      },
-      { $sample: { size: 5 } },
-    ],
-    function (err, moments) {
-      if (err) {
-        console.log(err);
-        return res.json({
-          success: false,
-          message: "error posting the hashtag",
+        { $sample: { size: 5 } },
+      ],
+      function (err, moments) {
+        if (err) {
+          console.log(err);
+          return res.json({
+            success: false,
+            message: "error posting the hashtag",
+          });
+        }
+        let idList = [];
+        let momentsList = [];
+        let usernameList = [];
+        let postidList = [];
+        let numofLike = [];
+        let logoList = [];
+        let commentList = [];
+        let postDateList = [];
+        let hashtagList = [];
+        let filesList = [];
+        let postTimeList = [];
+        let uniqueIDList = [];
+
+        getAllComments(moments).then((allComments) => {
+          commentList = allComments;
+          for (let i = 0; i < moments.length; i++) {
+            idList.push(moments[i].userId);
+            momentsList.push(moments[i].postmessage);
+            usernameList.push(moments[i].nickname);
+            postidList.push(moments[i]._id);
+            numofLike.push(moments[i].likeList.length);
+            postDateList.push(moments[i].postTime);
+            hashtagList.push(moments[i].hashtagList);
+            filesList.push(moments[i].fileLocation);
+            postTimeList.push(moments[i].postDate);
+            uniqueIDList.push(moments[i].uniqueID);
+            if (moments[i].nickname == null) {
+              logoList.push("0");
+            } else {
+              logoList.push(moments[i].userLogo);
+            }
+          }
+          return res.json({
+            idList: idList,
+            allMoments: momentsList,
+            allUsername: usernameList,
+            allPostid: postidList,
+            numofLike: numofLike,
+            momentLength: moments.length,
+            logoList: logoList,
+            commentList: commentList,
+            postDateList: postDateList,
+            hashtagList: hashtagList,
+            filesList: filesList,
+            postTimeList: postTimeList,
+            uniqueIDList: uniqueIDList,
+          });
         });
       }
-      let idList = [];
-      let momentsList = [];
-      let usernameList = [];
-      let postidList = [];
-      let numofLike = [];
-      let logoList = [];
-      let commentList = [];
-      let postDateList = [];
-      let hashtagList = [];
-      let filesList = [];
-      let postTimeList = [];
-      let uniqueIDList = [];
+    );
+  } else {
+    Post.aggregate(
+      [
+        {
+          $match: {
+            visible: true,
+            fileType: { $in: type.map((i) => i) },
 
-      getAllComments(moments).then((allComments) => {
-        commentList = allComments;
-        for (let i = 0; i < moments.length; i++) {
-          idList.push(moments[i].userId);
-          momentsList.push(moments[i].postmessage);
-          usernameList.push(moments[i].nickname);
-          postidList.push(moments[i]._id);
-          numofLike.push(moments[i].likeList.length);
-          postDateList.push(moments[i].postTime);
-          hashtagList.push(moments[i].hashtagList);
-          filesList.push(moments[i].fileLocation);
-          postTimeList.push(moments[i].postDate);
-          uniqueIDList.push(moments[i].uniqueID);
-          if (moments[i].nickname == null) {
-            logoList.push("0");
-          } else {
-            logoList.push(moments[i].userLogo);
-          }
+            // userId: { $in: following.map((i) => i) },
+            _id: {
+              $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
+            },
+            postDate: {
+              $gte: makeTime() - days,
+            },
+          },
+        },
+
+        { $sample: { size: 5 } },
+      ],
+      function (err, moments) {
+        if (err) {
+          console.log(err);
+          return res.json({
+            success: false,
+            message: "error posting the hashtag",
+          });
         }
-        return res.json({
-          idList: idList,
-          allMoments: momentsList,
-          allUsername: usernameList,
-          allPostid: postidList,
-          numofLike: numofLike,
-          momentLength: moments.length,
-          logoList: logoList,
-          commentList: commentList,
-          postDateList: postDateList,
-          hashtagList: hashtagList,
-          filesList: filesList,
-          postTimeList: postTimeList,
-          uniqueIDList: uniqueIDList,
+        let idList = [];
+        let momentsList = [];
+        let usernameList = [];
+        let postidList = [];
+        let numofLike = [];
+        let logoList = [];
+        let commentList = [];
+        let postDateList = [];
+        let hashtagList = [];
+        let filesList = [];
+        let postTimeList = [];
+        let uniqueIDList = [];
+
+        getAllComments(moments).then((allComments) => {
+          commentList = allComments;
+          for (let i = 0; i < moments.length; i++) {
+            idList.push(moments[i].userId);
+            momentsList.push(moments[i].postmessage);
+            usernameList.push(moments[i].nickname);
+            postidList.push(moments[i]._id);
+            numofLike.push(moments[i].likeList.length);
+            postDateList.push(moments[i].postTime);
+            hashtagList.push(moments[i].hashtagList);
+            filesList.push(moments[i].fileLocation);
+            postTimeList.push(moments[i].postDate);
+            uniqueIDList.push(moments[i].uniqueID);
+            if (moments[i].nickname == null) {
+              logoList.push("0");
+            } else {
+              logoList.push(moments[i].userLogo);
+            }
+          }
+          return res.json({
+            idList: idList,
+            allMoments: momentsList,
+            allUsername: usernameList,
+            allPostid: postidList,
+            numofLike: numofLike,
+            momentLength: moments.length,
+            logoList: logoList,
+            commentList: commentList,
+            postDateList: postDateList,
+            hashtagList: hashtagList,
+            filesList: filesList,
+            postTimeList: postTimeList,
+            uniqueIDList: uniqueIDList,
+          });
         });
-      });
-    }
-  );
+      }
+    );
+  }
 });
 
 module.exports = router;
