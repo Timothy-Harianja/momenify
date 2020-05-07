@@ -67,19 +67,19 @@ router.get("/profilePage", (req, res) => {
       });
     }
     if (posts == null || posts.length == 0) {
-      return res.json({
-        idList: idList,
-        allMoments: momentsList,
-        allUsername: usernameList,
-        allPostid: postidList,
-        numofLike: numofLike,
-        momentLength: 0,
-        logoList: logoList,
-        commentList: commentList,
-        postDateList: postDateList,
-        hashtagList: hashtagList,
-        filesList: filesList,
-        visibleList: visibleList,
+      User.findOne({ uniqueID: token }, (err, user) => {
+        if (user == null) {
+          return res.json({ message: "no user find", success: false });
+        } else {
+          return res.json({
+            success: true,
+            allMoments: [],
+            followerCount: user.follower.length,
+            followingCount: user.following.length,
+            logoList: user.logo,
+            allUsername: user.nickname,
+          });
+        }
       });
     } else {
       let newPosts = posts;
@@ -110,6 +110,7 @@ router.get("/profilePage", (req, res) => {
           }
 
           return res.json({
+            success: true,
             ProfileUserId: newPosts[0].userId,
             allMoments: momentsList,
             allUsername: newPosts[0].nickname,

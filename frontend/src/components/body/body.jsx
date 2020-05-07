@@ -454,10 +454,10 @@ class Body extends Component {
                     </td>
                     <td>
                       <button
-                        onClick={() => this.showFilter({ filter: "following" })}
+                        onClick={() => this.showFilter({ filter: "random" })}
                         className="btn btn-light"
                       >
-                        Following
+                        Random
                       </button>
                     </td>
                   </tr>
@@ -470,12 +470,21 @@ class Body extends Component {
                         Last Week
                       </button>
                     </td>
+
                     <td>
                       <button
                         onClick={() => this.showFilter({ filter: "image" })}
                         className="btn btn-light"
                       >
                         Image
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => this.showFilter({ filter: "following" })}
+                        className="btn btn-light"
+                      >
+                        Following
                       </button>
                     </td>
                   </tr>

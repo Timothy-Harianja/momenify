@@ -41,6 +41,8 @@ class ProfilePage extends Component {
       commentLogo: null,
       followerCount: 0,
       followingCount: 0,
+      foundResult: null,
+      notfound: null,
     };
   }
 
@@ -63,42 +65,51 @@ class ProfilePage extends Component {
         axios
           .get("/api/getRoute/profilePage")
           .then((res) => {
-            this.setState({
-              followerCount: res.data.followerCount,
-              followingCount: res.data.followingCount,
-              loadingFeedback:
-                res.data.allMoments.length > 3 ? "Loading Posts..." : "",
-              posts:
-                res.data.allMoments.length >= 3
-                  ? 3
-                  : res.data.allMoments.length,
-              ProfileUserId: res.data.ProfileUserId,
-              moments: res.data.allMoments,
-              usernameList: res.data.allUsername,
-              postidList: res.data.allPostid,
-              likeStatus: Array(res.data.momentLength).fill(false),
-              numofLike: res.data.numofLike,
-              message: Array(res.data.momentLength).fill(""),
-              userLogo: res.data.logoList,
-              commentList: res.data.commentList,
-              postDateList: res.data.postDateList,
-              hashtagList: res.data.hashtagList,
-              visibleList: res.data.visibleList,
-              loadStatus: true,
-              filesList: res.data.filesList,
-              uniqueID: res.data.uniqueID,
-              own: res.data.uniqueID == this.state.owner,
-              followStatus:
-                this.state.following === undefined
-                  ? false
-                  : this.state.following.includes(res.data.ProfileUserId)
-                  ? true
-                  : false,
-            });
-            for (let i = 0; i < res.data.allMoments.length; i++) {
-              this.state.boolHideList.push(true);
+            if (res.data.success) {
+              this.setState({
+                foundResult: res.data.success,
+                followerCount: res.data.followerCount,
+                followingCount: res.data.followingCount,
+                loadingFeedback:
+                  res.data.allMoments.length > 3 ? "Loading Posts..." : "",
+                posts:
+                  res.data.allMoments.length >= 3
+                    ? 3
+                    : res.data.allMoments.length,
+                ProfileUserId: res.data.ProfileUserId,
+                moments: res.data.allMoments,
+                usernameList: res.data.allUsername,
+                postidList: res.data.allPostid,
+                likeStatus: Array(res.data.momentLength).fill(false),
+                numofLike: res.data.numofLike,
+                message: Array(res.data.momentLength).fill(""),
+                userLogo: res.data.logoList,
+                commentList: res.data.commentList,
+                postDateList: res.data.postDateList,
+                hashtagList: res.data.hashtagList,
+                visibleList: res.data.visibleList,
+                loadStatus: true,
+                filesList: res.data.filesList,
+                uniqueID: res.data.uniqueID,
+                own: res.data.uniqueID == this.state.owner,
+                followStatus:
+                  this.state.following === undefined
+                    ? false
+                    : this.state.following.includes(res.data.ProfileUserId)
+                    ? true
+                    : false,
+                notfound: "No user found!",
+              });
+              for (let i = 0; i < res.data.allMoments.length; i++) {
+                this.state.boolHideList.push(true);
+              }
+              this.setState({ testBool: true });
+            } else {
+              this.setState({
+                foundResult: res.data.success,
+                notfound: "No user found!",
+              });
             }
-            this.setState({ testBool: true });
           })
           .catch((err) => {
             console.log(err);
@@ -317,59 +328,70 @@ class ProfilePage extends Component {
       document.getElementById("reload").click();
     };
     return (
-      <div className="profile-body">
-        <div className="profile-top-container">
-          {/*
-          {this.state.following}
-           */}
+      <div>
+        {this.state.foundResult ? (
+          <div className="profile-body">
+            <div className="profile-top-container">
+              <div className="profile-top">
+                <img className="profile-pic" src={this.state.userLogo} />
+                <div className="profile-info">
+                  <div>
+                    <button
+                      id="reload"
+                      style={{ visibility: "hidden" }}
+                      onClick={() => this.componentDidMount()}
+                    >
+                      {" "}
+                      reload
+                    </button>
+                    <div className="profile-username">
+                      {this.state.usernameList}
+                    </div>
+                    <div className="profile-stats">
+                      <span>
+                        <b>{this.state.moments.length}</b> posts
+                      </span>
+                      <span>
+                        <b>{this.state.followerCount}</b> followers
+                      </span>
+                      <span>
+                        <b>{this.state.followingCount}</b> following
+                      </span>
+                    </div>
 
-          <div className="profile-top">
-            <img className="profile-pic" src={this.state.userLogo} />
-            <div className="profile-info">
-              <div>
-                <button
-                  id="reload"
-                  style={{ visibility: "hidden" }}
-                  onClick={() => this.componentDidMount()}
-                >
-                  {" "}
-                  reload
-                </button>
-                <div className="profile-username">
-                  {this.state.usernameList}
+                    <div className="profile-description"></div>
+                  </div>
                 </div>
-                <div className="profile-stats">
-                  <span>
-                    <b>{this.state.moments.length}</b> posts
-                  </span>
-                  <span>
-                    <b>{this.state.followerCount}</b> followers
-                  </span>
-                  <span>
-                    <b>{this.state.followingCount}</b> following
-                  </span>
-                </div>
-
-                <div className="profile-description"></div>
+              </div>
+              <hr className="profile-hr"></hr>
+            </div>
+            <div className="profile-home-page">
+              <div className="profile-main-posts-container">
+                <PostsContainer
+                  postContent={this.state.postContent}
+                  resetPostContent={() => this.resetNewPost()}
+                  loadMorePosts={() => this.loadMorePosts()}
+                  showPosts={() => this.showPosts()}
+                  giveLike={(post) => this.giveLike(post)}
+                  state={this.state}
+                />
               </div>
             </div>
           </div>
-
-          <hr className="profile-hr"></hr>
-        </div>
-
-        <div className="profile-home-page">
-          <div className="profile-main-posts-container">
-            <PostsContainer
-              postContent={this.state.postContent}
-              resetPostContent={() => this.resetNewPost()}
-              loadMorePosts={() => this.loadMorePosts()}
-              showPosts={() => this.showPosts()}
-              giveLike={(post) => this.giveLike(post)}
-              state={this.state}
-            />
+        ) : (
+          <div className="profile-notfound">
+            <button
+              id="reload"
+              style={{ visibility: "hidden" }}
+              onClick={() => this.componentDidMount()}
+            >
+              {" "}
+              reload
+            </button>
+            <b>{this.state.notfound}</b>
           </div>
-        </div>
+        )}
+
         <ScrollUpButton />
       </div>
     );
