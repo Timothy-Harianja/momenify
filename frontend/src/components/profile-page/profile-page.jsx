@@ -43,6 +43,7 @@ class ProfilePage extends Component {
       followingCount: 0,
       foundResult: null,
       notfound: null,
+      homepage: null,
     };
   }
 
@@ -98,7 +99,6 @@ class ProfilePage extends Component {
                     : this.state.following.includes(res.data.ProfileUserId)
                     ? true
                     : false,
-                notfound: "No user found!",
               });
               for (let i = 0; i < res.data.allMoments.length; i++) {
                 this.state.boolHideList.push(true);
@@ -108,6 +108,7 @@ class ProfilePage extends Component {
               this.setState({
                 foundResult: res.data.success,
                 notfound: "No user found!",
+                homepage: "Go back to homepage",
               });
             }
           })
@@ -379,16 +380,27 @@ class ProfilePage extends Component {
             </div>
           </div>
         ) : (
-          <div className="profile-notfound">
-            <button
-              id="reload"
-              style={{ visibility: "hidden" }}
-              onClick={() => this.componentDidMount()}
+          <div>
+            <div className="profile-notfound">
+              <button
+                id="reload"
+                style={{ visibility: "hidden" }}
+                onClick={() => this.componentDidMount()}
+              >
+                {" "}
+                reload
+              </button>
+              <b>{this.state.notfound}</b>
+            </div>
+            <p
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                display: "flex",
+              }}
             >
-              {" "}
-              reload
-            </button>
-            <b>{this.state.notfound}</b>
+              <a href="/">{this.state.homepage}</a>
+            </p>
           </div>
         )}
 
