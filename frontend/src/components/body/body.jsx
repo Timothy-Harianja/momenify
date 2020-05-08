@@ -340,11 +340,10 @@ class Body extends Component {
     }
     var retVal = 300;
     var shortText = text.slice(0, 300);
-    if ((shortText.match(/\n/g) || []).length >= 4) {
-      //find the position of the 4th happened \n
+    if ((shortText.match(/\n/g) || []).length >= 3) {
+      //find the position of the 3rd happened \n
       var spl = shortText.split("\n");
-      retVal =
-        spl[0].length + spl[1].length + spl[2].length + spl[3].length + 3;
+      retVal = spl[0].length + spl[1].length + spl[2].length + 2;
       // retVal = shortText.indexOf("\n", shortText.indexOf("\n") + 4) - 1;
     }
     return retVal;

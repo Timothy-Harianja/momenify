@@ -93,7 +93,6 @@ class PostItem extends React.Component {
           playsInline
           // src={file}
           controls
-          loop
           preload="metadata"
           src={file + "#t=0.1"}
         ></video>
