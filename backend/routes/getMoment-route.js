@@ -281,10 +281,10 @@ let comment = (obj) => {
 let getComments = (obj) => {
   // console.log("get user: ", user);
   let res = new Array(obj.length);
-  let commentList = obj.reverse();
-  for (let i = 0; i < commentList.length; i++) {
+  // let commentList = obj.reverse();
+  for (let i = 0; i < obj.length; i++) {
     res[i] = new Promise((resolve, reject) => {
-      comment(commentList[i]).then((data) => {
+      comment(obj[i]).then((data) => {
         resolve(data);
       });
     });
@@ -326,81 +326,87 @@ router.post("/getMoment", (req, res) => {
   }
 
   if (filter == "following") {
-    Post.aggregate(
-      [
-        {
-          $match: {
-            visible: true,
-            fileType: { $in: type.map((i) => i) },
-            userId: { $in: following.map((i) => i) },
-            _id: {
-              $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
-            },
-            postDate: {
-              $gte: makeTime() - days,
+    let following = [];
+    User.findOne({ uniqueID: req.session.uniqueID }, (err, result) => {
+      if (result != null) {
+        following = result.following;
+      }
+      Post.aggregate(
+        [
+          {
+            $match: {
+              visible: true,
+              fileType: { $in: type.map((i) => i) },
+              userId: { $in: following.map((i) => i) },
+              _id: {
+                $nin: visitedPost.map((post) => mongoose.Types.ObjectId(post)),
+              },
+              postDate: {
+                $gte: makeTime() - days,
+              },
             },
           },
-        },
-        { $sample: { size: 5 } },
-      ],
-      function (err, moments) {
-        if (err) {
-          console.log(err);
-          return res.json({
-            success: false,
-            message: "error posting the hashtag",
+          { $sample: { size: 5 } },
+        ],
+        function (err, moments) {
+          if (err) {
+            console.log(err);
+            return res.json({
+              success: false,
+              message: "error posting the hashtag",
+            });
+          }
+          let idList = [];
+          let momentsList = [];
+          let usernameList = [];
+          let postidList = [];
+          let numofLike = [];
+          let logoList = [];
+          let commentList = [];
+          let postDateList = [];
+          let hashtagList = [];
+          let filesList = [];
+          let postTimeList = [];
+          let uniqueIDList = [];
+
+          getAllComments(moments).then((allComments) => {
+            commentList = allComments;
+            for (let i = 0; i < moments.length; i++) {
+              idList.push(moments[i].userId);
+              momentsList.push(moments[i].postmessage);
+              usernameList.push(moments[i].nickname);
+              postidList.push(moments[i]._id);
+              numofLike.push(moments[i].likeList.length);
+              postDateList.push(moments[i].postTime);
+              hashtagList.push(moments[i].hashtagList);
+              filesList.push(moments[i].fileLocation);
+              postTimeList.push(moments[i].postDate);
+              uniqueIDList.push(moments[i].uniqueID);
+              if (moments[i].nickname == null) {
+                logoList.push("0");
+              } else {
+                logoList.push(moments[i].userLogo);
+              }
+            }
+            return res.json({
+              idList: idList,
+              allMoments: momentsList,
+              allUsername: usernameList,
+              allPostid: postidList,
+              numofLike: numofLike,
+              momentLength: moments.length,
+              logoList: logoList,
+              commentList: commentList,
+              postDateList: postDateList,
+              hashtagList: hashtagList,
+              filesList: filesList,
+              postTimeList: postTimeList,
+              uniqueIDList: uniqueIDList,
+            });
           });
         }
-        let idList = [];
-        let momentsList = [];
-        let usernameList = [];
-        let postidList = [];
-        let numofLike = [];
-        let logoList = [];
-        let commentList = [];
-        let postDateList = [];
-        let hashtagList = [];
-        let filesList = [];
-        let postTimeList = [];
-        let uniqueIDList = [];
-
-        getAllComments(moments).then((allComments) => {
-          commentList = allComments;
-          for (let i = 0; i < moments.length; i++) {
-            idList.push(moments[i].userId);
-            momentsList.push(moments[i].postmessage);
-            usernameList.push(moments[i].nickname);
-            postidList.push(moments[i]._id);
-            numofLike.push(moments[i].likeList.length);
-            postDateList.push(moments[i].postTime);
-            hashtagList.push(moments[i].hashtagList);
-            filesList.push(moments[i].fileLocation);
-            postTimeList.push(moments[i].postDate);
-            uniqueIDList.push(moments[i].uniqueID);
-            if (moments[i].nickname == null) {
-              logoList.push("0");
-            } else {
-              logoList.push(moments[i].userLogo);
-            }
-          }
-          return res.json({
-            idList: idList,
-            allMoments: momentsList,
-            allUsername: usernameList,
-            allPostid: postidList,
-            numofLike: numofLike,
-            momentLength: moments.length,
-            logoList: logoList,
-            commentList: commentList,
-            postDateList: postDateList,
-            hashtagList: hashtagList,
-            filesList: filesList,
-            postTimeList: postTimeList,
-            uniqueIDList: uniqueIDList,
-          });
-        });
-      }
-    );
+      );
+    });
   } else {
     Post.aggregate(
       [

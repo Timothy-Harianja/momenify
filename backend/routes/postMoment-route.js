@@ -195,7 +195,7 @@ router.post("/postMoment", (req, res) => {
     req.session.postCookie <= new Date().getTime()
   ) {
     req.session.postCookie = postCookieTime;
-    req.session.postLeft = 3;
+    req.session.postLeft = 2;
   }
 
   postMoment.nickname = req.body.nickname;

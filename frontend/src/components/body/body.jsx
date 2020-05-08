@@ -113,7 +113,6 @@ class Body extends Component {
       .post("/api/getRoute/getMoment", {
         visitedList: this.state.postidList,
         filter: this.state.filter,
-        following: this.state.following,
       })
       .then((res) => {
         for (let i = 0; i < res.data.allMoments.length; i++) {
