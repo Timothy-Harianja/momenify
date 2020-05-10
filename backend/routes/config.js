@@ -288,4 +288,31 @@ router.post("/message", (req, res) => {
     }
   });
 });
+
+router.get("/getMessage", (req, res) => {
+  Meg.find({ users: req.session.userId }, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      let chatters = [];
+      let roomList = [];
+      let messageList = [];
+      for (let i = 0; i < result.length; i++) {
+        chatters.push(
+          result[i].users[0] == req.session.userId
+            ? result[i].users[1]
+            : result[i].users[0]
+        );
+        roomList.push(result[i].roomID);
+        messageList.push(result[i].messageList);
+      }
+      console.log("result from get message: ", result);
+      return res.json({
+        chatters: chatters,
+        roomList: roomList,
+        messageList: messageList,
+      });
+    }
+  });
+});
 module.exports = router;

@@ -10,8 +10,10 @@ class Messenger extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      scrollList: [],
+      chatters: [],
       messageList: [],
+      userID: null,
+      roomList: [],
     };
   }
 
@@ -19,9 +21,18 @@ class Messenger extends Component {
     axios.get("/api/loginRoute/session").then((res) => {
       if (res.data.uniqueID == null || res.data.email == null) {
         this.props.history.push("/login");
+      } else {
+        this.setState({ userID: res.data.userId });
+        axios.get("/api/config/getMessage").then((res) => {
+          console.log("res from get message: ", res);
+          this.setState({
+            chatters: res.data.chatters,
+            messageList: res.data.messageList,
+            roomList: res.data.roomList,
+          });
+        });
       }
     });
-    // gets all user's following people, add to scroll list
   }
 
   //when click the scroll, show all messages with him
