@@ -74,4 +74,20 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 });
 
-app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+const server = app.listen(API_PORT, () =>
+  console.log(`LISTENING ON PORT ${API_PORT}`)
+);
+
+const http = require("http");
+// const server = http.createServer(app);
+
+const socketio = require("socket.io");
+const io = socketio(server);
+io.on("connect", (socket) => {
+  console.log("connected to socket.io");
+  // console.log("socket:", socket);
+
+  socket.on("disconnect", () => {
+    console.log("disconnected");
+  });
+});
