@@ -3,7 +3,7 @@ import ScrollMenu from "react-horizontal-scrolling-menu";
 import "./scrollBar.css";
 
 // list of items
-const list = [
+const scrollList = [
   { name: "item1" },
   { name: "item2" },
   { name: "item3" },
@@ -16,7 +16,7 @@ const list = [
   { name: "item11" },
   { name: "item12" },
   { name: "item13" },
-  { name: "item14" }
+  { name: "item14" },
 ];
 
 // One item component
@@ -28,7 +28,7 @@ const MenuItem = ({ text, selected }) => {
 // All items component
 // Important! add unique key
 export const Menu = (list, selected) =>
-  list.map(el => {
+  list.map((el) => {
     const { name } = el;
 
     return <MenuItem text={name} key={name} selected={selected} />;
@@ -47,14 +47,15 @@ class ScrollBar extends Component {
   constructor(props) {
     super(props);
     // call it again if items count changes
-    this.menuItems = Menu(list, selected);
+    this.menuItems = Menu(scrollList, selected);
   }
 
   state = {
-    selected
+    selected,
   };
 
-  onSelect = key => {
+  onSelect = (key) => {
+    console.log(key);
     this.setState({ selected: key });
   };
 

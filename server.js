@@ -82,7 +82,29 @@ const socketio = require("socket.io");
 const io = socketio(server);
 io.on("connect", (socket) => {
   console.log("connected to socket.io");
-  socket.on("disconnect", () => {
+
+  socket.on("join", ({ name, room }, callback) => {
+    socket.join(room);
+    socket.emit("message", {
+      user: "admin",
+      text: name + ", welcome to room " + room,
+    });
+    socket.broadcast
+      .to(room)
+      .emit("message", { user: "admin", text: `${user.name} has joined!` });
+    callback();
+  });
+
+  socket.on("sendMessage", ({ user, room, message }, callback) => {
+    io.to(room).emit("message", { user: user.name, text: message });
+    callback();
+  });
+
+  socket.on("disconnect", ({ user, room }) => {
     console.log("disconnected");
+    io.to(room).emit("message", {
+      user: "Admin",
+      text: user + "has left.",
+    });
   });
 });
