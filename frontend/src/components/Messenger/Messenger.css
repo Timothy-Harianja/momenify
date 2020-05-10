@@ -18,7 +18,6 @@
   position: relative;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  
 }
 
 .sidebar {
@@ -36,4 +35,9 @@
 .footer {
   grid-column-start: 2;
   background: white;
+}
+.message-list-container {
+  padding: 10px;
+  padding-bottom: 70px;
+  background-color: #fafafa;
 }

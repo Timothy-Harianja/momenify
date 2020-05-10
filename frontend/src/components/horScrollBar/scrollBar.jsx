@@ -29,6 +29,7 @@ const MenuItem = ({ text, selected }) => {
 // Important! add unique key
 export const Menu = (list, selected) =>
   list.map((el) => {
+    console.log("el ", el[0]);
     const { name } = el;
 
     return <MenuItem text={name} key={name} selected={selected} />;
@@ -50,27 +51,30 @@ class ScrollBar extends Component {
     this.state = {
       selected: null,
     };
-    this.menuItems = Menu(this.props.chatters, this.props.chatters[0]);
+    this.menuItems = Menu(this.props.chatters, selected);
   }
 
+  componentDidMount() {
+    console.log("hello", this.props.chatters);
+    let selected = this.props.chatters;
+    this.setState({ selected: selected });
+  }
   onSelect = (key) => {
     console.log(key);
-    this.setState({ selected: key });
   };
 
   render() {
-    selected = this.props.chatters[0];
     // Create menu from items
     const menu = this.menuItems;
 
     return (
       <div className="App">
         <ScrollMenu
-          data={menu}
+          data={this.props.menuItems}
           arrowLeft={ArrowLeft}
           arrowRight={ArrowRight}
-          selected={selected}
-          onSelect={this.onSelect}
+          selected={this.props.selected}
+          onSelect={(key) => this.props.onSelectChatter(key)}
         />
       </div>
     );
