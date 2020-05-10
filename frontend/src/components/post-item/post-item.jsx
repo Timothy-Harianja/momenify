@@ -244,6 +244,9 @@ class PostItem extends React.Component {
                 owned={this.props.owned}
                 reportPost={(e) => this.props.reportPost(e)}
                 reportID={(e) => this.props.reportID(e)}
+                position={this.props.position}
+                sendMessage={(e) => this.props.sendMessage(e)}
+                checkLogin={(e) => this.props.checkLogin(e)}
               ></PostDropdown>
             )}
           </span>
