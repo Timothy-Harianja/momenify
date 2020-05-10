@@ -367,7 +367,7 @@ class Body extends Component {
   };
 
   changeToNote = () => {
-    this.setState({ followList: this.state.noteList });
+    this.setState({ followList: this.state.noteList, unread: 0 });
     axios
       .post("/api/config/resetNote", { id: this.state.userId })
       .then((res) => {});

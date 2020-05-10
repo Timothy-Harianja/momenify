@@ -215,14 +215,14 @@ class PostItem extends React.Component {
           )}
           {this.props.own && this.props.visible ? (
             <span className="post-item-follow" style={{ color: "green" }}>
-              -Public post: {this.props.position}
+              -Public
             </span>
           ) : (
             <span></span>
           )}
           {this.props.own && !this.props.visible ? (
             <span className="post-item-follow" style={{ color: "red" }}>
-              -Private: {this.props.position}
+              -Private
             </span>
           ) : (
             <span></span>
