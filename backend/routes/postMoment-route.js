@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
+const User = require("../user");
 const path = require("path");
 const multer = require("multer");
 const aws = require("aws-sdk");
@@ -130,6 +131,31 @@ router.post("/postComment", (req, res) => {
       return res.json({ success: false, message: "error finding the post" });
     }
 
+    let meg = result.postmessage.substring(0, 8) + "...";
+    if (result.userId != null) {
+      User.findOne({ _id: result.userId }, (err, user) => {
+        if (user != null && user._id != req.session.userId) {
+          let newNote = user.notification;
+          newNote.push([
+            req.session.uniqueID,
+            "comment your post: " + '"' + meg + '"',
+            req.body.postId,
+          ]);
+          let newUnread = user.unread + 1;
+
+          User.updateOne(
+            { _id: user._id },
+            { $set: { unread: newUnread, notification: newNote } },
+            (err, result) => {
+              if (err) {
+                console.log("err: ", err);
+              }
+            }
+          );
+        }
+      });
+    }
+
     let commentMessage = req.body.postComment;
     result.commentList.push([req.session.uniqueID, commentMessage, new Date()]);
     result.save((err) => {
@@ -167,6 +193,30 @@ router.post("/giveLike", (req, res) => {
       return res.json({
         success: false,
         message: "you already liked this post",
+      });
+    }
+    let meg = result.postmessage.substring(0, 8) + "...";
+    if (result.userId != null) {
+      User.findOne({ _id: result.userId }, (err, user) => {
+        if (user != null && user._id != req.session.userId) {
+          let newNote = user.notification;
+          newNote.push([
+            req.session.uniqueID,
+            "like your post: " + '"' + meg + '"',
+            req.body.postId,
+          ]);
+          let newUnread = user.unread + 1;
+
+          User.updateOne(
+            { _id: user._id },
+            { $set: { unread: newUnread, notification: newNote } },
+            (err, result) => {
+              if (err) {
+                console.log("err: ", err);
+              }
+            }
+          );
+        }
       });
     }
     result.likeList.push(req.session.userId);

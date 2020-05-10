@@ -214,12 +214,16 @@ class PostItem extends React.Component {
             <span> </span>
           )}
           {this.props.own && this.props.visible ? (
-            <span className="post-item-follow">-Public</span>
+            <span className="post-item-follow" style={{ color: "green" }}>
+              -Public
+            </span>
           ) : (
             <span></span>
           )}
           {this.props.own && !this.props.visible ? (
-            <span className="post-item-follow">-Private</span>
+            <span className="post-item-follow" style={{ color: "red" }}>
+              -Private
+            </span>
           ) : (
             <span></span>
           )}
@@ -244,6 +248,9 @@ class PostItem extends React.Component {
                 owned={this.props.owned}
                 reportPost={(e) => this.props.reportPost(e)}
                 reportID={(e) => this.props.reportID(e)}
+                position={this.props.position}
+                sendMessage={(e) => this.props.sendMessage(e)}
+                checkLogin={(e) => this.props.checkLogin(e)}
               ></PostDropdown>
             )}
           </span>
