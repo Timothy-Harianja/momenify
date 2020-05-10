@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../user");
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
+const Meg = require("../chat-room");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
@@ -257,5 +258,34 @@ router.post("/changeVisible", (req, res) => {
       }
     }
   );
+});
+
+function makeToken(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+router.post("/message", (req, res) => {
+  let timestamp = new Date().getTime();
+
+  let newRoom = new Meg();
+
+  newRoom.users = [req.body.sender, req.body.receiver];
+  newRoom.messageList = [[req.body.sender, req.body.message, timestamp]];
+  newRoom.roomID = makeToken(20);
+  newRoom.save((err) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    } else {
+      return res.json({ success: true });
+    }
+  });
 });
 module.exports = router;
