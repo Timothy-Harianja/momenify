@@ -289,6 +289,32 @@ router.post("/message", (req, res) => {
   });
 });
 
+let getUser = (obj) => {
+  return new Promise((resolve, reject) => {
+    User.findOne({ _id: obj }, (err, result) => {
+      if (err) console.log(err);
+
+      if (result != null) {
+        resolve(result.nickname);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+};
+
+let getAllUser = (obj) => {
+  let res = new Array(obj.length);
+  for (let i = 0; i < obj.length; i++) {
+    res[i] = new Promise((resolve, reject) => {
+      getUser(obj[i]).then((data) => {
+        resolve(data);
+      });
+    });
+  }
+  return Promise.all(res);
+};
+
 router.get("/getMessage", (req, res) => {
   Meg.find({ users: req.session.userId }, (err, result) => {
     if (err) {
@@ -306,11 +332,17 @@ router.get("/getMessage", (req, res) => {
         roomList.push(result[i].roomID);
         messageList.push(result[i].messageList);
       }
-      console.log("result from get message: ", result);
-      return res.json({
-        chatters: chatters,
-        roomList: roomList,
-        messageList: messageList,
+      getAllUser(chatters).then((result2) => {
+        chatterList = [];
+        for (let j = 0; j < result2.length; j++) {
+          chatterList.push([result2[j], chatters[j]]);
+        }
+        // console.log("result from get message: ", result);
+        return res.json({
+          chatters: chatterList,
+          roomList: roomList,
+          messageList: messageList,
+        });
       });
     }
   });
