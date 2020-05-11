@@ -3,10 +3,13 @@ import MessageList from "../MessageList/index.js";
 import ScrollBar from "../horScrollBar/scrollBar.jsx";
 import "./Messenger.css";
 import axios from "axios";
-import io from "socket.io-client";
+import Message from "../Message";
+import moment from "moment";
 
+import io from "socket.io-client";
 let socket;
 
+let socket;
 class Messenger extends Component {
   constructor(props) {
     super(props);
@@ -16,6 +19,8 @@ class Messenger extends Component {
       userID: null,
       roomList: [],
       selectedInfo: ["", "", []], //[receiverName, receiverId,showing message]
+      socketList: [],
+      renderedMessage: [],
     };
   }
 
@@ -44,6 +49,8 @@ class Messenger extends Component {
             });
             // console.log("chatters:", this.state.chatters);
             // console.log("messageList:", this.state.messageList);
+            // initial socket.io for each person
+            socket = io();
           } else {
             console.log("oops, you haven't chat with anyone");
           }
@@ -51,6 +58,15 @@ class Messenger extends Component {
       }
     });
   }
+
+  // initSocket = () => {
+  //   let chatters = this.state.chatters;
+  //   let roomList = this.state.roomList;
+  //   console.log("chatters,", chatters);
+  //   console.log("roomList,", roomList);
+
+  //   for (let i = 0; i < chatters.length; i++) {}
+  // };
 
   makeToken = (length) => {
     var result = "";
@@ -78,22 +94,22 @@ class Messenger extends Component {
       });
       return meg;
     });
-    console.log("retMessage", retMessages);
+    // console.log("retMessage", retMessages);
     return retMessages;
   };
   //when click the scroll, show all messages with him
   setupSocket = () => {
-    socket = io();
+    let socket = io();
   };
 
   onSelectChatter = (receiverId) => {
-    console.log("receiverid in onSelectChatter:", receiverId);
+    // console.log("receiverid in onSelectChatter:", receiverId);
     //find name, id and message  findIndex
     let theChatter = "";
     let chatters = this.state.chatters;
     chatters.map((chatter) => {
       if (chatter.includes(receiverId)) {
-        console.log("found the chatter");
+        // console.log("found the chatter");
         theChatter = chatter;
       }
     });
@@ -102,12 +118,88 @@ class Messenger extends Component {
     this.setState({
       selectedInfo: [theChatter[0], theChatter[1], this.state.messageList[i]],
     });
-    console.log("selectedInfo after onselectchatter,", this.state.selectedInfo);
+    // console.log("selectedInfo after onselectchatter,", this.state.selectedInfo);
     return true;
   };
 
+  renderMessages = () => {
+    //check messageList undefined
+    let messages = [];
+
+    if (
+      this.state.messageList != undefined &&
+      this.state.messageList.length != 0
+    ) {
+      console.log("selectedInfo ", this.state.selectedInfo);
+
+      console.log(" selectedInfo[2] ", this.state.selectedInfo[2]);
+      messages = this.state.selectedInfo[2];
+      console.log("messages length: ", messages.length);
+    }
+    let i = 0;
+    let messageCount = messages.length;
+    let tempMessages = [];
+
+    while (i < messageCount) {
+      let previous = messages[i - 1];
+      let current = messages[i];
+      let next = messages[i + 1];
+      let isMine = current.author === this.state.userID;
+      let currentMoment = moment(current.timestamp);
+      let prevBySameAuthor = false;
+      let nextBySameAuthor = false;
+      let startsSequence = true;
+      let endsSequence = true;
+      let showTimestamp = true;
+
+      if (previous) {
+        let previousMoment = moment(previous.timestamp);
+        let previousDuration = moment.duration(
+          currentMoment.diff(previousMoment)
+        );
+        prevBySameAuthor = previous.author === current.author;
+
+        if (prevBySameAuthor && previousDuration.as("hours") < 1) {
+          startsSequence = false;
+        }
+
+        if (previousDuration.as("hours") < 1) {
+          showTimestamp = false;
+        }
+      }
+
+      if (next) {
+        let nextMoment = moment(next.timestamp);
+        let nextDuration = moment.duration(nextMoment.diff(currentMoment));
+        nextBySameAuthor = next.author === current.author;
+
+        if (nextBySameAuthor && nextDuration.as("hours") < 1) {
+          endsSequence = false;
+        }
+      }
+
+      tempMessages.push(
+        <Message
+          key={i}
+          isMine={isMine}
+          startsSequence={startsSequence}
+          endsSequence={endsSequence}
+          showTimestamp={showTimestamp}
+          data={current}
+        />
+      );
+
+      // Proceed to the next message.
+      i += 1;
+    }
+    tempMessages = tempMessages.reverse();
+    // setRenderedMessage(tempMessages);
+
+    return tempMessages;
+  };
+
   render() {
-    console.log("got here");
+    // console.log("got here");
     return (
       <div>
         <ScrollBar
@@ -115,12 +207,13 @@ class Messenger extends Component {
           selected={this.state.selected}
           onSelectChatter={(e) => this.onSelectChatter(e)}
           selectedInfo={this.state.selectedInfo}
-          setupSocket={() => this.setupSocket()}
+          // setupSocket={() => this.setupSocket()}
         />
         <MessageList
           messageList={this.state.messageList}
           MY_USER_ID={this.state.userID}
           selectedInfo={this.state.selectedInfo}
+          renderMessages={() => this.renderMessages()}
         />
       </div>
     );
