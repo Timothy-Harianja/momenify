@@ -5,7 +5,7 @@ import "./Messenger.css";
 import axios from "axios";
 import io from "socket.io-client";
 
-let socket;
+// let socket;
 
 class Messenger extends Component {
   constructor(props) {
@@ -82,7 +82,7 @@ class Messenger extends Component {
     return retMessages;
   };
   //when click the scroll, show all messages with him
-  scrollBarClick = () => {
+  setupSocket = () => {
     socket = io();
   };
 
@@ -115,6 +115,7 @@ class Messenger extends Component {
           selected={this.state.selected}
           onSelectChatter={(e) => this.onSelectChatter(e)}
           selectedInfo={this.state.selectedInfo}
+          setupSocket={() => this.setupSocket()}
         />
         <MessageList
           messageList={this.state.messageList}
