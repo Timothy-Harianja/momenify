@@ -298,6 +298,48 @@ class ProfilePage extends Component {
     }
   };
 
+  follow = () => {
+    if (this.state.userId != null) {
+      axios
+        .post("/api/followChangeRoute/follow", {
+          userid: this.state.ProfileUserId,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.updateFollow({
+              id: this.state.ProfileUserId,
+              action: "follow",
+            });
+          } else {
+            alert("something went wrong");
+          }
+        });
+    } else {
+      alert("You need to login first!");
+    }
+  };
+
+  unfollow = () => {
+    if (this.state.userId != null) {
+      axios
+        .post("/api/followChangeRoute/unfollow", {
+          userid: this.state.ProfileUserId,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.updateFollow({
+              id: this.state.ProfileUserId,
+              action: "unfollow",
+            });
+          } else {
+            alert("something went wrong");
+          }
+        });
+    } else {
+      alert("You need to login first!");
+    }
+  };
+
   getSplitPosition = (text) => {
     var edgeLength = 300;
     var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
@@ -346,6 +388,9 @@ class ProfilePage extends Component {
                     </button>
                     <div className="profile-username">
                       {this.state.usernameList}
+                      <span style={{ color: "grey", fontSize: 20 }}>
+                        {this.state.followStatus ? "-followed" : null}
+                      </span>
                     </div>
                     <div className="profile-stats">
                       <span>
@@ -357,9 +402,24 @@ class ProfilePage extends Component {
                       <span>
                         <b>{this.state.followingCount}</b> following
                       </span>
+                      {this.state.own ? null : this.state.followStatus ? (
+                        <button
+                          className="profile-follow"
+                          onClick={() => this.unfollow()}
+                        >
+                          unfollow
+                        </button>
+                      ) : (
+                        <button
+                          className="profile-follow"
+                          onClick={() => this.follow()}
+                        >
+                          follow
+                        </button>
+                      )}
                     </div>
 
-                    <div className="profile-description"></div>
+                    {/* <div className="profile-description">bio here </div> */}
                   </div>
                 </div>
               </div>
