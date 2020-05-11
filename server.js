@@ -78,34 +78,93 @@ const server = app.listen(API_PORT, () =>
   console.log(`LISTENING ON PORT ${API_PORT}`)
 );
 
+let chatRooms = []; //elem: [room id, user1 name, user2 name]
 const socketio = require("socket.io");
 const io = socketio(server);
 io.on("connect", (socket) => {
   console.log("connected to socket.io");
 
-  socket.on("join", ({ name, room }, callback) => {
-    socket.join(room);
+  socket.on("join", ({ name, roomId }, callback) => {
+    //check if roomId in chatRooms
+    addtoRoom({ roomId: roomId, name: name });
+    socket.join(roomId);
     socket.emit("message", {
       user: "admin",
-      text: name + ", welcome to room " + room,
+      text: name + ", welcome to room " + roomId,
     });
     socket.broadcast
-      .to(room)
-      .emit("message", { user: "admin", text: `${user.name} has joined!` });
+      .to(roomId)
+      .emit("message", { user: "admin", text: `${name} has joined!` });
     callback();
   });
 
-  socket.on("sendMessage", ({ user, room, message }, callback) => {
-    io.to(room).emit("message", { user: user.name, text: message });
+  socket.on("sendMessage", ({ name, room, message }, callback) => {
+    io.to(room).emit("message", { user: name, text: message });
     callback();
   });
 
-  socket.on("disconnect", ({ user, room }) => {
+  socket.on("disconnect", ({ user, roomId }) => {
+    exitRoom({ roomId: roomId, name: user });
     console.log("disconnected");
-    io.to(room).emit("message", {
+    io.to(roomId).emit("message", {
       user: "Admin",
       text: user + "has left.",
     });
   });
 });
-app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+
+function addtoRoom(newRoom) {
+  let alreadyAdded = false;
+  chatRooms.map((chatRoom) => {
+    if (chatRoom[0] == newRoom.roomId) {
+      alreadyAdded = true;
+    }
+  });
+
+  if (alreadyAdded) {
+    //check if the room has space for user
+    let position = chatRooms.findIndex(
+      (chatRoom) => chatRoom[0] == newRoom.roomId
+    );
+    if (chatRooms[position][1] == "") {
+      chatRooms[position][1] = newRoom.name;
+    } else if (chatRooms[position][2] == "") {
+      chatRooms[position][2] = newRoom.name;
+    } else {
+      console.log("error: the room is full");
+    }
+  } else {
+    //room not created
+    chatRooms.push([newRoom.roomId, newRoom.name, ""]);
+  }
+}
+
+function exitRoom(delRoom) {
+  let alreadyLeft = true;
+  chatRooms.map((chatRoom) => {
+    if (chatRoom[0] == delRoom.roomId) {
+      alreadyLeft = false;
+    }
+  });
+
+  if (!alreadyLeft) {
+    let position = chatRooms.findIndex(
+      (chatRoom) => chatRoom[0] == delRoom.roomId
+    );
+    if (chatRooms[position][2] == "") {
+      //position 2 is empty, meaning only you in the room, then delete the room
+      chatRooms.splice(position, 1);
+    } else {
+      //delete your name, and restruct the room
+      if (chatRooms[position][1] == delRoom.name) {
+        chatRooms[position][1] = chatRooms[position][2];
+        chatRooms[position][2] = "";
+      } else if (chatRooms[position][2] == delRoom.name) {
+        chatRooms[position][2] = "";
+      } else {
+        //should not end up here because should have user's name
+        console.log("don't find you in room");
+      }
+    }
+  }
+}
