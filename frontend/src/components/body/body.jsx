@@ -355,6 +355,8 @@ class Body extends Component {
     if (req.action == "follow") {
       this.state.following.push(req.id);
     }
+
+    this.componentDidMount();
   };
 
   changeToFollower = () => {
