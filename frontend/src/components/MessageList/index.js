@@ -12,6 +12,7 @@ const MY_USER_ID = "apple";
 export default function MessageList(props) {
   const [messages, setMessages] = useState([]);
   const [renderedMessage, setRenderedMessage] = useState(["hello"]);
+  const [typedMessage, setTypedMessage] = useState([""]);
 
   useEffect(() => {
     // renderMessages();
@@ -271,22 +272,36 @@ export default function MessageList(props) {
     return true;
   };
 
-  console.log("happends then");
+  console.log("message: ", typedMessage);
 
   return (
     <div className="message-list">
-      <div className="message-list-container">{props.renderMessages()}</div>
+      <div className="message-list-container">{props.selectedInfo[2]}</div>
 
       <div className="compose">
         <input
           type="text"
           className="compose-input"
           placeholder="Enter Your Message"
+          value={typedMessage}
+          onChange={(e) => {
+            setTypedMessage(e.target.value);
+          }}
+          onKeyPress={(event) => {
+            if (event.key == "Enter") {
+              console.log("enter is pressed");
+              props.sendMessage(typedMessage);
+              setTypedMessage("");
+            }
+          }}
         />
         <Button
           variant="secondary"
           className="centerButton"
-          onClick={() => sendMessage()}
+          onClick={() => {
+            props.sendMessage(typedMessage);
+            setTypedMessage("");
+          }}
         >
           Send
         </Button>
