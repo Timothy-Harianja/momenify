@@ -73,6 +73,7 @@ router.get("/profilePage", (req, res) => {
         } else {
           return res.json({
             success: true,
+            ProfileUserId: user._id,
             allMoments: [],
             followerCount: user.follower.length,
             followingCount: user.following.length,
