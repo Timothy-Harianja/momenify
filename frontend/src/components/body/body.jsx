@@ -12,6 +12,8 @@ import three from "../images/three.png";
 import four from "../images/four.png";
 import five from "../images/five.png";
 import trend from "../images/trend.png";
+import people from "../images/people.png";
+
 class Body extends Component {
   constructor(props) {
     super(props);
@@ -52,6 +54,7 @@ class Body extends Component {
       filterClass: "filter-options",
       filter: null,
       filterStatus: "random",
+      swapTrend: true,
     };
   }
 
@@ -436,6 +439,22 @@ class Body extends Component {
     }
   };
 
+  getTrend = () => {
+    axios.get("/api/getRoute/getHashtag").then((res) => {
+      if (res.data.success) {
+        this.setState({ topTrendList: res.data.hashtagList, swapTrend: true });
+      }
+    });
+  };
+
+  getPeople = () => {
+    axios.get("/api/getRoute/getPeople").then((res) => {
+      if (res.data.success) {
+        this.setState({ topTrendList: res.data.peopleList, swapTrend: false });
+      }
+    });
+  };
+
   render() {
     return (
       <div className="body">
@@ -620,27 +639,69 @@ class Body extends Component {
                 />
               </div>
               <div className="box middle">
-                <div id="trending-hashtag">
-                  <img src={trend} alt="kun" className="trend-img" />
-                  &nbsp;&nbsp;&nbsp;Trending:
-                </div>
-                <span class="line-fade"></span>
-                <div id="trend-list">
-                  <ul>
-                    {this.state.topTrendList.map((tag, index) => (
-                      <a href={"/hashtag/" + tag.substring(1)}>
-                        <li>
-                          <img
-                            src={this.getNumberLogo(index)}
-                            alt="kun"
-                            className="trend-img"
-                          />
-                          <h3>{tag}</h3>
-                        </li>
-                      </a>
-                    ))}
-                  </ul>
-                </div>
+                {this.state.swapTrend ? (
+                  <div>
+                    <div id="trending-hashtag">
+                      <img src={trend} alt="kun" className="trend-img" />
+                      &nbsp;&nbsp;&nbsp;Trending
+                      <button
+                        className="peopleButton"
+                        onClick={() => this.getPeople()}
+                      >
+                        {" "}
+                        People
+                      </button>
+                    </div>
+                    <span class="line-fade"></span>
+                    <div id="trend-list">
+                      <ul>
+                        {this.state.topTrendList.map((tag, index) => (
+                          <a href={"/hashtag/" + tag.substring(1)}>
+                            <li>
+                              <img
+                                src={this.getNumberLogo(index)}
+                                alt="kun"
+                                className="trend-img"
+                              />
+                              <h3>{tag}</h3>
+                            </li>
+                          </a>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div id="trending-hashtag">
+                      <img src={people} alt="kun" className="trend-img" />
+                      &nbsp;&nbsp;&nbsp;People
+                      <button
+                        className="peopleButton"
+                        onClick={() => this.getTrend()}
+                      >
+                        {" "}
+                        Trending
+                      </button>
+                    </div>
+                    <span class="line-fade"></span>
+                    <div id="trend-list">
+                      <ul>
+                        {this.state.topTrendList.map((ppl, index) => (
+                          <a href={"/profile/" + ppl[1]}>
+                            <li>
+                              <img
+                                src={ppl[2]}
+                                alt="kun"
+                                className="trend-img"
+                              />
+                              <h3>{ppl[0]}</h3>
+                            </li>
+                          </a>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="box-bottom box">
                 <a href="/about-us">About</a>

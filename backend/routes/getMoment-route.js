@@ -305,6 +305,17 @@ let getAllComments = (obj) => {
   return Promise.all(res);
 };
 
+router.get("/getPeople", (req, res) => {
+  let peopleList = [];
+  User.aggregate([{ $sample: { size: 5 } }], (err, result) => {
+    for (let i = 0; i < result.length; i++) {
+      peopleList.push([result[i].nickname, result[i].uniqueID, result[i].logo]);
+    }
+
+    return res.json({ success: true, peopleList: peopleList });
+  });
+});
+
 router.post("/getMoment", (req, res) => {
   let days = 1000 * 60 * 60 * 24 * 10;
   let visitedPost = req.body.visitedList;
