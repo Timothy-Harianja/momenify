@@ -287,35 +287,47 @@ router.post("/message", (req, res) => {
         return res.jsno({ success: false, message: err });
       }
       if (result != null) {
-        console.log("chat-room already created,just update message");
-        result.messageList = [
+        console.log(
+          "chat-room already created,just update message",
+          result.messageList
+        );
+        let updateMessageList = result.messageList;
+        console.log("1");
+        updateMessageList = [
           [req.body.sender, req.body.message, timestamp],
-          ...result.messageList,
+          ...updateMessageList,
         ];
+        result.messageList = updateMessageList;
+        console.log("2");
+
         result.save((err) => {
           if (err) {
+            console.log("3");
             console.log(err);
             return res.json({ success: false, message: err });
           }
+          console.log("5");
           return res.json({
             success: true,
             message: "message sending success",
           });
         });
+      } else {
+        console.log("4");
+        //result is null, create new room
+        let newRoom = new Meg();
+        newRoom.users = [req.body.sender, req.body.receiver];
+        newRoom.messageList = [[req.body.sender, req.body.message, timestamp]];
+        newRoom.roomID = makeToken(20);
+        newRoom.save((err) => {
+          if (err) {
+            console.log(err);
+            return res.json({ success: false });
+          } else {
+            return res.json({ success: true });
+          }
+        });
       }
-      //result is null, create new room
-      let newRoom = new Meg();
-      newRoom.users = [req.body.sender, req.body.receiver];
-      newRoom.messageList = [[req.body.sender, req.body.message, timestamp]];
-      newRoom.roomID = makeToken(20);
-      newRoom.save((err) => {
-        if (err) {
-          console.log(err);
-          return res.json({ success: false });
-        } else {
-          return res.json({ success: true });
-        }
-      });
     }
   );
 });

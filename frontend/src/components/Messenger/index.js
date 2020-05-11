@@ -7,22 +7,6 @@ import io from "socket.io-client";
 
 let socket;
 
-// One item component
-// selected prop will be passed
-const MenuItem = ({ text, selected }) => {
-  return <div className={`menu-item ${selected ? "active" : ""}`}>{text}</div>;
-};
-
-// All items component
-// Important! add unique key
-export const Menu = (list, selected) =>
-  list.map((el) => {
-    console.log("el ", el);
-    const { name } = el;
-
-    return <MenuItem text={name} key={name} selected={selected} />;
-  });
-
 class Messenger extends Component {
   constructor(props) {
     super(props);
@@ -31,8 +15,7 @@ class Messenger extends Component {
       messageList: [],
       userID: null,
       roomList: [],
-      menuItems: [],
-      selected: "",
+      selectedInfo: ["", "", []], //[receiverName, receiverId,showing message]
     };
   }
 
@@ -44,31 +27,31 @@ class Messenger extends Component {
         this.setState({ userID: res.data.userId });
         axios.get("/api/config/getMessage").then((res) => {
           console.log("res from get message: ", res);
-          //default chat room when enter
-          let convert = this.covertType([
-            res.data.chatters,
-            res.data.messageList,
-          ]);
-          // let list = res.data.chatters.map((x) => {
-          //   let tail = x[0];
-          //   return { name: tail };
-          // });
-          let chatterList = convert[0];
-          let messageList = convert[1];
-          let name = chatterList[0].name;
-          this.setState({
-            chatters: res.data.chatters,
-            messageList: messageList,
-            roomList: res.data.roomList,
-            menuItems: Menu(chatterList, name),
-            selected: name,
-          });
-          console.log("chatters:", this.state.chatters);
-          console.log("messageList:", this.state.messageList);
+          if (res.data.chatters.length != 0) {
+            //default chat room when enter
+            let convert = this.covertType(res.data.messageList);
+            let messageList = convert;
+            this.setState({
+              chatters: res.data.chatters,
+              messageList: messageList,
+              roomList: res.data.roomList,
+              // menuItems: this.Menu(res.data.chatters, res.data.chatters[0][0]),
+              selectedInfo: [
+                res.data.chatters[0][0],
+                res.data.chatters[0][1],
+                res.data.messageList[0],
+              ],
+            });
+            // console.log("chatters:", this.state.chatters);
+            // console.log("messageList:", this.state.messageList);
+          } else {
+            console.log("oops, you haven't chat with anyone");
+          }
         });
       }
     });
   }
+
   makeToken = (length) => {
     var result = "";
     var characters =
@@ -80,16 +63,7 @@ class Messenger extends Component {
     return result;
   };
   covertType = (input) => {
-    let chatter = input[0];
-    console.log("chatter", chatter);
-    let messages = input[1];
-    console.log("messages", messages);
-    let retChatter = chatter.map((x) => {
-      let tail = x[0];
-      return { name: tail };
-    });
-
-    let retMessages = messages.map((m) => {
+    let retMessages = input.map((m) => {
       let meg = m.map((n) => {
         let id = this.makeToken(10);
         let author = n[0];
@@ -104,31 +78,49 @@ class Messenger extends Component {
       });
       return meg;
     });
-    return [retChatter, retMessages];
+    console.log("retMessage", retMessages);
+    return retMessages;
   };
   //when click the scroll, show all messages with him
   scrollBarClick = () => {
     socket = io();
   };
 
-  onSelectChatter = (key) => {
-    console.log(key);
-    this.setState({ selected: key });
+  onSelectChatter = (receiverId) => {
+    console.log("receiverid in onSelectChatter:", receiverId);
+    //find name, id and message  findIndex
+    let theChatter = "";
+    let chatters = this.state.chatters;
+    chatters.map((chatter) => {
+      if (chatter.includes(receiverId)) {
+        console.log("found the chatter");
+        theChatter = chatter;
+      }
+    });
+
+    let i = chatters.findIndex((ch) => ch == theChatter);
+    this.setState({
+      selectedInfo: [theChatter[0], theChatter[1], this.state.messageList[i]],
+    });
+    console.log("selectedInfo after onselectchatter,", this.state.selectedInfo);
+    return true;
   };
+
   render() {
     console.log("got here");
     return (
       <div>
-        {/* <div className="scrollable content"> */}
         <ScrollBar
           chatters={this.state.chatters}
-          // showChatters={() => this.showChatters()}
-          menuItems={this.state.menuItems}
           selected={this.state.selected}
           onSelectChatter={(e) => this.onSelectChatter(e)}
+          selectedInfo={this.state.selectedInfo}
         />
-        <MessageList />
-        {/* </div> */}
+        <MessageList
+          messageList={this.state.messageList}
+          MY_USER_ID={this.state.userID}
+          selectedInfo={this.state.selectedInfo}
+        />
       </div>
     );
   }

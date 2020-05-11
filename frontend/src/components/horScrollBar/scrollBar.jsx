@@ -2,38 +2,28 @@ import React, { Component } from "react";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import "./scrollBar.css";
 
-// list of items
-const chatters = [
-  { name: "item1" },
-  { name: "item2" },
-  { name: "item3" },
-  { name: "item4" },
-  { name: "item5" },
-  { name: "item6" },
-  { name: "item7" },
-  { name: "item8" },
-  { name: "item10" },
-  { name: "item11" },
-  { name: "item12" },
-  { name: "item13" },
-  { name: "item14" },
-];
-
 // One item component
 // selected prop will be passed
-const MenuItem = ({ text, selected }) => {
-  return <div className={`menu-item ${selected ? "active" : ""}`}>{text}</div>;
+const MenuItem = ({ text, key, selectedName, onSelectChatter }) => {
+  return (
+    <div
+      className={`menu-item ${selectedName == text ? "active" : ""}`}
+      // onClick={onSelectChatter(receiverId)}
+    >
+      {text}
+    </div>
+  );
 };
 
 // All items component
 // Important! add unique key
-export const Menu = (list, selected) =>
-  list.map((el) => {
-    console.log("el ", el[0]);
-    const { name } = el;
+// export const Menu = (list, selected) =>
+//   list.map((el) => {
+//     // console.log("el ", el[0]);
+//     const { name } = el;
 
-    return <MenuItem text={name} key={name} selected={selected} />;
-  });
+//     return <MenuItem text={name} key={name} selected={selected} />;
+//   });
 
 const Arrow = ({ text, className }) => {
   return <div className={className}>{text}</div>;
@@ -48,19 +38,34 @@ class ScrollBar extends Component {
   constructor(props) {
     super(props);
     // call it again if items count changes
-    this.state = {
-      selected: null,
-    };
-    this.menuItems = Menu(this.props.chatters, selected);
+    // this.menuItems = Menu(this.props.chatters, selected);
   }
 
   componentDidMount() {
     console.log("hello", this.props.chatters);
-    let selected = this.props.chatters;
-    this.setState({ selected: selected });
   }
+
+  menu = () => {
+    let list = this.props.chatters;
+    // let selectedName = this.props.selectedInfo[0];
+    let retVal = list.map((el) => {
+      console.log("el ", el);
+      const name = el[0];
+      const receiverId = el[1];
+      return (
+        <MenuItem
+          text={name}
+          key={receiverId}
+          selectedName={this.props.selectedInfo[0]}
+        />
+      );
+    });
+    return retVal;
+  };
+
   onSelect = (key) => {
     console.log(key);
+    this.props.onSelectChatter(key);
   };
 
   render() {
@@ -70,11 +75,11 @@ class ScrollBar extends Component {
     return (
       <div className="App">
         <ScrollMenu
-          data={this.props.menuItems}
+          data={this.menu()}
           arrowLeft={ArrowLeft}
           arrowRight={ArrowRight}
           selected={this.props.selected}
-          onSelect={(key) => this.props.onSelectChatter(key)}
+          onSelect={this.onSelect}
         />
       </div>
     );

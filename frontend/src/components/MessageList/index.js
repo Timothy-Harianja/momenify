@@ -5,6 +5,7 @@ import moment from "moment";
 import { Button } from "reactstrap";
 
 import "./MessageList.css";
+import { set } from "mongoose";
 
 const MY_USER_ID = "apple";
 
@@ -12,29 +13,20 @@ export default function MessageList(props) {
   const [messages, setMessages] = useState([]);
   const ENDPOINT = "localhost:3000/message";
   useEffect(() => {
-    getMessages();
+    // getMessages();
   }, []);
 
-  const getMessages = () => {
-    var tempMessages = [
-      {
-        id: 10,
-        author: "orange",
-        message:
-          "It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!",
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 10,
-        author: "apple",
-        message: "Hello world!",
-        timestamp: new Date().getTime(),
-      },
-    ];
-    setMessages([...messages, ...tempMessages]);
-  };
-
   const renderMessages = () => {
+    //check messageList undefined
+    let messages = [];
+
+    if (props.messageList != undefined && props.messageList.length != 0) {
+      console.log("selectedInfo ", props.selectedInfo);
+
+      console.log(" selectedInfo[2] ", props.selectedInfo[2]);
+      messages = props.selectedInfo[2];
+      console.log("messages length: ", messages.length);
+    }
     let i = 0;
     let messageCount = messages.length;
     let tempMessages = [];
@@ -43,7 +35,7 @@ export default function MessageList(props) {
       let previous = messages[i - 1];
       let current = messages[i];
       let next = messages[i + 1];
-      let isMine = current.author === MY_USER_ID;
+      let isMine = current.author === props.MY_USER_ID;
       let currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
