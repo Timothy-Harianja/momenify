@@ -19,7 +19,7 @@ class Messenger extends Component {
       roomList: [],
       selectedInfo: ["", "", []], //[receiverName, receiverId,showing message]
       socketList: [],
-      renderedMessage: [],
+      // renderedMessage: [],
     };
   }
 
@@ -33,17 +33,18 @@ class Messenger extends Component {
           console.log("res from get message: ", res);
           if (res.data.chatters.length != 0) {
             //default chat room when enter
-            let convert = this.covertType(res.data.messageList);
-            let messageList = convert;
+
+            // let convert = this.covertType(res.data.messageList);
+            // let messageList = convert;
             this.setState({
               chatters: res.data.chatters,
-              messageList: messageList,
+              messageList: res.data.messageList,
               roomList: res.data.roomList,
               // menuItems: this.Menu(res.data.chatters, res.data.chatters[0][0]),
               selectedInfo: [
                 res.data.chatters[0][0],
                 res.data.chatters[0][1],
-                res.data.messageList[0],
+                this.renderMessages(res.data.messageList[0], true),
               ],
             });
             // console.log("chatters:", this.state.chatters);
@@ -115,36 +116,43 @@ class Messenger extends Component {
 
     let i = chatters.findIndex((ch) => ch == theChatter);
     this.setState({
-      selectedInfo: [theChatter[0], theChatter[1], this.state.messageList[i]],
+      selectedInfo: [
+        theChatter[0],
+        theChatter[1],
+        this.renderMessages(this.state.messageList[i]),
+      ],
     });
     // console.log("selectedInfo after onselectchatter,", this.state.selectedInfo);
     return true;
   };
 
-  renderMessages = () => {
+  renderMessages = (messages, isInit) => {
     //check messageList undefined
-    let messages = [];
+    // let messages = [];
 
     if (
       this.state.messageList != undefined &&
       this.state.messageList.length != 0
     ) {
-      console.log("selectedInfo ", this.state.selectedInfo);
+      // console.log("selectedInfo ", this.state.selectedInfo);
 
-      console.log(" selectedInfo[2] ", this.state.selectedInfo[2]);
-      messages = this.state.selectedInfo[2];
+      // console.log(" selectedInfo[2] ", this.state.selectedInfo[2]);
+      // messages = this.state.selectedInfo[2];
       console.log("messages length: ", messages.length);
     }
     let i = 0;
     let messageCount = messages.length;
     let tempMessages = [];
-
     while (i < messageCount) {
       let previous = messages[i - 1];
       let current = messages[i];
+      console.log("what is current[0]?|", current[0], "|");
+      console.log("what is  this.srID?|", this.state.userID, "|");
+      console.log("equal?", current[0] == this.state.userID);
+
       let next = messages[i + 1];
-      let isMine = current.author === this.state.userID;
-      let currentMoment = moment(current.timestamp);
+      let isMine = current[0] == this.state.userID;
+      let currentMoment = moment(current[2]);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
       let startsSequence = true;
@@ -152,11 +160,11 @@ class Messenger extends Component {
       let showTimestamp = true;
 
       if (previous) {
-        let previousMoment = moment(previous.timestamp);
+        let previousMoment = moment(previous[2]);
         let previousDuration = moment.duration(
           currentMoment.diff(previousMoment)
         );
-        prevBySameAuthor = previous.author === current.author;
+        prevBySameAuthor = previous[0] === current[0];
 
         if (prevBySameAuthor && previousDuration.as("hours") < 1) {
           startsSequence = false;
@@ -168,15 +176,20 @@ class Messenger extends Component {
       }
 
       if (next) {
-        let nextMoment = moment(next.timestamp);
+        let nextMoment = moment(next[2]);
         let nextDuration = moment.duration(nextMoment.diff(currentMoment));
-        nextBySameAuthor = next.author === current.author;
+        nextBySameAuthor = next[0] === current[0];
 
         if (nextBySameAuthor && nextDuration.as("hours") < 1) {
           endsSequence = false;
         }
       }
-
+      current = {
+        id: i,
+        author: current[0],
+        message: current[1],
+        timestamp: current[2],
+      };
       tempMessages.push(
         <Message
           key={i}
@@ -192,9 +205,44 @@ class Messenger extends Component {
       i += 1;
     }
     tempMessages = tempMessages.reverse();
-    // setRenderedMessage(tempMessages);
 
     return tempMessages;
+  };
+
+  sendMessage = (newMessage) => {
+    // newMessage.preventDefault();
+    console.log("newMessagddddddd:", newMessage);
+
+    let selected = this.state.selectedInfo;
+    let receiverName = selected[0];
+    let receiverId = selected[1];
+
+    let index = this.state.chatters.findIndex(
+      (chatter) => chatter[1] == receiverId
+    );
+    let newMessageList = this.state.messageList;
+    console.log("newmessageList", newMessageList);
+    newMessageList[index] = [
+      [this.state.userID, newMessage, new Date().getTime()],
+      ...newMessageList[index],
+    ];
+
+    let newRenderedMessages = this.renderMessages(newMessageList[index], false);
+    selected[2] = newRenderedMessages;
+
+    console.log("newmessageList after", newMessageList);
+
+    this.setState({ selectedInfo: selected, messageList: newMessageList });
+    console.log("after setstate");
+
+    //then update backend
+    axios
+      .post("/api/config/message", {
+        sender: this.state.userID,
+        receiver: receiverId,
+        message: newMessage,
+      })
+      .then((res) => {});
   };
 
   render() {
@@ -212,7 +260,8 @@ class Messenger extends Component {
           messageList={this.state.messageList}
           MY_USER_ID={this.state.userID}
           selectedInfo={this.state.selectedInfo}
-          renderMessages={() => this.renderMessages()}
+          sendMessage={(newMessage) => this.sendMessage(newMessage)}
+          // renderMessages={() => this.renderMessages()}
         />
       </div>
     );
