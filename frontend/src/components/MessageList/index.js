@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Compose from "../Compose";
 import Message from "../Message";
 import moment from "moment";
+import { Button } from "reactstrap";
 
 import "./MessageList.css";
+import { set } from "mongoose";
 
 
 const MY_USER_ID = "apple";
@@ -12,6 +14,10 @@ export default function MessageList(props) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
+    // getMessages();
+  }, []);
+
+
     getMessages();
   }, []);
 
@@ -92,6 +98,16 @@ export default function MessageList(props) {
   };
 
   const renderMessages = () => {
+    //check messageList undefined
+    let messages = [];
+
+    if (props.messageList != undefined && props.messageList.length != 0) {
+      console.log("selectedInfo ", props.selectedInfo);
+
+      console.log(" selectedInfo[2] ", props.selectedInfo[2]);
+      messages = props.selectedInfo[2];
+      console.log("messages length: ", messages.length);
+    }
     let i = 0;
     let messageCount = messages.length;
     let tempMessages = [];
@@ -100,7 +116,7 @@ export default function MessageList(props) {
       let previous = messages[i - 1];
       let current = messages[i];
       let next = messages[i + 1];
-      let isMine = current.author === MY_USER_ID;
+      let isMine = current.author === props.MY_USER_ID;
       let currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
@@ -152,11 +168,28 @@ export default function MessageList(props) {
     return tempMessages;
   };
 
+  const sendMessage = () => {
+    console.log("true");
+    return true;
+  };
   return (
     <div className="message-list">
       <div className="message-list-container">{renderMessages()}</div>
 
-      <Compose />
+      <div className="compose">
+        <input
+          type="text"
+          className="compose-input"
+          placeholder="Enter Your Message"
+        />
+        <Button
+          variant="secondary"
+          className="centerButton"
+          onClick={() => sendMessage()}
+        >
+          Send
+        </Button>
+      </div>
     </div>
   );
 }
