@@ -287,6 +287,13 @@ export default function MessageList(props) {
           onChange={(e) => {
             setTypedMessage(e.target.value);
           }}
+          onKeyPress={(event) => {
+            if (event.key == "Enter") {
+              console.log("enter is pressed");
+              props.sendMessage(typedMessage);
+              setTypedMessage("");
+            }
+          }}
         />
         <Button
           variant="secondary"
