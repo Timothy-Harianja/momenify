@@ -74,6 +74,7 @@ class Header extends Component {
           </Form>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
               {this.state.userId != undefined ? (

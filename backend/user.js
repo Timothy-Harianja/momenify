@@ -10,8 +10,10 @@ const UserSchema = new Schema({
   activeToken: String,
   following: [],
   follower: [],
+  notification: [],
   logo: String,
   uniqueID: String,
+  unread: Number,
 });
 
 module.exports = mongoose.model("User", UserSchema);

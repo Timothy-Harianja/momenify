@@ -210,19 +210,17 @@ class PostItem extends React.Component {
           )}
           {this.props.followStatus ? (
             <span className="post-item-follow">-Followed</span>
-          ) : (
-            <span> </span>
-          )}
+          ) : null}
           {this.props.own && this.props.visible ? (
-            <span className="post-item-follow">-Public</span>
-          ) : (
-            <span></span>
-          )}
+            <span className="post-item-follow" style={{ color: "green" }}>
+              -Public
+            </span>
+          ) : null}
           {this.props.own && !this.props.visible ? (
-            <span className="post-item-follow">-Private</span>
-          ) : (
-            <span></span>
-          )}
+            <span className="post-item-follow" style={{ color: "red" }}>
+              -Private
+            </span>
+          ) : null}
           <span className="post-item-header-dropdown">
             {this.props.own ? (
               <ProfileDropDown

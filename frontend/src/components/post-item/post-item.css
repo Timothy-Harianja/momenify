@@ -3,6 +3,11 @@
   stroke-width: 1;
 }
 
+/* html {
+  scroll-behavior: smooth;
+  
+} */
+
 .post-item-container {
   display: flex;
   flex-direction: column;
