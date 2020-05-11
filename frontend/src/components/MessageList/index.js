@@ -164,6 +164,7 @@ export default function MessageList(props) {
       // Proceed to the next message.
       i += 1;
     }
+    tempMessages = tempMessages.reverse();
 
     return tempMessages;
   };

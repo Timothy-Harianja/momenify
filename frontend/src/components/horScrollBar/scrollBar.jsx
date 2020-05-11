@@ -65,6 +65,7 @@ class ScrollBar extends Component {
 
   onSelect = (key) => {
     console.log(key);
+    this.props.setupSocket();
     this.props.onSelectChatter(key);
   };
 
@@ -80,6 +81,7 @@ class ScrollBar extends Component {
           arrowRight={ArrowRight}
           selected={this.props.selected}
           onSelect={this.onSelect}
+          // onClick={this.onSelect}
         />
       </div>
     );
