@@ -1,23 +1,8 @@
 import React, { Component } from "react";
 import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
-import anonymous from "../posts-container/anonymous.png";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
-import logo1 from "../images/logo1.png";
-import logo2 from "../images/logo2.png";
-import logo3 from "../images/logo3.png";
-import logo4 from "../images/logo4.png";
-import logo5 from "../images/logo5.png";
-import logo6 from "../images/logo6.png";
-import logo7 from "../images/logo7.png";
-import logo8 from "../images/logo1.png";
-import logo9 from "../images/logo9.png";
-import one from "../images/one.png";
-import two from "../images/two.png";
-import three from "../images/three.png";
-import four from "../images/four.png";
-import five from "../images/five.png";
 import "./profile-page.css";
 
 class ProfilePage extends Component {
@@ -51,6 +36,13 @@ class ProfilePage extends Component {
       boolHideList: [],
       testBool: false,
       own: false,
+      username: null,
+      commentLogo: null,
+      followerCount: 0,
+      followingCount: 0,
+      foundResult: null,
+      notfound: null,
+      homepage: null,
     };
   }
 
@@ -60,9 +52,10 @@ class ProfilePage extends Component {
       .then((res) => {
         this.setState({
           userId: res.data.userId,
-          logoNumber: res.data.logoNumber,
+          commentLogo: res.data.logoNumber,
           owner: res.data.uniqueID,
           following: res.data.following,
+          username: res.data.username,
         });
       })
       .catch((err) => {
@@ -72,40 +65,51 @@ class ProfilePage extends Component {
         axios
           .get("/api/getRoute/profilePage")
           .then((res) => {
-            this.setState({
-              loadingFeedback:
-                res.data.allMoments.length > 3 ? "Loading Posts..." : "",
-              posts:
-                res.data.allMoments.length >= 3
-                  ? 3
-                  : res.data.allMoments.length,
-              ProfileUserId: res.data.ProfileUserId,
-              moments: res.data.allMoments,
-              usernameList: res.data.allUsername,
-              postidList: res.data.allPostid,
-              likeStatus: Array(res.data.momentLength).fill(false),
-              numofLike: res.data.numofLike,
-              message: Array(res.data.momentLength).fill(""),
-              userLogo: res.data.logoList,
-              commentList: res.data.commentList,
-              postDateList: res.data.postDateList,
-              hashtagList: res.data.hashtagList,
-              visibleList: res.data.visibleList,
-              loadStatus: true,
-              filesList: res.data.filesList,
-              uniqueID: res.data.uniqueID,
-              own: res.data.uniqueID == this.state.owner,
-              followStatus:
-                this.state.following === undefined
-                  ? false
-                  : this.state.following.includes(res.data.ProfileUserId)
-                  ? true
-                  : false,
-            });
-            for (let i = 0; i < res.data.allMoments.length; i++) {
-              this.state.boolHideList.push(true);
+            if (res.data.success) {
+              this.setState({
+                foundResult: res.data.success,
+                followerCount: res.data.followerCount,
+                followingCount: res.data.followingCount,
+                loadingFeedback:
+                  res.data.allMoments.length > 3 ? "Loading Posts..." : "",
+                posts:
+                  res.data.allMoments.length >= 3
+                    ? 3
+                    : res.data.allMoments.length,
+                ProfileUserId: res.data.ProfileUserId,
+                moments: res.data.allMoments,
+                usernameList: res.data.allUsername,
+                postidList: res.data.allPostid,
+                likeStatus: Array(res.data.momentLength).fill(false),
+                numofLike: res.data.numofLike,
+                message: Array(res.data.momentLength).fill(""),
+                userLogo: res.data.logoList,
+                commentList: res.data.commentList,
+                postDateList: res.data.postDateList,
+                hashtagList: res.data.hashtagList,
+                visibleList: res.data.visibleList,
+                loadStatus: true,
+                filesList: res.data.filesList,
+                uniqueID: res.data.uniqueID,
+                own: res.data.uniqueID == this.state.owner,
+                followStatus:
+                  this.state.following === undefined
+                    ? false
+                    : this.state.following.includes(res.data.ProfileUserId)
+                    ? true
+                    : false,
+              });
+              for (let i = 0; i < res.data.allMoments.length; i++) {
+                this.state.boolHideList.push(true);
+              }
+              this.setState({ testBool: true });
+            } else {
+              this.setState({
+                foundResult: res.data.success,
+                notfound: "No user found!",
+                homepage: "Go back to homepage",
+              });
             }
-            this.setState({ testBool: true });
           })
           .catch((err) => {
             console.log(err);
@@ -115,6 +119,8 @@ class ProfilePage extends Component {
 
   giveComment = (comment) => {
     if (comment.postComment != null && comment.postComment.trim() != "") {
+      comment.userLogo = this.state.commentLogo;
+      comment.nickname = this.state.username;
       axios
         .post("/api/postRoute/postComment", comment)
         .then((res) => {
@@ -292,6 +298,48 @@ class ProfilePage extends Component {
     }
   };
 
+  follow = () => {
+    if (this.state.userId != null) {
+      axios
+        .post("/api/followChangeRoute/follow", {
+          userid: this.state.ProfileUserId,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.updateFollow({
+              id: this.state.ProfileUserId,
+              action: "follow",
+            });
+          } else {
+            alert("something went wrong");
+          }
+        });
+    } else {
+      alert("You need to login first!");
+    }
+  };
+
+  unfollow = () => {
+    if (this.state.userId != null) {
+      axios
+        .post("/api/followChangeRoute/unfollow", {
+          userid: this.state.ProfileUserId,
+        })
+        .then((res) => {
+          if (res.data.success) {
+            this.updateFollow({
+              id: this.state.ProfileUserId,
+              action: "unfollow",
+            });
+          } else {
+            alert("something went wrong");
+          }
+        });
+    } else {
+      alert("You need to login first!");
+    }
+  };
+
   getSplitPosition = (text) => {
     var edgeLength = 300;
     var textLength = text.length + (text.match(/\n/g) || []).length * 80; //text length plus number of "\n"*80
@@ -316,21 +364,104 @@ class ProfilePage extends Component {
     newBoolHideList[position] = !newBoolHideList[position];
     this.setState({ boolHideList: newBoolHideList });
   };
+
   render() {
+    window.onload = function () {
+      document.getElementById("reload").click();
+    };
     return (
-      <div className="profile-body">
-        <div className="profile-home-page">
-          <div className="profile-main-posts-container">
-            <PostsContainer
-              postContent={this.state.postContent}
-              resetPostContent={() => this.resetNewPost()}
-              loadMorePosts={() => this.loadMorePosts()}
-              showPosts={() => this.showPosts()}
-              giveLike={(post) => this.giveLike(post)}
-              state={this.state}
-            />
+      <div>
+        {this.state.foundResult ? (
+          <div className="profile-body">
+            <div className="profile-top-container">
+              <div className="profile-top">
+                <img className="profile-pic" src={this.state.userLogo} />
+                <div className="profile-info">
+                  <div>
+                    <button
+                      id="reload"
+                      style={{ visibility: "hidden" }}
+                      onClick={() => this.componentDidMount()}
+                    >
+                      {" "}
+                      reload
+                    </button>
+                    <div className="profile-username">
+                      {this.state.usernameList}
+                      <span style={{ color: "grey", fontSize: 20 }}>
+                        {this.state.followStatus ? "-followed" : null}
+                      </span>
+                    </div>
+                    <div className="profile-stats">
+                      <span>
+                        <b>{this.state.moments.length}</b> posts
+                      </span>
+                      <span>
+                        <b>{this.state.followerCount}</b> followers
+                      </span>
+                      <span>
+                        <b>{this.state.followingCount}</b> following
+                      </span>
+                      {this.state.own ? null : this.state.followStatus ? (
+                        <button
+                          className="profile-follow"
+                          onClick={() => this.unfollow()}
+                        >
+                          unfollow
+                        </button>
+                      ) : (
+                        <button
+                          className="profile-follow"
+                          onClick={() => this.follow()}
+                        >
+                          follow
+                        </button>
+                      )}
+                    </div>
+
+                    {/* <div className="profile-description">bio here </div> */}
+                  </div>
+                </div>
+              </div>
+              <hr className="profile-hr"></hr>
+            </div>
+            <div className="profile-home-page">
+              <div className="profile-main-posts-container">
+                <PostsContainer
+                  postContent={this.state.postContent}
+                  resetPostContent={() => this.resetNewPost()}
+                  loadMorePosts={() => this.loadMorePosts()}
+                  showPosts={() => this.showPosts()}
+                  giveLike={(post) => this.giveLike(post)}
+                  state={this.state}
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div className="profile-notfound">
+              <button
+                id="reload"
+                style={{ visibility: "hidden" }}
+                onClick={() => this.componentDidMount()}
+              >
+                {" "}
+                reload
+              </button>
+              <b>{this.state.notfound}</b>
+            </div>
+            <p
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                display: "flex",
+              }}
+            >
+              <a href="/">{this.state.homepage}</a>
+            </p>
+          </div>
+        )}
         <ScrollUpButton />
       </div>
     );

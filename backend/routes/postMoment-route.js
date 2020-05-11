@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
+const User = require("../user");
 const path = require("path");
 const multer = require("multer");
 const aws = require("aws-sdk");
@@ -59,10 +60,17 @@ router.post("/upload", (req, res) => {
       } else {
         // If Success
         // Save the file name into database into profile model
+        let imageType = ["png", "jpg", "gif", "jpeg"];
+        let videoType = ["mp4", "mov", "ogg"];
+        let fileExt = req.file.key.split(".").pop().toLowerCase();
+        let fileType = "text";
+        if (imageType.includes(fileExt)) fileType = "image";
+        if (videoType.includes(fileExt)) fileType = "video";
         return res.json({
           success: true,
           key: req.file.key,
           imageLocation: req.file.location,
+          fileType: fileType,
         });
       }
     }
@@ -109,6 +117,7 @@ router.post("/postHashtag", (req, res) => {
     });
   }
 });
+
 router.post("/postComment", (req, res) => {
   if (!req.session.userId) {
     return res.json({
@@ -121,8 +130,34 @@ router.post("/postComment", (req, res) => {
     if (err) {
       return res.json({ success: false, message: "error finding the post" });
     }
-    let messageWithName = req.session.username + ":  " + req.body.postComment;
-    result.commentList.push(messageWithName);
+
+    let meg = result.postmessage.substring(0, 8) + "...";
+    if (result.userId != null) {
+      User.findOne({ _id: result.userId }, (err, user) => {
+        if (user != null && user._id != req.session.userId) {
+          let newNote = user.notification;
+          newNote.push([
+            req.session.uniqueID,
+            "comment your post: " + '"' + meg + '"',
+            req.body.postId,
+          ]);
+          let newUnread = user.unread + 1;
+
+          User.updateOne(
+            { _id: user._id },
+            { $set: { unread: newUnread, notification: newNote } },
+            (err, result) => {
+              if (err) {
+                console.log("err: ", err);
+              }
+            }
+          );
+        }
+      });
+    }
+
+    let commentMessage = req.body.postComment;
+    result.commentList.push([req.session.uniqueID, commentMessage, new Date()]);
     result.save((err) => {
       if (err) {
         return res.json({
@@ -132,7 +167,13 @@ router.post("/postComment", (req, res) => {
       }
       return res.json({
         success: true,
-        message: messageWithName,
+        message: [
+          req.session.uniqueID,
+          commentMessage,
+          req.body.userLogo,
+          req.body.nickname,
+          "0m",
+        ],
       });
     });
   });
@@ -152,6 +193,30 @@ router.post("/giveLike", (req, res) => {
       return res.json({
         success: false,
         message: "you already liked this post",
+      });
+    }
+    let meg = result.postmessage.substring(0, 8) + "...";
+    if (result.userId != null) {
+      User.findOne({ _id: result.userId }, (err, user) => {
+        if (user != null && user._id != req.session.userId) {
+          let newNote = user.notification;
+          newNote.push([
+            req.session.uniqueID,
+            "like your post: " + '"' + meg + '"',
+            req.body.postId,
+          ]);
+          let newUnread = user.unread + 1;
+
+          User.updateOne(
+            { _id: user._id },
+            { $set: { unread: newUnread, notification: newNote } },
+            (err, result) => {
+              if (err) {
+                console.log("err: ", err);
+              }
+            }
+          );
+        }
       });
     }
     result.likeList.push(req.session.userId);
@@ -180,7 +245,7 @@ router.post("/postMoment", (req, res) => {
     req.session.postCookie <= new Date().getTime()
   ) {
     req.session.postCookie = postCookieTime;
-    req.session.postLeft = 3;
+    req.session.postLeft = 2;
   }
 
   postMoment.nickname = req.body.nickname;
@@ -198,11 +263,12 @@ router.post("/postMoment", (req, res) => {
   postMoment.objectKey = req.body.fileKey;
   postMoment.reportCount = 0;
   postMoment.visible = true;
+  postMoment.fileType = req.body.fileType == null ? "text" : req.body.fileType;
 
   if (req.session.userId) {
     postMoment.save((err, newPost) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
         return res.json({
@@ -216,21 +282,18 @@ router.post("/postMoment", (req, res) => {
     return res.json({
       success: false,
       message:
-        "You have reached the max number of posts per day as anonymous, please login to post more!",
+        "You have reached the max number of posts per day as anonymous, please login or sign up to post more!",
     });
   } else {
     req.session.postLeft--;
     postMoment.save((err, newPost) => {
       if (err) {
-        // console.log(err);
+        console.log(err);
         return res.json({ success: false, message: "Post moment failed" });
       } else {
         return res.json({
           success: true,
-          message:
-            "Post moment success! You have " +
-            req.session.postLeft +
-            " left for today! Login to make unlimited post per day!",
+          message: "",
           postId: newPost._id,
         });
       }

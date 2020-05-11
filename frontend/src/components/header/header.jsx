@@ -14,6 +14,7 @@ const Styles = styled.div`
     border: solid;
     border-color: lightgrey;
     border-width: thin;
+
     /* background-color: white; */
   }
   a,
@@ -21,7 +22,7 @@ const Styles = styled.div`
   .navbar-light .nav-link {
     color: black;
     &:hover {
-      color: white;
+      color: grey;
     }
   }
   .navbar-brand {
@@ -73,6 +74,7 @@ class Header extends Component {
           </Form>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
               {this.state.userId != undefined ? (
@@ -134,6 +136,9 @@ class Header extends Component {
                 </Nav>
               ) : (
                 <Nav>
+                  <Nav.Item>
+                    <Nav.Link href="/about-us">About</Nav.Link>
+                  </Nav.Item>
                   <Nav.Item>
                     <Nav.Link href="/login">Login</Nav.Link>
                   </Nav.Item>

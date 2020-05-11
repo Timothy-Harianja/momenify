@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../user");
 const Post = require("../postMoment");
 const Hashtag = require("../hashtag");
+const Meg = require("../chat-room");
 const router = express.Router();
 const path = require("path");
 const multer = require("multer");
@@ -126,6 +127,62 @@ router.post("/getFollower", (req, res) => {
 router.post("/getFollowing", (req, res) => {
   getAllFollow(req.body.followingList).then((result) => {
     return res.json({ success: true, followingResult: result });
+  });
+});
+
+getNote = (e) => {
+  return new Promise((resolve, reject) => {
+    User.findOne({ uniqueID: e[0] }, (err, result) => {
+      if (err) console.log(err);
+      if (result != null) {
+        resolve([result.nickname, result.logo]);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+};
+
+getAllNote = (e) => {
+  let res = new Array(e.length);
+  for (let i = 0; i < e.length; i++) {
+    res[i] = new Promise((resolve, reject) => {
+      getNote(e[i]).then((result) => {
+        resolve(result);
+      });
+    });
+  }
+
+  return Promise.all(res);
+};
+router.get("/getNotification", (req, res) => {
+  User.findOne({ _id: req.session.userId }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    }
+    if (result != null) {
+      let unread = result.unread;
+
+      let noteList = result.notification.reverse();
+      getAllNote(noteList).then((result2) => {
+        if (result2 != null) {
+          for (let i = 0; i < result2.length; i++) {
+            let postID = noteList[i][2];
+            noteList[i][1] = result2[i][0] + " " + noteList[i][1];
+            noteList[i][2] = result2[i][1];
+            noteList[i].push(postID);
+          }
+        }
+        return res.json({ success: true, noteList: noteList, unread: unread });
+      });
+    }
+  });
+});
+
+router.post("/resetNote", (req, res) => {
+  User.updateOne({ _id: req.body.id }, { $set: { unread: 0 } }, (err, res) => {
+    if (err) console.log(err);
   });
 });
 
@@ -257,5 +314,136 @@ router.post("/changeVisible", (req, res) => {
       }
     }
   );
+});
+
+function makeToken(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+router.post("/message", (req, res) => {
+  let timestamp = new Date().getTime();
+
+  Meg.findOne(
+    {
+      $or: [
+        { users: [req.body.sender, req.body.receiver] },
+        { users: [req.body.receiver, req.body.sender] },
+      ],
+    },
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.jsno({ success: false, message: err });
+      }
+      if (result != null) {
+        console.log(
+          "chat-room already created,just update message",
+          result.messageList
+        );
+        let updateMessageList = result.messageList;
+        console.log("1");
+        updateMessageList = [
+          [req.body.sender, req.body.message, timestamp],
+          ...updateMessageList,
+        ];
+        result.messageList = updateMessageList;
+        console.log("2");
+
+        result.save((err) => {
+          if (err) {
+            console.log("3");
+            console.log(err);
+            return res.json({ success: false, message: err });
+          }
+          console.log("5");
+          return res.json({
+            success: true,
+            message: "message sending success",
+          });
+        });
+      } else {
+        console.log("4");
+        //result is null, create new room
+        let newRoom = new Meg();
+        newRoom.users = [req.body.sender, req.body.receiver];
+        newRoom.messageList = [[req.body.sender, req.body.message, timestamp]];
+        newRoom.roomID = makeToken(20);
+        newRoom.save((err) => {
+          if (err) {
+            console.log(err);
+            return res.json({ success: false });
+          } else {
+            return res.json({ success: true });
+          }
+        });
+      }
+    }
+  );
+});
+
+let getUser = (obj) => {
+  return new Promise((resolve, reject) => {
+    User.findOne({ _id: obj }, (err, result) => {
+      if (err) console.log(err);
+
+      if (result != null) {
+        resolve(result.nickname);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+};
+
+let getAllUser = (obj) => {
+  let res = new Array(obj.length);
+  for (let i = 0; i < obj.length; i++) {
+    res[i] = new Promise((resolve, reject) => {
+      getUser(obj[i]).then((data) => {
+        resolve(data);
+      });
+    });
+  }
+  return Promise.all(res);
+};
+
+router.get("/getMessage", (req, res) => {
+  Meg.find({ users: req.session.userId }, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      let chatters = [];
+      let roomList = [];
+      let messageList = [];
+      for (let i = 0; i < result.length; i++) {
+        chatters.push(
+          result[i].users[0] == req.session.userId
+            ? result[i].users[1]
+            : result[i].users[0]
+        );
+        roomList.push(result[i].roomID);
+        messageList.push(result[i].messageList);
+      }
+      getAllUser(chatters).then((result2) => {
+        chatterList = [];
+        for (let j = 0; j < result2.length; j++) {
+          chatterList.push([result2[j], chatters[j]]);
+        }
+        // console.log("result from get message: ", result);
+        return res.json({
+          chatters: chatterList,
+          roomList: roomList,
+          messageList: messageList,
+        });
+      });
+    }
+  });
 });
 module.exports = router;

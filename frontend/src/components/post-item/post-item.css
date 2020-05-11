@@ -3,6 +3,11 @@
   stroke-width: 1;
 }
 
+/* html {
+  scroll-behavior: smooth;
+  
+} */
+
 .post-item-container {
   display: flex;
   flex-direction: column;
@@ -181,6 +186,14 @@
   border: none;
   border-top: 1px solid #e1e1e1;
   padding-top: 0;
+}
+
+.comment-profile {
+  position: relative;
+  top: 0px;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
 }
 
 .comment-post {

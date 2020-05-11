@@ -140,6 +140,7 @@ class Signup extends Component {
           <div className="form-group">
             <label>Nickname</label>
             <input
+              id="signupname"
               required
               type="text"
               className="form-control"
@@ -157,6 +158,7 @@ class Signup extends Component {
             </label>
             <input
               required
+              id="signupid"
               type="text"
               className="form-control"
               placeholder="Pick a unique ID"
@@ -168,6 +170,7 @@ class Signup extends Component {
             <label>Email address</label>
             <input
               required
+              id="signupemail"
               type="email"
               className="form-control"
               placeholder="Enter email"
@@ -179,6 +182,7 @@ class Signup extends Component {
             <label>Password</label>
             <input
               required
+              id="signuppassword"
               type="password"
               className="form-control"
               placeholder="Password"
@@ -189,6 +193,7 @@ class Signup extends Component {
             <label>Re-enter Password</label>
             <input
               required
+              id="signupconfirmpassword"
               type="password"
               className="form-control"
               placeholder="Re-enter Password"

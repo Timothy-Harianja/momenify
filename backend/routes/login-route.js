@@ -12,7 +12,7 @@ router.get("/session", (req, res) => {
     if (result != null) {
       req.session.username = result.nickname;
       req.session.logoNumber = result.logo;
-
+      req.session.uniqueID = result.uniqueID;
       return res.json({
         userId: req.session.userId,
         logoNumber: result.logo,
@@ -55,6 +55,7 @@ router.post("/login", (req, res) => {
           req.session.username = result2.nickname;
           req.session.email = result2.email;
           req.session.logoNumber = result2.logo;
+          req.session.uniqueID = result2.uniqueID;
 
           // console.log("req session in login:", req.session);
 

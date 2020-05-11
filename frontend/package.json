@@ -26,6 +26,7 @@
     "react-scroll-up-button": "^1.6.4",
     "reactstrap": "^8.4.1",
     "redux": "^4.0.5",
+    "rodal": "^1.8.1",
     "styled-components": "^5.0.1"
   },
   "scripts": {

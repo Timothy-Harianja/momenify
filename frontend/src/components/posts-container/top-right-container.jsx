@@ -45,7 +45,10 @@ class TopRightContainer extends Component {
           </InfiniteScroll>
         ) : (
           <div>
-            <p>Please sign in first to see you follower and following.</p>
+            <p>
+              Please sign in first to see you follower, following, and
+              notification.
+            </p>
 
             <a href="/login">Login</a>
             <br></br>

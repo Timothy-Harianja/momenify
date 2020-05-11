@@ -24,7 +24,22 @@ class PostItem extends React.Component {
     return (
       <div>
         {props.message.map((message, index) =>
-          index < this.state.commentNumber ? <div>{message}</div> : ""
+          index < this.state.commentNumber ? (
+            <div style={{ margin: "7px" }}>
+              <a href={"/profile/" + message[0]}>
+                <img className="comment-profile" src={message[2]} />
+              </a>
+              &nbsp;
+              <a href={"/profile/" + message[0]}>{message[3]}</a>
+              <span style={{ color: "grey", fontSize: 12 }}>
+                {"(" + message[4] + ")"}
+              </span>
+              : &nbsp;
+              {message[1]}
+            </div>
+          ) : (
+            ""
+          )
         )}
         {props.message.length > 3 &&
         this.state.commentNumber < props.message.length ? (
@@ -78,7 +93,6 @@ class PostItem extends React.Component {
           playsInline
           // src={file}
           controls
-          loop
           preload="metadata"
           src={file + "#t=0.1"}
         ></video>
@@ -196,19 +210,17 @@ class PostItem extends React.Component {
           )}
           {this.props.followStatus ? (
             <span className="post-item-follow">-Followed</span>
-          ) : (
-            <span> </span>
-          )}
+          ) : null}
           {this.props.own && this.props.visible ? (
-            <span className="post-item-follow">-Public</span>
-          ) : (
-            <span></span>
-          )}
+            <span className="post-item-follow" style={{ color: "green" }}>
+              -Public
+            </span>
+          ) : null}
           {this.props.own && !this.props.visible ? (
-            <span className="post-item-follow">-Private</span>
-          ) : (
-            <span></span>
-          )}
+            <span className="post-item-follow" style={{ color: "red" }}>
+              -Private
+            </span>
+          ) : null}
           <span className="post-item-header-dropdown">
             {this.props.own ? (
               <ProfileDropDown
@@ -230,6 +242,9 @@ class PostItem extends React.Component {
                 owned={this.props.owned}
                 reportPost={(e) => this.props.reportPost(e)}
                 reportID={(e) => this.props.reportID(e)}
+                position={this.props.position}
+                sendMessage={(e) => this.props.sendMessage(e)}
+                checkLogin={(e) => this.props.checkLogin(e)}
               ></PostDropdown>
             )}
           </span>
@@ -273,7 +288,11 @@ class PostItem extends React.Component {
                 })
               }
             >
-              <img src={require("./like.png")}></img>
+              {this.props.likeStatus ? (
+                <img src={require("./liked.png")}></img>
+              ) : (
+                <img src={require("./like.png")}></img>
+              )}
             </Button>
 
             <Button

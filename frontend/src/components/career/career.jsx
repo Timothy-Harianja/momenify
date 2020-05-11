@@ -101,6 +101,7 @@ class Career extends Component {
                   <input
                     required
                     type="text"
+                    id="careername"
                     class="form-control"
                     placeholder="Full name"
                     onChange={(e) => this.setState({ name: e.target.value })}
@@ -114,6 +115,7 @@ class Career extends Component {
                   <input
                     required
                     type="number"
+                    id="careerphone"
                     class="form-control"
                     placeholder="10 digits please"
                     onChange={(e) => this.setState({ phone: e.target.value })}
@@ -128,6 +130,7 @@ class Career extends Component {
                     required
                     type="text"
                     class="form-control"
+                    id="careeremail"
                     placeholder="Email address"
                     onChange={(e) => this.setState({ email: e.target.value })}
                   />

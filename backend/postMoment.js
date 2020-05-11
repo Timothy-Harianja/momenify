@@ -16,6 +16,7 @@ const PostSchema = new Schema({
   objectKey: String,
   reportCount: Number,
   visible: Boolean,
+  fileType: String,
 });
 
 module.exports = mongoose.model("Moment", PostSchema);
