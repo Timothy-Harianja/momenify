@@ -7,6 +7,7 @@ import Message from "../Message";
 import moment from "moment";
 
 import io from "socket.io-client";
+let socket;
 
 let socket;
 class Messenger extends Component {
