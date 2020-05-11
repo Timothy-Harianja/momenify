@@ -130,6 +130,62 @@ router.post("/getFollowing", (req, res) => {
   });
 });
 
+getNote = (e) => {
+  return new Promise((resolve, reject) => {
+    User.findOne({ uniqueID: e[0] }, (err, result) => {
+      if (err) console.log(err);
+      if (result != null) {
+        resolve([result.nickname, result.logo]);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+};
+
+getAllNote = (e) => {
+  let res = new Array(e.length);
+  for (let i = 0; i < e.length; i++) {
+    res[i] = new Promise((resolve, reject) => {
+      getNote(e[i]).then((result) => {
+        resolve(result);
+      });
+    });
+  }
+
+  return Promise.all(res);
+};
+router.get("/getNotification", (req, res) => {
+  User.findOne({ _id: req.session.userId }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    }
+    if (result != null) {
+      let unread = result.unread;
+
+      let noteList = result.notification.reverse();
+      getAllNote(noteList).then((result2) => {
+        if (result2 != null) {
+          for (let i = 0; i < result2.length; i++) {
+            let postID = noteList[i][2];
+            noteList[i][1] = result2[i][0] + " " + noteList[i][1];
+            noteList[i][2] = result2[i][1];
+            noteList[i].push(postID);
+          }
+        }
+        return res.json({ success: true, noteList: noteList, unread: unread });
+      });
+    }
+  });
+});
+
+router.post("/resetNote", (req, res) => {
+  User.updateOne({ _id: req.body.id }, { $set: { unread: 0 } }, (err, res) => {
+    if (err) console.log(err);
+  });
+});
+
 router.post("/contact-us", (req, res) => {
   note = {
     from: "themomenify@gmail.com",

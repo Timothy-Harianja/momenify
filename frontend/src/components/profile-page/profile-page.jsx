@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PostsContainer from "../posts-container/posts-container";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
-import anonymous from "../posts-container/anonymous.png";
 import axios from "axios";
 import PostItem from "../post-item/post-item";
 import "./profile-page.css";
@@ -403,7 +402,6 @@ class ProfilePage extends Component {
             </p>
           </div>
         )}
-
         <ScrollUpButton />
       </div>
     );

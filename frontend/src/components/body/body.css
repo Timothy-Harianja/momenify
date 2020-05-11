@@ -3,7 +3,6 @@
   background-color: #fafafa;
 }
 
-
 .filter {
   width: 1100px;
   margin-left: auto;
@@ -44,7 +43,9 @@
   margin: 15px auto 5px 0px;
 }
 
-.alncenter { text-align: center; }
+.alncenter {
+  text-align: center;
+}
 
 .home-page {
   display: flex;
@@ -148,7 +149,7 @@
 .box {
   color: #fafafa;
   padding: 0px;
-  width: 100%;
+  width: 105%;
 
   border-radius: 8px;
   border-style: solid;
@@ -176,18 +177,33 @@
 
 #side-profile {
   position: relative;
-  margin: 10px 10px 10px 20px;
+  margin: 10px 10px 10px 15px;
   height: 70px;
   width: 70px;
   position: relative;
   border-radius: 50%;
 }
-
+.noteButton {
+  border-radius: 5px;
+  border: solid;
+  border-width: 1px;
+  border-color: #696969;
+  font-size: 13px;
+  background-color: Transparent;
+}
+.noteBadge {
+  position: relative;
+  top: -5px;
+  color: red;
+  font-size: 14px;
+  font-weight: bolder;
+}
 #follower {
   border-radius: 5px;
   border: solid;
   border-width: 1px;
   border-color: #696969;
+  font-size: 13px;
 }
 
 #following {
@@ -197,6 +213,7 @@
   border-color: #696969;
   margin-left: 5px;
   margin-right: 10px;
+  font-size: 13px;
 }
 
 #trending-hashtag {
