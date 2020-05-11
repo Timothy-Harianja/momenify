@@ -9,7 +9,6 @@ import moment from "moment";
 import io from "socket.io-client";
 let socket;
 
-let socket;
 class Messenger extends Component {
   constructor(props) {
     super(props);
