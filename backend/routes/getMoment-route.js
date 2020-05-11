@@ -368,10 +368,16 @@ router.post("/getMoment", (req, res) => {
           let filesList = [];
           let postTimeList = [];
           let uniqueIDList = [];
-
+          let likestatus = [];
           getAllComments(moments).then((allComments) => {
             commentList = allComments;
             for (let i = 0; i < moments.length; i++) {
+              if (moments[i].likeList.includes(req.session.userId)) {
+                likestatus.push(true);
+              } else {
+                likestatus.push(false);
+              }
+
               idList.push(moments[i].userId);
               momentsList.push(moments[i].postmessage);
               usernameList.push(moments[i].nickname);
@@ -390,6 +396,7 @@ router.post("/getMoment", (req, res) => {
             }
             return res.json({
               idList: idList,
+              likestatus: likestatus,
               allMoments: momentsList,
               allUsername: usernameList,
               allPostid: postidList,
@@ -447,10 +454,15 @@ router.post("/getMoment", (req, res) => {
         let filesList = [];
         let postTimeList = [];
         let uniqueIDList = [];
-
+        let likestatus = [];
         getAllComments(moments).then((allComments) => {
           commentList = allComments;
           for (let i = 0; i < moments.length; i++) {
+            if (moments[i].likeList.includes(req.session.userId)) {
+              likestatus.push(true);
+            } else {
+              likestatus.push(false);
+            }
             idList.push(moments[i].userId);
             momentsList.push(moments[i].postmessage);
             usernameList.push(moments[i].nickname);
@@ -469,6 +481,7 @@ router.post("/getMoment", (req, res) => {
           }
           return res.json({
             idList: idList,
+            likestatus: likestatus,
             allMoments: momentsList,
             allUsername: usernameList,
             allPostid: postidList,

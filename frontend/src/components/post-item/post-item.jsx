@@ -288,7 +288,11 @@ class PostItem extends React.Component {
                 })
               }
             >
-              <img src={require("./like.png")}></img>
+              {this.props.likeStatus ? (
+                <img src={require("./liked.png")}></img>
+              ) : (
+                <img src={require("./like.png")}></img>
+              )}
             </Button>
 
             <Button

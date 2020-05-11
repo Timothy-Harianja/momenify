@@ -130,7 +130,7 @@ class Body extends Component {
           this.state.moments.push(res.data.allMoments[i]);
           this.state.usernameList.push(res.data.allUsername[i]);
           this.state.postidList.push(res.data.allPostid[i]);
-          this.state.likeStatus.push(false);
+          this.state.likeStatus.push(res.data.likestatus[i]);
           this.state.numofLike.push(res.data.numofLike[i]);
           this.state.userLogo.push(res.data.logoList[i]);
           this.state.commentList.push(res.data.commentList[i]);
@@ -236,7 +236,7 @@ class Body extends Component {
               uniqueID={this.state.uniqueIDList[i]}
               postDate={this.state.postDateList[i]}
               text={this.state.moments[i]}
-              likeStatus={this.state.message[i]}
+              // likeStatus={this.state.message[i]}
               profileUrl={
                 this.state.usernameList[i] == undefined
                   ? "https://momenify.s3.us-east-2.amazonaws.com/default.png"
