@@ -32,40 +32,40 @@ router.post("/follow", (req, res) => {
       updateFollower = userToFollow.follower;
       updateFollower.push(yourId);
       userToFollow.follower = updateFollower;
-      userToFollow.save((err) => {
+
+      User.updateOne(
+        { _id: req.body.userid },
+        { $set: { follower: updateFollower } },
+        (err, result) => {
+          if (err) console.log(err);
+        }
+      );
+
+      User.findOne({ _id: yourId }, (err, yours) => {
         if (err) {
-          console.log("err in user to be followed", err);
+          console.log("err in find your info", err);
           return res.json({
             success: false,
-            message: "err in user to be followe",
+            message: "err in find your info",
           });
         }
-        User.findOne({ _id: yourId }, (err, yours) => {
-          if (err) {
-            console.log("err in find your info", err);
-            return res.json({
-              success: false,
-              message: "err in find your info",
-            });
-          }
-          updateFollowing = yours.following;
-          updateFollowing.push(req.body.userid);
-          yours.following = updateFollowing;
-          yours.save((err) => {
+        updateFollowing = yours.following;
+        updateFollowing.push(req.body.userid);
+        yours.following = updateFollowing;
+        User.updateOne(
+          { _id: yourId },
+          { $set: { following: updateFollowing } },
+          (err, result) => {
             if (err) {
-              console.log("err in update your info", err);
+              console.log(err);
+            } else {
               return res.json({
-                success: false,
-                message: "err in update your info",
+                success: true,
+                message: "You followed " + userNickName,
               });
             }
-            //now you and the other user are updated
-            return res.json({
-              success: true,
-              message: "You followed " + userNickName,
-            });
-          });
-        });
+          }
+        );
       });
     });
   } else {
@@ -96,44 +96,45 @@ router.post("/unfollow", (req, res) => {
       var updateFollower = userFollowed.follower;
       updateFollower = updateFollower.filter((item) => item != yourId);
       userFollowed.follower = updateFollower;
-      userFollowed.save((err) => {
-        if (err) {
-          console.log("err in user to be unfollowed", err);
-          return res.json({
-            success: false,
-            message: "err in user to be unfollowed",
-          });
-        }
-        User.findOne({ _id: yourId }, (err, yours) => {
-          if (err) {
-            console.log("err in find your info", err);
-            return res.json({
-              success: false,
-              message: "err in find your info",
+      User.updateOne(
+        { _id: req.body.userid },
+        { $set: { follower: updateFollower } },
+        (err, result) => {
+          if (err) console.log(err);
+          else {
+            User.findOne({ _id: yourId }, (err, yours) => {
+              if (err) {
+                console.log("err in find your info", err);
+                return res.json({
+                  success: false,
+                  message: "err in find your info",
+                });
+              }
+              var updateFollowing = yours.following;
+              updateFollowing = updateFollowing.filter(
+                (item) => item != req.body.userid
+              );
+
+              yours.following = updateFollowing;
+
+              User.updateOne(
+                { _id: yourId },
+                { $set: { following: updateFollowing } },
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    return res.json({
+                      success: true,
+                      message: "You unfollowed " + userNickName,
+                    });
+                  }
+                }
+              );
             });
           }
-          var updateFollowing = yours.following;
-          updateFollowing = updateFollowing.filter(
-            (item) => item != req.body.userid
-          );
-
-          yours.following = updateFollowing;
-          yours.save((err) => {
-            if (err) {
-              console.log("err in update your info", err);
-              return res.json({
-                success: false,
-                message: "err in update your info",
-              });
-            }
-            //now you and the other user are updated
-            return res.json({
-              success: true,
-              message: "You unfollowed " + userNickName,
-            });
-          });
-        });
-      });
+        }
+      );
     });
   } else {
     return res.json({ success: false, message: "You should login first" });
