@@ -53,7 +53,7 @@ class Messenger extends Component {
             // console.log("chatters:", this.state.chatters);
             // console.log("messageList:", this.state.messageList);
             // initial socket.io for each person
-            socket = io("http://localhost:3000");
+            socket = io("https://momenify.com/");
             this.setupSocket();
           } else {
             console.log("oops, you haven't chat with anyone");
@@ -303,6 +303,7 @@ class Messenger extends Component {
       done by the the sender */
     if (sender != this.state.userID) {
       console.log("should not have this");
+      console.log("sender: ", sender);
       // let selected = this.state.selectedInfo;
       // console.log("the sender in socket.on message: ", sender);
       // console.log("the chatters in state:", this.state.chatters);

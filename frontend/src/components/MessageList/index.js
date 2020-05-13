@@ -290,7 +290,10 @@ export default function MessageList(props) {
           onKeyPress={(event) => {
             if (event.key == "Enter") {
               console.log("enter is pressed");
-              props.sendMessage(typedMessage);
+              props.sendMessage({
+                newMessage: typedMessage,
+                sender: props.MY_USER_ID,
+              });
               setTypedMessage("");
             }
           }}
