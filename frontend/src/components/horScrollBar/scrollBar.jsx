@@ -6,11 +6,14 @@ import "./scrollBar.css";
 // selected prop will be passed
 const MenuItem = ({ text, key, selectedName, onSelectChatter }) => {
   return (
-    <div
-      className={`menu-item ${selectedName == text ? "active" : ""}`}
-      // onClick={onSelectChatter(receiverId)}
-    >
-      {text}
+    <div>
+      <span class="badge">0</span>
+      <div
+        className={`menu-item ${selectedName == text ? "active" : ""}`}
+        // onClick={onSelectChatter(receiverId)}
+      >
+        {text}
+      </div>
     </div>
   );
 };
@@ -52,19 +55,24 @@ class ScrollBar extends Component {
       // console.log("el ", el);
       const name = el[0];
       const receiverId = el[1];
+      {
+      }
+
       return (
+        // <React.Fragment>
         <MenuItem
           text={name}
           key={receiverId}
           selectedName={this.props.selectedInfo[0]}
         />
+        // </React.Fragment>
       );
     });
     return retVal;
   };
 
   onSelect = (key) => {
-    console.log(key);
+    console.log("what is the key", key);
     // this.props.setupSocket();
     this.props.onSelectChatter(key);
   };

@@ -33,7 +33,7 @@ class Messenger extends Component {
       } else {
         this.setState({ userID: res.data.userId });
         axios.get("/api/config/getMessage").then((res) => {
-          console.log("res from get message: ", res);
+          // console.log("res from get message: ", res);
           if (res.data.chatters.length != 0) {
             //default chat room when enter
 
@@ -50,8 +50,6 @@ class Messenger extends Component {
                 this.renderMessages(res.data.messageList[0]),
               ],
             });
-            // console.log("chatters:", this.state.chatters);
-            // console.log("messageList:", this.state.messageList);
             // initial socket.io for each person
             socket = io("http://localhost:3000");
             this.setupSocket();
@@ -73,40 +71,16 @@ class Messenger extends Component {
     }
     return result;
   };
-  // covertType = (input) => {
-  //   let retMessages = input.map((m) => {
-  //     let meg = m.map((n) => {
-  //       let id = this.makeToken(10);
-  //       let author = n[0];
-  //       let message = n[1];
-  //       let timestamp = n[2];
-  //       return {
-  //         id: id,
-  //         author: author,
-  //         message: message,
-  //         timestamp: timestamp,
-  //       };
-  //     });
-  //     return meg;
-  //   });
-  //   // console.log("retMessage", retMessages);
-  //   return retMessages;
-  // };
 
   setupSocket = () => {
-    //socket.emit()
     let receiver = this.state.selectedInfo[1];
-    // console.log("receiver:  ", receiver);
     let index = this.state.chatters.findIndex(
       (chatter) => chatter[1] == receiver
     );
-    // console.log("this.state.roomList[index]:", this.state.roomList[index]);
-    // console.log("this.state.roomList:", this.state.roomList);
-    // console.log("what is index?", index);
+
     let name = this.state.userID;
     let roomInfo = [this.state.roomList[index], name, receiver];
-    // console.log("name", name);
-    // console.log("roomInfo", roomInfo);
+
     socket.emit("join", { name, roomInfo }, (err) => {
       if (err) {
         console.log("err in join: ", err);
@@ -115,29 +89,29 @@ class Messenger extends Component {
     socket.on("message", (message) => {
       let sender = message.user;
       let text = message.text;
-      console.log("the message I received", message);
+      // console.log("the message I received", message);
       // console.log("the sender in socket.on message: ", sender);
       if (sender != this.state.userID) {
         if (checkSameMessage.length != 0) {
-          console.log("first sent already");
+          // console.log("first sent already");
           let date = new Date().getTime();
           //compare sender and date
           let preUser = checkSameMessage[0];
           let preDate = checkSameMessage[1];
           checkSameMessage[0] = sender;
           checkSameMessage[1] = date;
-          console.log(
-            "the time between two message:",
-            Math.abs(date - preDate)
-          );
+          // console.log(
+          //   "the time between two message:",
+          //   Math.abs(date - preDate)
+          // );
           if (preUser == sender && Math.abs(date - preDate) <= 180) {
-            console.log("the two post are the same, do nothing");
+            // console.log("the two post are the same, do nothing");
           } else {
-            console.log("time not big enough");
+            // console.log("time not big enough");
             this.getMessageFromOther({ newMessage: text, sender: sender });
           }
         } else {
-          console.log("no one send yet");
+          // console.log("no one send yet");
           let date = new Date().getTime();
           checkSameMessage.push(sender);
           checkSameMessage.push(date);
@@ -156,7 +130,9 @@ class Messenger extends Component {
   };
 
   onSelectChatter = (receiverId) => {
-    // console.log("receiverid in onSelectChatter:", receiverId);
+    console.log("receiverid in onSelectChatter:", receiverId);
+    console.log("receiverid this.state.chatters:", this.state.chatters);
+
     //find name, id and message  findIndex
     let theChatter = "";
     let chatters = this.state.chatters;
@@ -167,7 +143,7 @@ class Messenger extends Component {
       }
     });
     let i = chatters.findIndex((ch) => ch == theChatter);
-
+    console.log("the i:", i);
     this.setState({
       selectedInfo: [
         theChatter[0],
@@ -196,15 +172,16 @@ class Messenger extends Component {
     //check messageList undefined
     // let messages = [];
 
-    if (
-      this.state.messageList != undefined &&
-      this.state.messageList.length != 0
-    ) {
-      // console.log("selectedInfo ", this.state.selectedInfo);
-      // console.log(" selectedInfo[2] ", this.state.selectedInfo[2]);
-      // messages = this.state.selectedInfo[2];
-      // console.log("messages length: ", messages.length);
-    }
+    // if (
+    //   this.state.messageList != undefined &&
+    //   this.state.messageList.length != 0
+    // ) {
+    //   // console.log("selectedInfo ", this.state.selectedInfo);
+    //   // console.log(" selectedInfo[2] ", this.state.selectedInfo[2]);
+    //   // messages = this.state.selectedInfo[2];
+    //   // console.log("messages length: ", messages.length);
+    // }
+    // console.log("messages", messages);
     let i = 0;
     let messageCount = messages.length;
     let tempMessages = [];
@@ -303,25 +280,9 @@ class Messenger extends Component {
       done by the the sender */
     if (sender != this.state.userID) {
       console.log("should not have this");
-      // let selected = this.state.selectedInfo;
-      // console.log("the sender in socket.on message: ", sender);
-      // console.log("the chatters in state:", this.state.chatters);
-      // let index = this.state.chatters.findIndex(
-      //   (chatter) => chatter[1] == sender
-      // );
-      // console.log("index in send message,", index);
-      // let newMessageList = this.state.messageList;
-      // newMessageList[index] = [
-      //   [sender, newMessage, new Date().getTime()],
-      //   ...newMessageList[index],
-      // ];
-      // let newRenderedMessages = this.renderMessages(newMessageList[index]);
-      // selected[2] = newRenderedMessages;
-      // this.setState({ selectedInfo: selected, messageList: newMessageList });
-      // return true;
     } else {
       // newMessage.preventDefault();
-      console.log("newMessagddddddd:", newMessage);
+      // console.log("newMessagddddddd:", newMessage);
 
       let selected = this.state.selectedInfo;
       let receiverName = selected[0];
@@ -336,7 +297,9 @@ class Messenger extends Component {
       let message = newMessage;
       let receiver = receiverId;
       // console.log("newMessage", newMessage);
-      socket.emit("sendMessage", { sender, receiver, message }, () => {});
+      socket.emit("sendMessage", { sender, receiver, message }, (callback) => {
+        console.log(callback);
+      });
 
       let newMessageList = this.state.messageList;
       // console.log("newmessageList", newMessageList);

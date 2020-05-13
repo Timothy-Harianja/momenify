@@ -129,7 +129,7 @@ io.on("connect", (socket) => {
     // console.log("the message you sent:", roomId, "  ", message);
     console.log("emit twice?");
     io.to(roomId).emit("message", { user: sender, text: message });
-    callback();
+    callback("got a call back");
   });
 
   socket.on("disconnect", ({ user }) => {
