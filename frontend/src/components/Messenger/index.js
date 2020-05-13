@@ -5,7 +5,7 @@ import "./Messenger.css";
 import axios from "axios";
 import Message from "../Message";
 import moment from "moment";
-
+import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 import io from "socket.io-client";
 let socket;
 
@@ -337,7 +337,9 @@ class Messenger extends Component {
       let message = newMessage;
       let receiver = receiverId;
       // console.log("newMessage", newMessage);
-      socket.emit("sendMessage", { sender, receiver, message }, () => {});
+      socket.emit("sendMessage", { sender, receiver, message }, (callback) => {
+        console.log("callback: ", callback);
+      });
 
       let newMessageList = this.state.messageList;
       // console.log("newmessageList", newMessageList);
@@ -372,6 +374,7 @@ class Messenger extends Component {
 
   render() {
     // console.log("got here");
+
     return (
       <div>
         <ScrollBar
@@ -389,6 +392,7 @@ class Messenger extends Component {
           sendMessage={(newMessage) => this.sendMessage(newMessage)}
           // renderMessages={() => this.renderMessages()}
         />
+        {/* <ScrollUpButton /> */}
       </div>
     );
   }
