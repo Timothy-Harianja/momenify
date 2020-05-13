@@ -49,7 +49,7 @@ class ScrollBar extends Component {
     let list = this.props.chatters;
     // let selectedName = this.props.selectedInfo[0];
     let retVal = list.map((el) => {
-      console.log("el ", el);
+      // console.log("el ", el);
       const name = el[0];
       const receiverId = el[1];
       return (
@@ -81,6 +81,7 @@ class ScrollBar extends Component {
           arrowRight={ArrowRight}
           selected={this.props.selected}
           onSelect={this.onSelect}
+          // to={`chat/?name=${this.props.userID}&room=${this.props.selectedInfo[2]}`}
           // onClick={this.onSelect}
         />
       </div>
