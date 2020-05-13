@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import "./scrollBar.css";
-
+import $ from "jquery";
 // One item component
 // selected prop will be passed
 const MenuItem = ({ text, key, selectedName, onSelectChatter }) => {
@@ -43,6 +43,24 @@ class ScrollBar extends Component {
 
   componentDidMount() {
     console.log("hello", this.props.chatters);
+    window.scrollTo(
+      0,
+      document.body.scrollHeight || document.documentElement.scrollHeight
+    );
+
+    $(document).ready(function () {
+      $(window).scroll(function () {
+        console.log($(window).scrollTop());
+
+        if ($(window).scrollTop() > 50) {
+          $("#nav-bar").addClass("navbar-fixed-top");
+        }
+
+        if ($(window).scrollTop() < 51) {
+          $("#nav-bar").removeClass("navbar-fixed-top");
+        }
+      });
+    });
   }
 
   menu = () => {
@@ -74,13 +92,24 @@ class ScrollBar extends Component {
     const menu = this.menuItems;
 
     return (
-      <div className="App">
+      <div
+        className="App"
+        id="nav-bar"
+        // style={{
+        //   position: "fixed",
+        //   padding: 0,
+        //   margin: 0,
+        //   overflow: "hidden",
+        //   width: "100%",
+        // }}
+      >
         <ScrollMenu
           data={this.menu()}
           arrowLeft={ArrowLeft}
           arrowRight={ArrowRight}
           selected={this.props.selected}
           onSelect={this.onSelect}
+
           // to={`chat/?name=${this.props.userID}&room=${this.props.selectedInfo[2]}`}
           // onClick={this.onSelect}
         />
