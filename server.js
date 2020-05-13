@@ -38,7 +38,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
 // app.use(express.static(path.join(__dirname, "../frontend/build")));
-
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(cors());
@@ -74,98 +74,144 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 });
 
-const server = app.listen(API_PORT, () =>
-  console.log(`LISTENING ON PORT ${API_PORT}`)
-);
+// const server = app.listen(API_PORT, () =>
+//   console.log(`LISTENING ON PORT ${API_PORT}`)
+// );
 
-let chatRooms = []; //elem: [room id, user1 name, user2 name]
-const socketio = require("socket.io");
-const io = socketio(server);
+/*elem: [room id, user1 name, user2 name].
+  room doesn't need to be deleted for now since 
+  we don't have a huge number of users.
+  */
+let chatRooms = [];
+/*let you know that the user is ready to chat
+  be deleted after socket disconnected
+*/
+let chatUser = []; //elem: userId
+// const socketio = require("socket.io");
+const http = require("http");
+const server = http.Server(app);
+const io = require("socket.io")(server);
 io.on("connect", (socket) => {
   console.log("connected to socket.io");
 
-  socket.on("join", ({ name, roomId }, callback) => {
+  socket.on("join", ({ name, roomInfo }, callback) => {
     //check if roomId in chatRooms
-    addtoRoom({ roomId: roomId, name: name });
-    socket.join(roomId);
-    socket.emit("message", {
-      user: "admin",
-      text: name + ", welcome to room " + roomId,
-    });
-    socket.broadcast
-      .to(roomId)
-      .emit("message", { user: "admin", text: `${name} has joined!` });
+    console.log("chatrooms: ", chatRooms);
+
+    console.log("joined the room");
+    console.log("the roomId:   ", roomInfo);
+
+    addtoRoom({ myId: name, newRoom: roomInfo }); //param: myid, [roomid, id,id]
+    console.log("the room:   ", roomInfo);
+    socket.join(roomInfo[0]);
+    // socket.emit("message", {
+    //   user: "admin",
+    //   text: name + ", welcome to room " + roomInfo[0],
+    // });
+    // socket.broadcast
+    //   .to(roomInfo[0])
+    //   .emit("message", { user: "admin", text: `${name} has joined!` });
+    // io.to(roomId).emit('roomData', { room: roomId, users: getUsersInRoom(user.room) });
     callback();
   });
 
-  socket.on("sendMessage", ({ name, room, message }, callback) => {
-    io.to(room).emit("message", { user: name, text: message });
+  socket.on("sendMessage", ({ sender, receiver, message }, callback) => {
+    // let recRoom = findReceiverRoom(sender);
+    // console.log("sendmessage recroom:", recRoom);
+
+    // let receiver = "";
+    // let roomId = "";
+    // if (recRoom != []) {
+    //   roomId = recRoom[0];
+    //   receiver = recRoom[1];
+    // }
+    let roomId = findReceiverRoom([sender, receiver]);
+    // console.log("the message you sent:", roomId, "  ", message);
+    console.log("emit twice?");
+    io.to(roomId).emit("message", { user: sender, text: message });
     callback();
   });
 
-  socket.on("disconnect", ({ user, roomId }) => {
-    exitRoom({ roomId: roomId, name: user });
+  socket.on("disconnect", ({ user }) => {
+    // exitRoom(user);
     console.log("disconnected");
-    io.to(roomId).emit("message", {
-      user: "Admin",
-      text: user + "has left.",
-    });
+    // io.to(roomId).emit("message", {
+    //   user: "Admin",
+    //   text: user + "has left.",
+    // });
   });
 });
 
-function addtoRoom(newRoom) {
+function addtoRoom({ myId, newRoom }) {
   let alreadyAdded = false;
   chatRooms.map((chatRoom) => {
-    if (chatRoom[0] == newRoom.roomId) {
+    if (chatRoom[0] == newRoom[0]) {
       alreadyAdded = true;
     }
   });
-
-  if (alreadyAdded) {
-    //check if the room has space for user
-    let position = chatRooms.findIndex(
-      (chatRoom) => chatRoom[0] == newRoom.roomId
-    );
-    if (chatRooms[position][1] == "") {
-      chatRooms[position][1] = newRoom.name;
-    } else if (chatRooms[position][2] == "") {
-      chatRooms[position][2] = newRoom.name;
-    } else {
-      console.log("error: the room is full");
-    }
-  } else {
-    //room not created
-    chatRooms.push([newRoom.roomId, newRoom.name, ""]);
+  if (!alreadyAdded) {
+    chatRooms.push(newRoom);
+  }
+  //should not contain myId
+  if (!chatUser.includes(myId)) {
+    chatUser.push(myId);
   }
 }
 
-function exitRoom(delRoom) {
-  let alreadyLeft = true;
-  chatRooms.map((chatRoom) => {
-    if (chatRoom[0] == delRoom.roomId) {
-      alreadyLeft = false;
-    }
-  });
+function exitRoom(myId) {
+  // if (chatRooms.length == 0) {
+  //   console.log("chatroom is empty");
+  //   return false;
+  // }
 
-  if (!alreadyLeft) {
-    let position = chatRooms.findIndex(
-      (chatRoom) => chatRoom[0] == delRoom.roomId
-    );
-    if (chatRooms[position][2] == "") {
-      //position 2 is empty, meaning only you in the room, then delete the room
-      chatRooms.splice(position, 1);
-    } else {
-      //delete your name, and restruct the room
-      if (chatRooms[position][1] == delRoom.name) {
-        chatRooms[position][1] = chatRooms[position][2];
-        chatRooms[position][2] = "";
-      } else if (chatRooms[position][2] == delRoom.name) {
-        chatRooms[position][2] = "";
-      } else {
-        //should not end up here because should have user's name
-        console.log("don't find you in room");
-      }
-    }
-  }
+  // //find the index of room
+  // let index = chatRooms.findIndex((chatRoom) => chatRoom[0] == delRoomId);
+  // console.log("exitRoom index: ", index);
+  // let receiverId = chatRooms[index][1];
+  // if (receiverId == myId) {
+  //   receiverId = chatRooms[index][2];
+  // }
+  // //check if the receiver in the charUser list, if not remove the room from chatRoom
+  // let receiverInRoom = chatUser.includes(receiverId);
+  // if (!receiverInRoom) {
+  //   chatRooms.splice(index, 1);
+  // }
+  chatUser.splice(
+    chatUser.findIndex((user) => user == myId),
+    1
+  );
+  return true;
 }
-// app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+
+function findReceiverRoom(users) {
+  //find the index of room which contains sender(id)
+  // let index = -1;
+  // let receiver = "";
+  // let roomId = "";
+  // index = chatRooms.findIndex((room) => room.includes(sender));
+  // if (index == -1) {
+  //   console.log("error: don't find a room contains your id");
+  //   return [];
+  // }
+  // roomId = chatRooms[index][0];
+  // let id1 = chatRooms[index][1];
+  // let id2 = chatRooms[index][2];
+  // if (sender == id1) {
+  //   receiver = id2;
+  // } else {
+  //   receiver = id1;
+  // }
+  let sender = users[0];
+  let receiver = users[1];
+
+  let index = chatRooms.findIndex(
+    (room) => room.includes(sender) && room.includes(receiver)
+  );
+  if (index == -1) {
+    console.log("doesn't find room with this sender and receiver");
+    return "";
+  }
+  let roomId = chatRooms[index][0];
+  return roomId;
+}
+server.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

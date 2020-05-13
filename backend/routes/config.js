@@ -10,6 +10,7 @@ const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
 const nodemailer = require("nodemailer");
 const ObjectID = require("mongodb").ObjectID;
+const PendMsg = require("../pending-message");
 var transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -340,13 +341,10 @@ router.post("/message", (req, res) => {
     (err, result) => {
       if (err) {
         console.log(err);
-        return res.jsno({ success: false, message: err });
+        return res.json({ success: false, message: err });
       }
       if (result != null) {
-        console.log(
-          "chat-room already created,just update message",
-          result.messageList
-        );
+        console.log("chat-room already created,just update message");
         let updateMessageList = result.messageList;
         console.log("1");
         updateMessageList = [
@@ -437,11 +435,101 @@ router.get("/getMessage", (req, res) => {
           chatterList.push([result2[j], chatters[j]]);
         }
         // console.log("result from get message: ", result);
+        // console.log("getMessage roomList,", roomList);
         return res.json({
           chatters: chatterList,
           roomList: roomList,
           messageList: messageList,
         });
+      });
+    }
+  });
+});
+
+//init pending-message when user send a message that receiver is not there
+router.post("/pendingMessage", (req, res) => {
+  //req: [receiverId, roomId, message]
+  let receiverId = req.body.receiverId;
+  let roomId = req.body.roomId;
+  // let message = req.body.message;
+
+  //check if pendMsg has the receiver
+  PendMsg.findOne({ receiverId: receiverId }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false, message: err });
+    }
+    if (result.length == 0) {
+      console.log("first time receiver get pending message");
+      let pm = new PendMsg();
+      pm.receiverId = receiverId;
+      pm.pendingList = [{ roomId: roomId, pendingNumber: 1 }];
+      pm.save((err1) => {
+        if (err1) {
+          console.log("err when save pending message,first time");
+          return res.json({ success: false, message: err1 });
+        }
+        return res.json({
+          success: true,
+          message: "pending message save success,first time",
+        });
+      });
+    } else {
+      console.log("found receiver");
+
+      let newResult = result;
+      //check if roomId in the list
+      let roomIndex = newResult.pendingList.findIndex(
+        (msgRoom) => msgRoom.roomId == roomId
+      );
+      if (roomIndex == -1) {
+        console.log("room not added yet in pm");
+        newResult.pendingList.push({ roomId: roomId, pendingNumber: 1 });
+      } else {
+        console.log("room existed in pm");
+        newResult.pendingList[roomIndex].pendingNumber += 1;
+      }
+      newResult.save((err) => {
+        if (err) {
+          console.log("err save message in pm");
+          return res.json({ success: false, message: "err" });
+        }
+        return res.json({
+          success: true,
+          message: "pending message save success",
+        });
+      });
+      return res.json({ success: false, message: "err" });
+    }
+  });
+});
+
+router.post("processingMessage", (req, res) => {
+  //req elem: {receiverId(user who process message,the current user),roomId}
+  let receiverId = req.body.receiverId;
+  let roomId = req.body.roomId;
+  PendMsg.findOne({ receiverId: receiverId }, (err, result) => {
+    if (err) {
+      console.log("processing message err PendMsg.findone receiver:", err);
+      return res.json({ success: false, message: err });
+    }
+    if (result.length == 0) {
+      let err1 =
+        "err: doesn't find pending message in database, receiverId not match";
+      console.log(err1);
+      return res.json({ success: false, message: err1 });
+    } else {
+      let newResult = result;
+      let roomIndex = newResult.pendingList.findIndex(
+        (room) => room.roomId == roomId
+      );
+      newResult.pendingList[roomIndex].pendingNumber = 0;
+      newResult.save((err2) => {
+        if (err2) {
+          console.log("processingmessage newsult save err:", err);
+          return res.json({ success: false, message: err2 });
+        }
+        return res.json({ success: true, message: "message processed" });
       });
     }
   });

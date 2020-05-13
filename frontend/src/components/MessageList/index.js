@@ -200,11 +200,11 @@ export default function MessageList(props) {
     let messages = [];
 
     if (props.messageList != undefined && props.messageList.length != 0) {
-      console.log("selectedInfo ", props.selectedInfo);
+      // console.log("selectedInfo ", props.selectedInfo);
 
-      console.log(" selectedInfo[2] ", props.selectedInfo[2]);
+      // console.log(" selectedInfo[2] ", props.selectedInfo[2]);
       messages = props.selectedInfo[2];
-      console.log("messages length: ", messages.length);
+      // console.log("messages length: ", messages.length);
     }
     let i = 0;
     let messageCount = messages.length;
@@ -272,7 +272,7 @@ export default function MessageList(props) {
     return true;
   };
 
-  console.log("message: ", typedMessage);
+  // console.log("message: ", typedMessage);
 
   return (
     <div className="message-list">
@@ -290,7 +290,10 @@ export default function MessageList(props) {
           onKeyPress={(event) => {
             if (event.key == "Enter") {
               console.log("enter is pressed");
-              props.sendMessage(typedMessage);
+              props.sendMessage({
+                newMessage: typedMessage,
+                sender: props.MY_USER_ID,
+              });
               setTypedMessage("");
             }
           }}
@@ -299,7 +302,10 @@ export default function MessageList(props) {
           variant="secondary"
           className="centerButton"
           onClick={() => {
-            props.sendMessage(typedMessage);
+            props.sendMessage({
+              newMessage: typedMessage,
+              sender: props.MY_USER_ID,
+            });
             setTypedMessage("");
           }}
         >
