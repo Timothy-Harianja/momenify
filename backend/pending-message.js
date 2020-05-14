@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const PendingMessage = new Schema({
-  receiverId: [],
+  receiverId: String,
   pendingList: [], //elem:{roomId: "roomid", pendingNumber: int }
 });
 
