@@ -94,11 +94,11 @@ let chatUser = []; //elem: userId
 */
 
 let chatters = []; //elem [chatterId, roomId,socketId]
-// const socketio = require("socket.io");
+const socketio = require("socket.io");
 const http = require("http");
-const server = http.Server(app);
-const io = require("socket.io")(server);
-io.on("connect", (socket) => {
+const server = http.createServer(app);
+const io = socketio(server);
+io.on("connection", (socket) => {
   console.log("connected to socket.io");
 
   socket.on("join", ({ name, roomId }, callback) => {
@@ -144,10 +144,17 @@ io.on("connect", (socket) => {
 
   socket.on("switchRoom", ({ userId, roomId }) => {
     let roomid = chatters[chatters.findIndex((user) => user[0] == userId)][1];
+    console.log(" switchRoom ::before, roomid is:", roomid);
     console.log("before, chatters is:", chatters);
     switchRoom({ userId, roomId });
+    socket.leave(roomid);
+    socket.join(roomId, () => {
+      console.log("switchRoom, what's the room now:", socket.rooms);
+      console.log("switchRoom, what's the socket.id now:", socket.id);
+    });
+
     roomid = chatters[chatters.findIndex((user) => user[0] == userId)][1];
-    console.log("now chatters is:", chatters);
+    console.log(" switchRoom ::after, roomid is:", roomid);
   });
 
   socket.on("disconnect", () => {

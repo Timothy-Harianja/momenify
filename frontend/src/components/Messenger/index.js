@@ -54,7 +54,7 @@ class Messenger extends Component {
                 ],
               });
               // initial socket.io for each person
-              socket = io("http://localhost:3000");
+              socket = io();
               this.setupSocket();
             } else {
               console.log("oops, you haven't chat with anyone");
@@ -299,6 +299,9 @@ class Messenger extends Component {
     ];
     let newRenderedMessages = this.renderMessages(newMessageList[index]);
     selected[2] = newRenderedMessages;
+
+    /*lastly, update new message icon: +1*/
+    this.addOnePend(sender);
     this.setState({ selectedInfo: selected, messageList: newMessageList });
     return true;
   };
@@ -421,10 +424,10 @@ class Messenger extends Component {
 
     //find number in pendingList
     let numIndex = this.state.pendingList.findIndex(
-      (pending) => pending.roomId == roomId
+      (pending) => pending[0] == roomId
     );
     if (numIndex != -1) {
-      let num = this.state.pendingList[numIndex].pendingNumber;
+      let num = this.state.pendingList[numIndex][1];
       if (num == 0) {
         console.log("pending num is 0");
         return 0;
@@ -454,12 +457,12 @@ class Messenger extends Component {
 
     //find number in pendingList
     let numIndex = this.state.pendingList.findIndex(
-      (pending) => pending.roomId == roomId
+      (pending) => pending[0] == roomId
     );
     if (numIndex != -1) {
       // update local, update backend
       let newPendingList = this.state.pendingList;
-      newPendingList[numIndex].pendingNumber = 0;
+      newPendingList[numIndex][1] = 0;
       this.setState({ pendingList: newPendingList });
       axios
         .post("/api/config/processingMessage", {
@@ -477,6 +480,47 @@ class Messenger extends Component {
     } else {
       //done nothing?
     }
+  };
+
+  addOnePend = (chatterId) => {
+    //find the room number
+    let index = this.state.chatters.findIndex(
+      (chatter) => chatter[1] == chatterId
+    );
+
+    let roomId = this.state.roomList[index];
+    console.log("resetpendNum roomId", roomId);
+
+    //find number in pendingList
+    let numIndex = this.state.pendingList.findIndex(
+      (pending) => pending[0] == roomId
+    );
+
+    let newPendingList = this.state.pendingList;
+    console.log("??????", newPendingList);
+
+    if (numIndex != -1) {
+      // update local, update backend
+      newPendingList[numIndex][1] += 1;
+    } else {
+      console.log("??????");
+      newPendingList.push([roomId, 1]);
+    }
+    console.log("??????", newPendingList);
+    this.setState({ pendingList: newPendingList });
+    axios
+      .post("/api/config/pendingMessage", {
+        receiverId: this.state.userID,
+        roomId: roomId,
+      })
+      .then((res) => {
+        console.log("addOnePend res.data:", res.data);
+        if (res.data.success) {
+          console.log("addOnePend  backend success");
+        } else {
+          console.log("addOnePend backend failed");
+        }
+      });
   };
 
   render() {
