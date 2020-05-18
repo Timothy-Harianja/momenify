@@ -77,7 +77,7 @@ class Messenger extends Component {
             }
           });
       });
-
+  }
 
   makeToken = (length) => {
     var result = "";

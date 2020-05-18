@@ -5,16 +5,6 @@ import "./scrollBar.css";
 import $ from "jquery";
 // One item component
 // selected prop will be passed
-const MenuItem = ({ text, key, selectedName, onSelectChatter }) => {
-  return (
-    <div
-      className={`menu-item ${selectedName == text ? "active" : ""}`}
-      // onClick={onSelectChatter(receiverId)}
-    >
-      {text}
-    </div>
-  );
-};
 
 // All items component
 // Important! add unique key
