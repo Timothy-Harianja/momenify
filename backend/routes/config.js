@@ -342,32 +342,32 @@ router.post("/message", (req, res) => {
       if (err) {
         console.log(err);
         return res.json({ success: false, message: err });
-      }
-      if (result != null) {
+      } else if (result != null) {
         console.log("chat-room already created,just update message");
         let updateMessageList = result.messageList;
-        console.log("1");
+        // console.log("1");
         updateMessageList = [
           [req.body.sender, req.body.message, timestamp],
           ...updateMessageList,
         ];
         result.messageList = updateMessageList;
-        console.log("2");
+        // console.log("2");
 
         result.save((err) => {
           if (err) {
-            console.log("3");
+            // console.log("3");
             console.log(err);
             return res.json({ success: false, message: err });
+          } else {
+            // console.log("5");
+            return res.json({
+              success: true,
+              message: "message sending success",
+            });
           }
-          console.log("5");
-          return res.json({
-            success: true,
-            message: "message sending success",
-          });
         });
       } else {
-        console.log("4");
+        // console.log("4");
         //result is null, create new room
         let newRoom = new Meg();
         newRoom.users = [req.body.sender, req.body.receiver];
@@ -448,22 +448,21 @@ router.get("/getMessage", (req, res) => {
 
 //init pending-message when user send a message that receiver is not there
 router.post("/pendingMessage", (req, res) => {
-  //req: [receiverId, roomId, message]
+  //req: [receiverId, roomId]
   let receiverId = req.body.receiverId;
   let roomId = req.body.roomId;
-  // let message = req.body.message;
-
+  console.log("PENDING MESSAGE");
+  console.log("roomId:", roomId);
   //check if pendMsg has the receiver
   PendMsg.findOne({ receiverId: receiverId }, (err, result) => {
     if (err) {
       console.log(err);
       return res.json({ success: false, message: err });
-    }
-    if (result.length == 0) {
+    } else if (result == null) {
       console.log("first time receiver get pending message");
       let pm = new PendMsg();
       pm.receiverId = receiverId;
-      pm.pendingList = [{ roomId: roomId, pendingNumber: 1 }];
+      pm.pendingList = [[roomId, 1]];
       pm.save((err1) => {
         if (err1) {
           console.log("err when save pending message,first time");
@@ -478,33 +477,49 @@ router.post("/pendingMessage", (req, res) => {
       console.log("found receiver");
 
       let newResult = result;
+      console.log("result.pendinglist: ", result.pendingList);
       //check if roomId in the list
       let roomIndex = newResult.pendingList.findIndex(
-        (msgRoom) => msgRoom.roomId == roomId
+        (msgRoom) => msgRoom[0] == roomId
       );
       if (roomIndex == -1) {
         console.log("room not added yet in pm");
-        newResult.pendingList.push({ roomId: roomId, pendingNumber: 1 });
+        newResult.pendingList.push([roomId, 1]);
       } else {
         console.log("room existed in pm");
-        newResult.pendingList[roomIndex].pendingNumber += 1;
+        let num = newResult.pendingList[roomIndex][1] + 1;
+        newResult.pendingList[roomIndex][1] = num;
+        console.log(
+          "newResult.pendingList[roomIndex].pendingNumber:",
+          newResult.pendingList[roomIndex][1]
+        );
       }
-      newResult.save((err) => {
-        if (err) {
-          console.log("err save message in pm");
-          return res.json({ success: false, message: "err" });
+      console.log("final newresult:", newResult);
+      let newPendinglist = newResult.pendingList;
+      console.log("final pending list:", newPendinglist);
+      PendMsg.updateOne(
+        { receiverId: receiverId },
+        { pendingList: newPendinglist },
+        (err) => {
+          if (err) {
+            console.log("err save message in pm");
+            return res.json({ success: false, message: "err" });
+          } else {
+            console.log("1");
+            return res.json({
+              success: true,
+              message: "pending message save success",
+            });
+          }
         }
-        return res.json({
-          success: true,
-          message: "pending message save success",
-        });
-      });
-      return res.json({ success: false, message: "err" });
+      );
+      // return res.json({ success: false, message: "err" });
     }
   });
 });
 
-router.post("processingMessage", (req, res) => {
+//
+router.post("/processingMessage", (req, res) => {
   //req elem: {receiverId(user who process message,the current user),roomId}
   let receiverId = req.body.receiverId;
   let roomId = req.body.roomId;
@@ -512,8 +527,7 @@ router.post("processingMessage", (req, res) => {
     if (err) {
       console.log("processing message err PendMsg.findone receiver:", err);
       return res.json({ success: false, message: err });
-    }
-    if (result.length == 0) {
+    } else if (result == null) {
       let err1 =
         "err: doesn't find pending message in database, receiverId not match";
       console.log(err1);
@@ -521,15 +535,53 @@ router.post("processingMessage", (req, res) => {
     } else {
       let newResult = result;
       let roomIndex = newResult.pendingList.findIndex(
-        (room) => room.roomId == roomId
+        (room) => room[0] == roomId
       );
-      newResult.pendingList[roomIndex].pendingNumber = 0;
-      newResult.save((err2) => {
-        if (err2) {
-          console.log("processingmessage newsult save err:", err);
-          return res.json({ success: false, message: err2 });
+      newResult.pendingList[roomIndex][1] = 0;
+      let newPendinglist = newResult.pendingList;
+      PendMsg.updateOne(
+        { receiverId: receiverId },
+        { pendingList: newPendinglist },
+        (err2) => {
+          if (err2) {
+            console.log("processingmessage newsult save err:", err);
+            return res.json({ success: false, message: err2 });
+          } else {
+            return res.json({ success: true, message: "message processed" });
+          }
         }
-        return res.json({ success: true, message: "message processed" });
+      );
+    }
+  });
+});
+
+//return every pending number in every room current user has
+router.post("/getPendingNumber", (req, res) => {
+  //req elem:receiverId
+  // console.log("getPendingNumber req.body:", req.body);
+  let receiverId = req.body.receiverId;
+  // console.log("receiverid: ", receiverId);
+  PendMsg.findOne({ receiverId: receiverId }, (err, result) => {
+    if (err) {
+      console.log("getpendingnubmer err in findone:", err);
+      return res.json({ success: false, message: err, pendingList: [] });
+    }
+    // console.log("result get pendingnumber:", result);
+    if (result == null) {
+      //meaning current user don't have the pending record, return empty List
+      // console.log(
+      //   "meaning current user don't have the pending record, return empty List"
+      // );
+      return res.json({ success: true, message: "", pendingList: [] });
+    } else {
+      //return pendingList
+
+      let retPendingList = result.pendingList;
+      // console.log("retPendingList: ", retPendingList);
+      return res.json({
+        success: true,
+        message: "",
+        pendingList: retPendingList,
       });
     }
   });

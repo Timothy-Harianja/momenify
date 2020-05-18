@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import "./scrollBar.css";
+
 import $ from "jquery";
 // One item component
 // selected prop will be passed
@@ -24,6 +25,32 @@ const MenuItem = ({ text, key, selectedName, onSelectChatter }) => {
 
 //     return <MenuItem text={name} key={name} selected={selected} />;
 //   });
+
+// One item component
+// selected prop will be passed
+const MenuItem = ({
+  text,
+  key,
+  selectedName,
+  testNumber,
+  getPendNum,
+  unviewNum,
+}) => {
+  function handlePick() {
+    alert("test");
+  }
+  return (
+    <div>
+      <span class="badge">{unviewNum}</span>
+      <div
+        className={`menu-item ${selectedName == text ? "active" : ""}`}
+        // onClick={onSelectChatter(receiverId)}
+      >
+        {text}
+      </div>
+    </div>
+  );
+};
 
 const Arrow = ({ text, className }) => {
   return <div className={className}>{text}</div>;
@@ -70,19 +97,32 @@ class ScrollBar extends Component {
       // console.log("el ", el);
       const name = el[0];
       const receiverId = el[1];
+      console.log("滚动条：", receiverId);
+      const unviewNum = this.props.getPendNum(receiverId);
       return (
         <MenuItem
           text={name}
           key={receiverId}
           selectedName={this.props.selectedInfo[0]}
+          testNumber={this.props.testNumber}
+          getPendNum={(chatterId) => this.props.getPendNum(chatterId)}
+          unviewNum={unviewNum}
         />
       );
+
+      // return this.MenuItem({
+      //   text: name,
+      //   key: receiverId,
+      //   selectedName: this.props.selectedInfo[0],
+      //   testNumber: this.props.selectedInfo[0],
+      //   // getPendNum: (chatterId) => this.props.getPendNum(chatterId)
+      // });
     });
     return retVal;
   };
 
   onSelect = (key) => {
-    console.log(key);
+    console.log("key是什么:", key);
     // this.props.setupSocket();
     this.props.onSelectChatter(key);
   };

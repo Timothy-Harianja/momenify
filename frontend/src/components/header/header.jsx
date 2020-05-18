@@ -87,7 +87,6 @@ class Header extends Component {
                         height="2em"
                         viewBox="0 0 16 16"
                         // fill="currentColor"
-
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
@@ -97,7 +96,7 @@ class Header extends Component {
                         />
                         <path d="M5 8a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" />
                       </svg>
-                      {/* <span class="badge">0</span> */}
+                      <span class="badge">0</span>
                     </Nav.Link>
                   </Nav.Item>
                   &nbsp;&nbsp;
