@@ -36,6 +36,7 @@ class HashtagPage extends Component {
       boolHideList: [],
       testBool: false,
       uniqueID: null,
+      receiverID: null,
     };
   }
 
@@ -190,12 +191,34 @@ class HashtagPage extends Component {
               owned={this.state.uniqueID == this.state.uniqueIDList[i]}
               reportPost={(e) => this.reportPost(e)}
               reportID={(e) => this.reportID(e)}
+              sendMessage={(e) => this.sendMessage(e)}
+              checkLogin={(e) => this.checkLogin(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  checkLogin = (e) => {
+    if (this.state.uniqueID == null) {
+      return true;
+    } else {
+      let receiverID = this.state.idList[e.position];
+      this.setState({ receiverID: receiverID });
+      return false;
+    }
+  };
+
+  sendMessage = (e) => {
+    axios
+      .post("/api/config/message", {
+        sender: this.state.userId,
+        receiver: this.state.receiverID,
+        message: e.message,
+      })
+      .then((res) => {});
   };
 
   reportID = (e) => {

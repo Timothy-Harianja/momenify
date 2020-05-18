@@ -5,7 +5,7 @@ import "./Messenger.css";
 import axios from "axios";
 import Message from "../Message";
 import moment from "moment";
-
+import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 import io from "socket.io-client";
 let socket;
 
@@ -77,7 +77,7 @@ class Messenger extends Component {
             }
           });
       });
-  }
+
 
   makeToken = (length) => {
     var result = "";
@@ -321,6 +321,24 @@ class Messenger extends Component {
       done by the the sender */
     if (sender != this.state.userID) {
       console.log("should not have this");
+
+      console.log("sender: ", sender);
+      // let selected = this.state.selectedInfo;
+      // console.log("the sender in socket.on message: ", sender);
+      // console.log("the chatters in state:", this.state.chatters);
+      // let index = this.state.chatters.findIndex(
+      //   (chatter) => chatter[1] == sender
+      // );
+      // console.log("index in send message,", index);
+      // let newMessageList = this.state.messageList;
+      // newMessageList[index] = [
+      //   [sender, newMessage, new Date().getTime()],
+      //   ...newMessageList[index],
+      // ];
+      // let newRenderedMessages = this.renderMessages(newMessageList[index]);
+      // selected[2] = newRenderedMessages;
+      // this.setState({ selectedInfo: selected, messageList: newMessageList });
+      // return true;
     } else {
       // newMessage.preventDefault();
       // console.log("newMessagddddddd:", newMessage);
@@ -371,6 +389,9 @@ class Messenger extends Component {
       );
 
       console.log("sendMessageSuccess:  ", sendMessageSuccess);
+      socket.emit("sendMessage", { sender, receiver, message }, (callback) => {
+        console.log("callback: ", callback);
+      });
 
       let newMessageList = this.state.messageList;
       // console.log("newmessageList", newMessageList);
@@ -549,6 +570,7 @@ class Messenger extends Component {
 
   render() {
     // console.log("got here");
+
     return (
       <div>
         <ScrollBar
@@ -568,6 +590,7 @@ class Messenger extends Component {
           sendMessage={(newMessage) => this.sendMessage(newMessage)}
           // renderMessages={() => this.renderMessages()}
         />
+        {/* <ScrollUpButton /> */}
       </div>
     );
   }

@@ -12,7 +12,8 @@
   border: 1px blue solid;
 }
 .menu-item.active {
-  border: 1px green solid;
+  /* border: 1px green solid; */
+  background-color: rgb(214, 214, 214);
 }
 
 .scroll-menu-arrow {
@@ -30,4 +31,9 @@
   border-radius: 1%;
   background: red;
   color: white;
+.navbar-fixed-top {
+  top: 0;
+  z-index: 100;
+  position: fixed;
+  width: 100%;
 }

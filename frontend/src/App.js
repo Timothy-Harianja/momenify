@@ -30,11 +30,7 @@ class App extends Component {
     userId: null,
   };
 
-  componentDidMount() {
-    axios.get("/api/loginRoute/session").then((res) => {
-      this.setState({ userId: res.data.userId });
-    });
-  }
+  componentDidMount() {}
 
   render() {
     return (

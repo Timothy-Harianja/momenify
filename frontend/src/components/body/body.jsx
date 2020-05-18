@@ -642,7 +642,7 @@ class Body extends Component {
                 {this.state.swapTrend ? (
                   <div>
                     <div id="trending-hashtag">
-                      <img src={trend} alt="kun" className="trend-img" />
+                      <img src={trend} alt="" className="trend-img" />
                       &nbsp;&nbsp;&nbsp;Trending
                       <button
                         className="peopleButton"
@@ -660,7 +660,7 @@ class Body extends Component {
                             <li>
                               <img
                                 src={this.getNumberLogo(index)}
-                                alt="kun"
+                                alt=""
                                 className="trend-img"
                               />
                               <h3>{tag}</h3>
@@ -673,7 +673,7 @@ class Body extends Component {
                 ) : (
                   <div>
                     <div id="trending-hashtag">
-                      <img src={people} alt="kun" className="trend-img" />
+                      <img src={people} alt="" className="trend-img" />
                       &nbsp;&nbsp;&nbsp;People
                       <button
                         className="peopleButton"
@@ -689,11 +689,7 @@ class Body extends Component {
                         {this.state.topTrendList.map((ppl, index) => (
                           <a href={"/profile/" + ppl[1]}>
                             <li>
-                              <img
-                                src={ppl[2]}
-                                alt="kun"
-                                className="trend-img"
-                              />
+                              <img src={ppl[2]} alt="" className="trend-img" />
                               <h3>{ppl[0]}</h3>
                             </li>
                           </a>
