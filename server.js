@@ -78,16 +78,6 @@ app.get("*", (req, res) => {
 //   console.log(`LISTENING ON PORT ${API_PORT}`)
 // );
 
-/*elem: [room id, user1 name, user2 name].
-  room doesn't need to be deleted for now since 
-  we don't have a huge number of users.
-  */
-let chatRooms = [];
-/*let you know that the user is ready to chat
-  be deleted after socket disconnected
-*/
-let chatUser = []; //elem: userId
-
 /*when join, add chatters and default roomId given,and socket.id
   when switch room, just change the roomId
   when exit, find the user using socket.id, then delete it
@@ -105,103 +95,92 @@ io.on("connection", (socket) => {
     //check if roomId in chatRooms
     // console.log("chatrooms: ", chatRooms);
 
-    // console.log("joined the room");
-    // console.log("the roomId:   ", roomId);
+    console.log("JOIN");
+    console.log("the roomId:   ", roomId, "  name: ", name);
+    chatters.push([name, roomId, socket.id]);
 
-    addtoRoom({ chatterId: name, roomId: roomId, socketId: socket.id }); //param: myid, [roomid, id,id]
-    console.log(
-      "chatters after ADDTOROOM",
-      chatters,
-      " and cnew hatter:",
-      name
-    );
+    // addtoRoom({ chatterId: name, roomId: roomId, socketId: socket.id }); //param: myid, [roomid, id,id]
+    console.log("chatters after ADDTOROOM", chatters);
     socket.join(roomId);
     callback();
   });
 
-  socket.on("sendMessage", ({ sender, receiver, message }, callback) => {
-    let receiverRoom = findReceiverRoom({ sender, receiver });
-    let receiverOnlineStatus = receiverRoom.online;
-    let roomId = receiverRoom.roomId;
-    console.log("SENDMESSAGE:");
-    console.log("sender ", sender);
-    console.log("sendmessage chatter：", chatters);
-    if (receiverOnlineStatus) {
-      //meaning that receiver is ready to chat now
-      console.log("sendMessage rooomId that found:", roomId);
-      // console.log("emit twice?");
-      io.to(roomId).emit("message", { user: sender, text: message });
-      callback({ success: true, roomId: roomId });
-    } else {
-      console.log("receiver is not online");
-      //get sender's roomid
-      roomId =
-        chatters[chatters.findIndex((chatter) => chatter[0] == sender)][1];
-      console.log("roomId of the sender sender: ", roomId);
-      callback({ success: false, roomId: roomId });
+  socket.on(
+    "sendMessage",
+    ({ sender, receiver, message, roomId }, callback) => {
+      let receiverIndex = chatters.findIndex(
+        (chatter) => chatter[0] == receiver && chatter[1] == roomId
+      );
+
+      if (receiverIndex != -1) {
+        //meaning that receiver is ready to chat now
+        console.log("sendMessage rooomId that found:", roomId);
+        // console.log("emit twice?");
+        io.to(roomId).emit("message", { user: sender, text: message });
+        callback({ success: true, roomId: roomId });
+      } else {
+        console.log("receiver is not online");
+        callback({ success: false, roomId: roomId });
+      }
     }
-  });
+  );
 
-  socket.on("switchRoom", ({ userId, roomId }) => {
-    let roomid = chatters[chatters.findIndex((user) => user[0] == userId)][1];
-    console.log(" switchRoom ::before, roomid is:", roomid);
-    console.log("before, chatters is:", chatters);
-    switchRoom({ userId, roomId });
-    socket.leave(roomid);
-    socket.join(roomId, () => {
-      console.log("switchRoom, what's the room now:", socket.rooms);
-      console.log("switchRoom, what's the socket.id now:", socket.id);
-    });
+  // socket.on("switchRoom", ({ userId, roomId }) => {
+  //   let roomid = chatters[chatters.findIndex((user) => user[0] == userId)][1];
+  //   console.log(" switchRoom ::before, roomid is:", roomid);
+  //   console.log("before, chatters is:", chatters);
+  //   switchRoom({ userId, roomId });
+  //   socket.leave(roomid);
+  //   socket.join(roomId, () => {
+  //     console.log("switchRoom, what's the room now:", socket.rooms);
+  //     console.log("switchRoom, what's the socket.id now:", socket.id);
+  //   });
 
-    roomid = chatters[chatters.findIndex((user) => user[0] == userId)][1];
-    console.log(" switchRoom ::after, roomid is:", roomid);
-  });
+  //   roomid = chatters[chatters.findIndex((user) => user[0] == userId)][1];
+  //   console.log(" switchRoom ::after, roomid is:", roomid);
+  // });
 
   socket.on("disconnect", () => {
-    exitRoom(socket.id);
+    chatters = chatters.filter((chatter) => chatter[2] == socket.id);
     console.log(socket.id, "  disconnected");
     console.log("chatters: ", chatters);
   });
 });
 
-function addtoRoom({ chatterId, roomId, socketId }) {
-  let alreadyAdded = false;
-  chatters.map((chatter) => {
-    if (chatter[0] == chatterId) {
-      alreadyAdded = true;
-    }
-  });
-  if (!alreadyAdded) {
-    chatters.push([chatterId, roomId, socketId]);
-  }
-}
+// function addtoRoom({ chatterId, roomId, socketId }) {
+//   let alreadyAdded = false;
+//   chatters.map((chatter) => {
+//     if (chatter[0] == chatterId) {
+//       alreadyAdded = true;
+//     }
+//   });
+//   if (!alreadyAdded) {
+//     chatters.push([chatterId, roomId, socketId]);
+//   }
+// }
 
-function exitRoom(socketId) {
-  let index = chatters.findIndex((user) => user[2] == socketId);
-  if (index != -1) {
-    chatters.splice(index, 1);
-    return true;
-  }
-  return false;
-}
+// function exitRoom(socketId) {
+//   // let index = chatters.findIndex((user) => user[2] == socketId);
+//   // if (index != -1) {
+//   //   chatters.splice(index, 1);
+//   //   return true;
+//   // }
+//   // return false;
+// }
 
-function findReceiverRoom({ sender, receiver }) {
-  let senderIndex = chatters.findIndex((chatter) => chatter[0] == sender);
-  let receiverIndex = chatters.findIndex((chatter) => chatter[0] == receiver);
-  if (receiverIndex == -1) {
-    console.log("receiver is not online now");
-    return { roomId: "", online: false };
-  } else if (chatters[senderIndex][1] == chatters[receiverIndex][1]) {
-    console.log("receiver is online");
-    console.log("receiver room:", chatters[receiverIndex][1]);
-    return { roomId: chatters[receiverIndex][1], online: true };
-  }
-  //then sender and receiver are online but in different room, regard as offline
-  console.log(
-    "sender and receiver are online but in different room, regard as offline"
-  );
-  return { roomId: chatters[receiverIndex][1], online: false };
-}
+// function findReceiverRoom({ receiver, roomId }) {
+//   // let senderIndex = chatters.findIndex((chatter) => chatter[0] == sender);
+//   let receiverIndex = chatters.findIndex(
+//     (chatter) => chatter[0] == receiver && chatter[1] == roomId
+//   );
+//   if (receiverIndex == -1) {
+//     console.log("receiver is not online now");
+//     return { roomId: "", online: false };
+//   }
+//   console.log("receiver is online");
+//   console.log("receiver room:", chatters[receiverIndex][1]);
+//   return { roomId: chatters[receiverIndex][1], online: true };
+// }
 
 function switchRoom({ userId, roomId }) {
   let index = chatters.findIndex((chatter) => chatter[0] == userId);

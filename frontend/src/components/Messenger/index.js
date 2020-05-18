@@ -98,13 +98,17 @@ class Messenger extends Component {
     );
 
     let name = this.state.userID;
-    let roomId = this.state.roomList[index];
+    // let roomId = this.state.roomList[index];
+    console.log("WHAT IS ROOMLIST IN STATE:", this.state.roomList);
+    for (let i = 0; i < this.state.roomList.length; i++) {
+      let roomId = this.state.roomList[i];
+      socket.emit("join", { name, roomId }, (err) => {
+        if (err) {
+          console.log("err in join: ", err);
+        }
+      });
+    }
 
-    socket.emit("join", { name, roomId }, (err) => {
-      if (err) {
-        console.log("err in join: ", err);
-      }
-    });
     socket.on("message", (message) => {
       let sender = message.user;
       let text = message.text;
@@ -181,10 +185,10 @@ class Messenger extends Component {
       // console.log(message);
       console.log("next");
 
-      this.switchRoom({
-        userId: this.state.userID,
-        roomId: this.state.roomList[i],
-      });
+      // this.switchRoom({
+      //   userId: this.state.userID,
+      //   roomId: this.state.roomList[i],
+      // });
     });
 
     // this.setupSocket();
@@ -297,12 +301,16 @@ class Messenger extends Component {
       [sender, newMessage, new Date().getTime()],
       ...newMessageList[index],
     ];
-    let newRenderedMessages = this.renderMessages(newMessageList[index]);
-    selected[2] = newRenderedMessages;
 
     /*lastly, update new message icon: +1*/
     this.addOnePend(sender);
-    this.setState({ selectedInfo: selected, messageList: newMessageList });
+    // this.setState({ messageList: newMessageList });
+
+    if (sender == selected[1]) {
+      let newRenderedMessages = this.renderMessages(newMessageList[index]);
+      selected[2] = newRenderedMessages;
+      this.setState({ selectedInfo: selected, messageList: newMessageList });
+    }
     return true;
   };
 
@@ -331,15 +339,36 @@ class Messenger extends Component {
       let receiver = receiverId;
       // console.log("newMessage", newMessage);
       let sendMessageSuccess = false;
-      let roomId = "";
-      socket.emit("sendMessage", { sender, receiver, message }, (callback) => {
-        console.log(callback);
-        console.log("emit sendmessage:", callback.success);
-        sendMessageSuccess = callback.success;
-        console.log("sendMessageSuccess after emit:", sendMessageSuccess);
+      let roomId = this.state.roomList[index];
+      socket.emit(
+        "sendMessage",
+        { sender, receiver, message, roomId },
+        (callback) => {
+          console.log(callback);
+          console.log("emit sendmessage:", callback.success);
+          sendMessageSuccess = callback.success;
+          console.log("sendMessageSuccess after emit:", sendMessageSuccess);
+          roomId = callback.roomId;
 
-        roomId = callback.roomId;
-      });
+          console.log("sendMessageSuccess:  ", sendMessageSuccess);
+          console.log("roomId: ", roomId);
+          if (!sendMessageSuccess) {
+            axios
+              .post("/api/config/pendingMessage", {
+                receiverId: receiver,
+                roomId: roomId,
+              })
+              .then((res) => {
+                console.log("res.data", res.data);
+                if (res.data.success) {
+                  console.log("pending message update success");
+                } else {
+                  console.log("pending message update failed");
+                }
+              });
+          }
+        }
+      );
 
       console.log("sendMessageSuccess:  ", sendMessageSuccess);
 
@@ -366,29 +395,24 @@ class Messenger extends Component {
         }, 1000);
       });
       pro.then(() => {
-        // console.log(message);
-        console.log("promise 2");
-        console.log("sendMessageSuccess:  ", sendMessageSuccess);
-        console.log("roomId: ", roomId);
-        // this.switchRoom({
-        //   userId: this.state.userID,
-        //   roomId: this.state.roomList[i],
-        // });
-        if (!sendMessageSuccess) {
-          axios
-            .post("/api/config/pendingMessage", {
-              receiverId: receiver,
-              roomId: roomId,
-            })
-            .then((res) => {
-              console.log("res.data", res.data);
-              if (res.data.success) {
-                console.log("pending message update success");
-              } else {
-                console.log("pending message update failed");
-              }
-            });
-        }
+        // console.log("promise 2");
+        // console.log("sendMessageSuccess:  ", sendMessageSuccess);
+        // console.log("roomId: ", roomId);
+        // if (!sendMessageSuccess) {
+        //   axios
+        //     .post("/api/config/pendingMessage", {
+        //       receiverId: receiver,
+        //       roomId: roomId,
+        //     })
+        //     .then((res) => {
+        //       console.log("res.data", res.data);
+        //       if (res.data.success) {
+        //         console.log("pending message update success");
+        //       } else {
+        //         console.log("pending message update failed");
+        //       }
+        //     });
+        // }
       });
 
       //then update backend
