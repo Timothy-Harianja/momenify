@@ -47,12 +47,11 @@
 
 .message-notification {
   position: relative;
-  /* top: 0%;
-  bottom: 0%;
-  right: 0%;
-  left: 0%; */
-  padding: 0px 0px 0px 0px;
-  border-radius: 10%;
+  top: -10px;
+  right: 0px;
+  padding: 5px 8px;
+  border-radius: 30%;
+  font-size: 12px;
   background: red;
   color: white;
 }
