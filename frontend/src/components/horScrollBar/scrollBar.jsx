@@ -17,7 +17,8 @@ const MenuItem = ({
   }
   return (
     <div>
-      <span class="badge">{unviewNum}</span>
+      {unviewNum > 0 ? <span class="badge">{unviewNum}</span> : null}
+
       <div
         className={`menu-item ${selectedName == text ? "active" : ""}`}
         // onClick={onSelectChatter(receiverId)}

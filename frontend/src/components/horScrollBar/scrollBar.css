@@ -9,7 +9,7 @@
   border: none;
 }
 .menu-item-wrapper.active {
-  border: 1px blue solid;
+  /* border: 1px blue solid; */
 }
 .menu-item.active {
   /* border: 1px green solid; */

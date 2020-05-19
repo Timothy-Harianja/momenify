@@ -26,11 +26,11 @@ export default function Message(props) {
       {showTimestamp && <div className="timestamp">{friendlyTimestamp}</div>}
 
       <div className="bubble-container">
-        <div>{isMine ? "" : "you"}</div>
+        <div>{isMine ? "" : ""}</div>
         <div className="bubble" title={friendlyTimestamp}>
           {data.message}
         </div>
-        <div>{isMine ? "me" : ""}</div>
+        <div>{isMine ? "" : ""}</div>
       </div>
     </div>
   );
