@@ -1,29 +1,33 @@
 import React, { Component } from "react";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import "./scrollBar.css";
+
 import $ from "jquery";
-// One item component
-// selected prop will be passed
-const MenuItem = ({ text, key, selectedName, onSelectChatter }) => {
+
+const MenuItem = ({
+  text,
+  key,
+  selectedName,
+  testNumber,
+  getPendNum,
+  unviewNum,
+}) => {
+  function handlePick() {
+    alert("test");
+  }
   return (
-    <div
-      className={`menu-item ${selectedName == text ? "active" : ""}`}
-      // onClick={onSelectChatter(receiverId)}
-    >
-      {text}
+    <div>
+      {unviewNum > 0 ? <span class="badge">{unviewNum}</span> : null}
+
+      <div
+        className={`menu-item ${selectedName == text ? "active" : ""}`}
+        // onClick={onSelectChatter(receiverId)}
+      >
+        {text}
+      </div>
     </div>
   );
 };
-
-// All items component
-// Important! add unique key
-// export const Menu = (list, selected) =>
-//   list.map((el) => {
-//     // console.log("el ", el[0]);
-//     const { name } = el;
-
-//     return <MenuItem text={name} key={name} selected={selected} />;
-//   });
 
 const Arrow = ({ text, className }) => {
   return <div className={className}>{text}</div>;
@@ -42,7 +46,6 @@ class ScrollBar extends Component {
   }
 
   componentDidMount() {
-    console.log("hello", this.props.chatters);
     window.scrollTo(
       0,
       document.body.scrollHeight || document.documentElement.scrollHeight
@@ -50,7 +53,7 @@ class ScrollBar extends Component {
 
     $(document).ready(function () {
       $(window).scroll(function () {
-        console.log($(window).scrollTop());
+        // console.log($(window).scrollTop());
 
         if ($(window).scrollTop() > 50) {
           $("#nav-bar").addClass("navbar-fixed-top");
@@ -67,22 +70,32 @@ class ScrollBar extends Component {
     let list = this.props.chatters;
     // let selectedName = this.props.selectedInfo[0];
     let retVal = list.map((el) => {
-      // console.log("el ", el);
       const name = el[0];
       const receiverId = el[1];
+      const unviewNum = this.props.getPendNum(receiverId);
       return (
         <MenuItem
           text={name}
           key={receiverId}
           selectedName={this.props.selectedInfo[0]}
+          testNumber={this.props.testNumber}
+          getPendNum={(chatterId) => this.props.getPendNum(chatterId)}
+          unviewNum={unviewNum}
         />
       );
+
+      // return this.MenuItem({
+      //   text: name,
+      //   key: receiverId,
+      //   selectedName: this.props.selectedInfo[0],
+      //   testNumber: this.props.selectedInfo[0],
+      //   // getPendNum: (chatterId) => this.props.getPendNum(chatterId)
+      // });
     });
     return retVal;
   };
 
   onSelect = (key) => {
-    console.log(key);
     // this.props.setupSocket();
     this.props.onSelectChatter(key);
   };

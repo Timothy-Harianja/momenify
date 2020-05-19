@@ -28,6 +28,8 @@
     "reactstrap": "^8.4.1",
     "redux": "^4.0.5",
     "rodal": "^1.8.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "styled-components": "^5.0.1"
   },
   "scripts": {

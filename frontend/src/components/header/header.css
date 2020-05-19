@@ -45,3 +45,14 @@
   }
 }
 
+.message-notification {
+  position: relative;
+  /* top: 0%;
+  bottom: 0%;
+  right: 0%;
+  left: 0%; */
+  padding: 0px 0px 0px 0px;
+  border-radius: 10%;
+  background: red;
+  color: white;
+}

@@ -16,51 +16,61 @@ class Messenger extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      socket: null,
       chatters: [], //elem: [name,id]
       messageList: [], //elem: [sender id,message, timestamp]
       userID: null,
       roomList: [], //elem: roomId
       selectedInfo: ["", "", []], //[receiverName, receiverId,showing message]
-      // socketList: [],
-      // renderedMessage: [],
+      testNumber: 1,
+      pendingList: [], //elem: {roomId,pendingNumber }
+      logoList: [], //[myLogo,yourLogo]
     };
   }
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then((res) => {
-      if (res.data.uniqueID == null || res.data.email == null) {
-        this.props.history.push("/login");
-      } else {
-        this.setState({ userID: res.data.userId });
-        axios.get("/api/config/getMessage").then((res) => {
-          console.log("res from get message: ", res);
-          if (res.data.chatters.length != 0) {
-            //default chat room when enter
-
-            // let convert = this.covertType(res.data.messageList);
-            // let messageList = convert;
-            this.setState({
-              chatters: res.data.chatters,
-              messageList: res.data.messageList,
-              roomList: res.data.roomList,
-              // menuItems: this.Menu(res.data.chatters, res.data.chatters[0][0]),
-              selectedInfo: [
-                res.data.chatters[0][0],
-                res.data.chatters[0][1],
-                this.renderMessages(res.data.messageList[0]),
-              ],
-            });
-            // console.log("chatters:", this.state.chatters);
-            // console.log("messageList:", this.state.messageList);
-            // initial socket.io for each person
-            socket = io("https://momenify.com/");
-            this.setupSocket();
-          } else {
-            console.log("oops, you haven't chat with anyone");
-          }
-        });
-      }
-    });
+    axios
+      .get("/api/loginRoute/session")
+      .then((res) => {
+        if (res.data.uniqueID == null || res.data.email == null) {
+          this.props.history.push("/login");
+        } else {
+          this.setState({ userID: res.data.userId });
+          axios.get("/api/config/getMessage").then((res) => {
+            if (res.data.chatters.length != 0) {
+              this.setState({
+                chatters: res.data.chatters,
+                messageList: res.data.messageList,
+                roomList: res.data.roomList,
+                selectedInfo: [
+                  res.data.chatters[0][0],
+                  res.data.chatters[0][1],
+                  this.renderMessages(res.data.messageList[0]),
+                ],
+              });
+              // initial socket.io
+              socket = io();
+              this.setupSocket();
+            } else {
+              // console.log("oops, you haven't chat with anyone");
+            }
+          });
+        }
+      })
+      .then(() => {
+        let receiverId = this.state.userID;
+        axios
+          .post("/api/config/getPendingNumber", { receiverId: receiverId })
+          .then((res) => {
+            // console.log("res.data.pendinglist:", res.data.pendingList);
+            if (res.data.success) {
+              // console.log("res.data.pendingList:", res.data.pendingList);
+              this.setState({ pendingList: res.data.pendingList });
+            } else {
+              // console.log("err find the pendingmessage");
+            }
+          });
+      });
   }
 
   makeToken = (length) => {
@@ -73,71 +83,43 @@ class Messenger extends Component {
     }
     return result;
   };
-  // covertType = (input) => {
-  //   let retMessages = input.map((m) => {
-  //     let meg = m.map((n) => {
-  //       let id = this.makeToken(10);
-  //       let author = n[0];
-  //       let message = n[1];
-  //       let timestamp = n[2];
-  //       return {
-  //         id: id,
-  //         author: author,
-  //         message: message,
-  //         timestamp: timestamp,
-  //       };
-  //     });
-  //     return meg;
-  //   });
-  //   // console.log("retMessage", retMessages);
-  //   return retMessages;
-  // };
 
   setupSocket = () => {
-    //socket.emit()
     let receiver = this.state.selectedInfo[1];
-    // console.log("receiver:  ", receiver);
     let index = this.state.chatters.findIndex(
       (chatter) => chatter[1] == receiver
     );
-    // console.log("this.state.roomList[index]:", this.state.roomList[index]);
-    // console.log("this.state.roomList:", this.state.roomList);
-    // console.log("what is index?", index);
+
     let name = this.state.userID;
-    let roomInfo = [this.state.roomList[index], name, receiver];
-    // console.log("name", name);
-    // console.log("roomInfo", roomInfo);
-    socket.emit("join", { name, roomInfo }, (err) => {
-      if (err) {
-        console.log("err in join: ", err);
-      }
-    });
+    for (let i = 0; i < this.state.roomList.length; i++) {
+      let roomId = this.state.roomList[i];
+      socket.emit("join", { name, roomId }, (err) => {
+        if (err) {
+          console.log("err in join: ", err);
+        }
+      });
+    }
+
     socket.on("message", (message) => {
       let sender = message.user;
       let text = message.text;
-      console.log("the message I received", message);
-      // console.log("the sender in socket.on message: ", sender);
       if (sender != this.state.userID) {
         if (checkSameMessage.length != 0) {
-          console.log("first sent already");
           let date = new Date().getTime();
           //compare sender and date
           let preUser = checkSameMessage[0];
           let preDate = checkSameMessage[1];
           checkSameMessage[0] = sender;
           checkSameMessage[1] = date;
-          console.log(
-            "the time between two message:",
-            Math.abs(date - preDate)
-          );
+
           if (preUser == sender && Math.abs(date - preDate) <= 180) {
-            console.log("the two post are the same, do nothing");
+            // console.log("the two post are the same, do nothing");
           } else {
-            console.log("time not big enough");
+            // console.log("time not big enough");
             this.getMessageFromOther({ newMessage: text, sender: sender });
           }
         } else {
-          console.log("no one send yet");
+          // console.log("no one send yet");
           let date = new Date().getTime();
           checkSameMessage.push(sender);
           checkSameMessage.push(date);
@@ -148,26 +130,24 @@ class Messenger extends Component {
   };
 
   useEffect = () => {
-    console.log("useEffect...");
-
     socket.on("roomData", ({ users }) => {
       // setUsers(users);
     });
   };
 
   onSelectChatter = (receiverId) => {
-    // console.log("receiverid in onSelectChatter:", receiverId);
+    //first thing update the pending number
+    this.resetPendNum(receiverId);
     //find name, id and message  findIndex
     let theChatter = "";
     let chatters = this.state.chatters;
     chatters.map((chatter) => {
       if (chatter.includes(receiverId)) {
-        // console.log("found the chatter");
         theChatter = chatter;
       }
     });
     let i = chatters.findIndex((ch) => ch == theChatter);
-
+    // console.log("the i:", i);
     this.setState({
       selectedInfo: [
         theChatter[0],
@@ -175,36 +155,16 @@ class Messenger extends Component {
         this.renderMessages(this.state.messageList[i]),
       ],
     });
-    let pro = new Promise(function (resolve, reject) {
-      setTimeout(function () {
-        resolve("promise end");
-      }, 25);
-    });
-    pro.then(() => {
-      // console.log(message);
-      console.log("next");
-      this.setupSocket();
-    });
 
-    // this.setupSocket();
-
-    // console.log("selectedInfo after onselectchatter,", this.state.selectedInfo);
     return true;
   };
 
-  renderMessages = (messages) => {
-    //check messageList undefined
-    // let messages = [];
+  switchRoom = ({ userId, roomId }) => {
+    // console.log("switchRoom happened");
+    socket.emit("switchRoom", { userId, roomId }, (callback) => {});
+  };
 
-    if (
-      this.state.messageList != undefined &&
-      this.state.messageList.length != 0
-    ) {
-      // console.log("selectedInfo ", this.state.selectedInfo);
-      // console.log(" selectedInfo[2] ", this.state.selectedInfo[2]);
-      // messages = this.state.selectedInfo[2];
-      // console.log("messages length: ", messages.length);
-    }
+  renderMessages = (messages) => {
     let i = 0;
     let messageCount = messages.length;
     let tempMessages = [];
@@ -272,58 +232,33 @@ class Messenger extends Component {
   };
 
   getMessageFromOther = ({ newMessage, sender }) => {
-    /*if the sender is not my userid, it means this message is from
-      socket, all to do is display it to frontend and updates all
-      local states, no more socket.emit update to backend since already 
-      done by the the sender */
-    // console.log("called twice?");
     let selected = this.state.selectedInfo;
-    // console.log("the sender in socket.on message: ", sender);
-    // console.log("the chatters in state:", this.state.chatters);
+
     let index = this.state.chatters.findIndex(
       (chatter) => chatter[1] == sender
     );
 
-    // console.log("index in send message,", index);
     let newMessageList = this.state.messageList;
     newMessageList[index] = [
       [sender, newMessage, new Date().getTime()],
       ...newMessageList[index],
     ];
-    let newRenderedMessages = this.renderMessages(newMessageList[index]);
-    selected[2] = newRenderedMessages;
-    this.setState({ selectedInfo: selected, messageList: newMessageList });
+
+    /*lastly, update new message icon: +1*/
+    this.addOnePend(sender);
+
+    if (sender == selected[1]) {
+      let newRenderedMessages = this.renderMessages(newMessageList[index]);
+      selected[2] = newRenderedMessages;
+      this.setState({ selectedInfo: selected, messageList: newMessageList });
+    }
     return true;
   };
 
   sendMessage = ({ newMessage, sender }) => {
-    /*if the sender is not my userid, it means this message is from
-      socket, all to do is display it to frontend and updates all
-      local states, no more socket.emit update to backend since already 
-      done by the the sender */
     if (sender != this.state.userID) {
-      console.log("should not have this");
-      console.log("sender: ", sender);
-      // let selected = this.state.selectedInfo;
-      // console.log("the sender in socket.on message: ", sender);
-      // console.log("the chatters in state:", this.state.chatters);
-      // let index = this.state.chatters.findIndex(
-      //   (chatter) => chatter[1] == sender
-      // );
-      // console.log("index in send message,", index);
-      // let newMessageList = this.state.messageList;
-      // newMessageList[index] = [
-      //   [sender, newMessage, new Date().getTime()],
-      //   ...newMessageList[index],
-      // ];
-      // let newRenderedMessages = this.renderMessages(newMessageList[index]);
-      // selected[2] = newRenderedMessages;
-      // this.setState({ selectedInfo: selected, messageList: newMessageList });
-      // return true;
+      // console.log("should not have this");
     } else {
-      // newMessage.preventDefault();
-      console.log("newMessagddddddd:", newMessage);
-
       let selected = this.state.selectedInfo;
       let receiverName = selected[0];
       let receiverId = selected[1];
@@ -337,12 +272,37 @@ class Messenger extends Component {
       let message = newMessage;
       let receiver = receiverId;
       // console.log("newMessage", newMessage);
-      socket.emit("sendMessage", { sender, receiver, message }, (callback) => {
-        console.log("callback: ", callback);
-      });
+      let sendMessageSuccess = false;
+      let roomId = this.state.roomList[index];
+      socket.emit(
+        "sendMessage",
+        { sender, receiver, message, roomId },
+        (callback) => {
+          sendMessageSuccess = callback.success;
+          roomId = callback.roomId;
+          if (!sendMessageSuccess) {
+            axios
+              .post("/api/config/pendingMessage", {
+                receiverId: receiver,
+                roomId: roomId,
+              })
+              .then((res) => {
+                // console.log("res.data", res.data);
+                if (res.data.success) {
+                  // console.log("pending message update success");
+                } else {
+                  // console.log("pending message update failed");
+                }
+              });
+          }
+        }
+      );
+
+      // socket.emit("sendMessage", { sender, receiver, message }, (callback) => {
+      //   console.log("callback: ", callback);
+      // });
 
       let newMessageList = this.state.messageList;
-      // console.log("newmessageList", newMessageList);
       newMessageList[index] = [
         [this.state.userID, newMessage, new Date().getTime()],
         ...newMessageList[index],
@@ -351,10 +311,7 @@ class Messenger extends Component {
       let newRenderedMessages = this.renderMessages(newMessageList[index]);
       selected[2] = newRenderedMessages;
 
-      // console.log("newmessageList after", newMessageList);
-
       this.setState({ selectedInfo: selected, messageList: newMessageList });
-      // console.log("after setstate");
 
       //then update backend
       axios
@@ -365,16 +322,122 @@ class Messenger extends Component {
         })
         .then((res) => {
           if (res.data.success) {
-            console.log("message sent");
+            // console.log("message sent");
           }
         });
       return true;
     }
   };
 
-  render() {
-    // console.log("got here");
+  getPendNum = (chatterId) => {
+    //edge case
+    if (this.state.pendingList.length == 0) {
+      return 0;
+    }
+    //find the room number
+    let index = this.state.chatters.findIndex(
+      (chatter) => chatter[1] == chatterId
+    );
+    let roomId = this.state.roomList[index];
 
+    //find number in pendingList
+    let numIndex = this.state.pendingList.findIndex(
+      (pending) => pending[0] == roomId
+    );
+    if (numIndex != -1) {
+      let num = this.state.pendingList[numIndex][1];
+      if (num == 0) {
+        // console.log("pending num is 0");
+        return 0;
+      }
+      return num;
+    }
+    //don't have any pending message
+    // console.log("don't have any pending message");
+    return 0;
+  };
+
+  resetPendNum = (chatterId) => {
+    //edge case
+    if (this.state.pendingList.length == 0) {
+      return true;
+    }
+
+    //find the room number
+    let index = this.state.chatters.findIndex(
+      (chatter) => chatter[1] == chatterId
+    );
+
+    let roomId = this.state.roomList[index];
+
+    //find number in pendingList
+    let numIndex = this.state.pendingList.findIndex(
+      (pending) => pending[0] == roomId
+    );
+    if (numIndex != -1) {
+      // update state in app.js ,update local, update backend
+      let newPendingList = this.state.pendingList;
+      let preNum = newPendingList[numIndex][1];
+      this.props.reducePendingSum(preNum);
+
+      newPendingList[numIndex][1] = 0;
+      this.setState({ pendingList: newPendingList });
+      axios
+        .post("/api/config/processingMessage", {
+          receiverId: this.state.userID,
+          roomId: roomId,
+        })
+        .then((res) => {
+          // console.log("processing message res.data:", res.data);
+          if (res.data.success) {
+            // console.log("procesising message backend success");
+          } else {
+            // console.log("procesising message backend failed");
+          }
+        });
+    } else {
+      //done nothing?
+    }
+  };
+
+  addOnePend = (chatterId) => {
+    //find the room number
+    let index = this.state.chatters.findIndex(
+      (chatter) => chatter[1] == chatterId
+    );
+
+    let roomId = this.state.roomList[index];
+
+    //find number in pendingList
+    let numIndex = this.state.pendingList.findIndex(
+      (pending) => pending[0] == roomId
+    );
+
+    let newPendingList = this.state.pendingList;
+
+    if (numIndex != -1) {
+      // update local, update backend
+      newPendingList[numIndex][1] += 1;
+    } else {
+      newPendingList.push([roomId, 1]);
+    }
+    this.setState({ pendingList: newPendingList });
+    axios
+      .post("/api/config/pendingMessage", {
+        receiverId: this.state.userID,
+        roomId: roomId,
+      })
+      .then((res) => {
+        // console.log("addOnePend res.data:", res.data);
+        if (res.data.success) {
+          // console.log("addOnePend  backend success");
+        } else {
+          // console.log("addOnePend backend failed");
+        }
+      });
+  };
+
+  render() {
     return (
       <div>
         <ScrollBar
@@ -384,6 +447,8 @@ class Messenger extends Component {
           selectedInfo={this.state.selectedInfo}
           userID={this.state.userID}
           // setupSocket={() => this.setupSocket()}
+          testNumber={this.state.testNumber}
+          getPendNum={(chatterId) => this.getPendNum(chatterId)}
         />
         <MessageList
           messageList={this.state.messageList}

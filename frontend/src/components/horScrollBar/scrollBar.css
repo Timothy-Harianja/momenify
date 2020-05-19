@@ -9,7 +9,7 @@
   border: none;
 }
 .menu-item-wrapper.active {
-  border: 1px blue solid;
+  /* border: 1px blue solid; */
 }
 .menu-item.active {
   /* border: 1px green solid; */
@@ -21,6 +21,17 @@
   cursor: pointer;
 }
 
+.badge {
+  position: relative;
+  top: 15px;
+  bottom: -50%;
+  /* right: 0%; */
+  left: 75%;
+  padding: 1px 1px 1px 1px;
+  border-radius: 1%;
+  background: red;
+  color: white;
+}
 .navbar-fixed-top {
   top: 0;
   z-index: 100;
