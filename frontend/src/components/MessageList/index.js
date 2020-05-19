@@ -7,7 +7,7 @@ import { Button } from "reactstrap";
 import "./MessageList.css";
 import { set } from "mongoose";
 
-const MY_USER_ID = "apple";
+// const MY_USER_ID = "apple";
 
 export default function MessageList(props) {
   const [messages, setMessages] = useState([]);
@@ -15,8 +15,6 @@ export default function MessageList(props) {
   const [typedMessage, setTypedMessage] = useState([""]);
 
   useEffect(() => {}, []);
-
-  // console.log("message: ", typedMessage);
 
   return (
     <div className="message-list">

@@ -3,21 +3,7 @@ import ScrollMenu from "react-horizontal-scrolling-menu";
 import "./scrollBar.css";
 
 import $ from "jquery";
-// One item component
-// selected prop will be passed
 
-// All items component
-// Important! add unique key
-// export const Menu = (list, selected) =>
-//   list.map((el) => {
-//     // console.log("el ", el[0]);
-//     const { name } = el;
-
-//     return <MenuItem text={name} key={name} selected={selected} />;
-//   });
-
-// One item component
-// selected prop will be passed
 const MenuItem = ({
   text,
   key,
@@ -59,7 +45,6 @@ class ScrollBar extends Component {
   }
 
   componentDidMount() {
-    console.log("hello", this.props.chatters);
     window.scrollTo(
       0,
       document.body.scrollHeight || document.documentElement.scrollHeight
@@ -67,7 +52,7 @@ class ScrollBar extends Component {
 
     $(document).ready(function () {
       $(window).scroll(function () {
-        console.log($(window).scrollTop());
+        // console.log($(window).scrollTop());
 
         if ($(window).scrollTop() > 50) {
           $("#nav-bar").addClass("navbar-fixed-top");
@@ -84,10 +69,8 @@ class ScrollBar extends Component {
     let list = this.props.chatters;
     // let selectedName = this.props.selectedInfo[0];
     let retVal = list.map((el) => {
-      // console.log("el ", el);
       const name = el[0];
       const receiverId = el[1];
-      console.log("滚动条：", receiverId);
       const unviewNum = this.props.getPendNum(receiverId);
       return (
         <MenuItem
@@ -112,7 +95,6 @@ class ScrollBar extends Component {
   };
 
   onSelect = (key) => {
-    console.log("key是什么:", key);
     // this.props.setupSocket();
     this.props.onSelectChatter(key);
   };

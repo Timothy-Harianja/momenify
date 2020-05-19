@@ -96,7 +96,11 @@ class Header extends Component {
                         />
                         <path d="M5 8a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" />
                       </svg>
-                      <span class="badge">0</span>
+                      <span class="message-notification">
+                        {this.props.sumPendingNumber <= 0
+                          ? null
+                          : this.props.sumPendingNumber}
+                      </span>
                     </Nav.Link>
                   </Nav.Item>
                   &nbsp;&nbsp;

@@ -434,8 +434,7 @@ router.get("/getMessage", (req, res) => {
         for (let j = 0; j < result2.length; j++) {
           chatterList.push([result2[j], chatters[j]]);
         }
-        // console.log("result from get message: ", result);
-        // console.log("getMessage roomList,", roomList);
+
         return res.json({
           chatters: chatterList,
           roomList: roomList,
@@ -451,15 +450,13 @@ router.post("/pendingMessage", (req, res) => {
   //req: [receiverId, roomId]
   let receiverId = req.body.receiverId;
   let roomId = req.body.roomId;
-  console.log("PENDING MESSAGE");
-  console.log("roomId:", roomId);
+
   //check if pendMsg has the receiver
   PendMsg.findOne({ receiverId: receiverId }, (err, result) => {
     if (err) {
       console.log(err);
       return res.json({ success: false, message: err });
     } else if (result == null) {
-      console.log("first time receiver get pending message");
       let pm = new PendMsg();
       pm.receiverId = receiverId;
       pm.pendingList = [[roomId, 1]];
@@ -474,29 +471,18 @@ router.post("/pendingMessage", (req, res) => {
         });
       });
     } else {
-      console.log("found receiver");
-
       let newResult = result;
-      console.log("result.pendinglist: ", result.pendingList);
       //check if roomId in the list
       let roomIndex = newResult.pendingList.findIndex(
         (msgRoom) => msgRoom[0] == roomId
       );
       if (roomIndex == -1) {
-        console.log("room not added yet in pm");
         newResult.pendingList.push([roomId, 1]);
       } else {
-        console.log("room existed in pm");
         let num = newResult.pendingList[roomIndex][1] + 1;
         newResult.pendingList[roomIndex][1] = num;
-        console.log(
-          "newResult.pendingList[roomIndex].pendingNumber:",
-          newResult.pendingList[roomIndex][1]
-        );
       }
-      console.log("final newresult:", newResult);
       let newPendinglist = newResult.pendingList;
-      console.log("final pending list:", newPendinglist);
       PendMsg.updateOne(
         { receiverId: receiverId },
         { pendingList: newPendinglist },
@@ -505,7 +491,6 @@ router.post("/pendingMessage", (req, res) => {
             console.log("err save message in pm");
             return res.json({ success: false, message: "err" });
           } else {
-            console.log("1");
             return res.json({
               success: true,
               message: "pending message save success",
@@ -558,12 +543,9 @@ router.post("/processingMessage", (req, res) => {
 //return every pending number in every room current user has
 router.post("/getPendingNumber", (req, res) => {
   //req elem:receiverId
-  // console.log("getPendingNumber req.body:", req.body);
   let receiverId = req.body.receiverId;
-  // console.log("receiverid: ", receiverId);
   PendMsg.findOne({ receiverId: receiverId }, (err, result) => {
     if (err) {
-      console.log("getpendingnubmer err in findone:", err);
       return res.json({ success: false, message: err, pendingList: [] });
     }
     // console.log("result get pendingnumber:", result);
@@ -583,6 +565,25 @@ router.post("/getPendingNumber", (req, res) => {
         message: "",
         pendingList: retPendingList,
       });
+    }
+  });
+});
+
+router.get("/getSumPendingNumber", (req, res) => {
+  let userId = req.session.userId;
+  PendMsg.findOne({ receiverId: userId }, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false, sumPendingNumber: 0 });
+    } else if (result == null) {
+      return res.json({ success: true, sumPendingNumber: 0 });
+    } else {
+      let pendingList = result.pendingList;
+      let sum = 0;
+      pendingList.map((elem) => {
+        sum += elem[1];
+      });
+      return res.json({ success: true, sumPendingNumber: sum });
     }
   });
 });
