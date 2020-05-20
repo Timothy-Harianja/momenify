@@ -62,3 +62,15 @@
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }
+.mylogo {
+  width: 35px;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10%;
+}
+
+.yourlogo {
+  width: 35px;
+  margin-right: 5%;
+  margin-top: 10%;
+}

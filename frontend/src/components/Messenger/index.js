@@ -7,6 +7,7 @@ import Message from "../Message";
 import moment from "moment";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button"; //Add this line Here
 import io from "socket.io-client";
+import { resolveContent } from "nodemailer/lib/shared";
 let socket;
 
 //this is hard code message date check: if date very close, regard it as one message, therefore don't display the second message
@@ -24,7 +25,7 @@ class Messenger extends Component {
       selectedInfo: ["", "", []], //[receiverName, receiverId,showing message]
       testNumber: 1,
       pendingList: [], //elem: {roomId,pendingNumber }
-      logoList: [], //[myLogo,yourLogo]
+      logoList: [], //[userId,logoLink]
     };
   }
 
@@ -37,22 +38,43 @@ class Messenger extends Component {
         } else {
           this.setState({ userID: res.data.userId });
           axios.get("/api/config/getMessage").then((res) => {
+            console.log("res.data.chatters: ", res.data.chatters);
             if (res.data.chatters.length != 0) {
               this.setState({
                 chatters: res.data.chatters,
                 messageList: res.data.messageList,
                 roomList: res.data.roomList,
-                selectedInfo: [
-                  res.data.chatters[0][0],
-                  res.data.chatters[0][1],
-                  this.renderMessages(res.data.messageList[0]),
-                ],
               });
+
               // initial socket.io
               socket = io();
               this.setupSocket();
+
+              //get logos
+              let ids = this.state.chatters.map((chatter) => {
+                return chatter[1];
+              });
+              ids = [this.state.userID, ...ids];
+              axios
+                .post("/api/postRoute/logos", { ids })
+                .then((logoRes) => {
+                  if (logoRes.data.success) {
+                    this.setState({ logoList: logoRes.data.logoList });
+                  } else {
+                    console.log("get logo failed");
+                  }
+                })
+                .then(() => {
+                  this.setState({
+                    selectedInfo: [
+                      res.data.chatters[0][0],
+                      res.data.chatters[0][1],
+                      this.renderMessages(res.data.messageList[0]),
+                    ],
+                  });
+                });
             } else {
-              // console.log("oops, you haven't chat with anyone");
+              console.log("oops, you haven't chat with anyone");
             }
           });
         }
@@ -62,15 +84,18 @@ class Messenger extends Component {
         axios
           .post("/api/config/getPendingNumber", { receiverId: receiverId })
           .then((res) => {
-            // console.log("res.data.pendinglist:", res.data.pendingList);
             if (res.data.success) {
-              // console.log("res.data.pendingList:", res.data.pendingList);
               this.setState({ pendingList: res.data.pendingList });
             } else {
-              // console.log("err find the pendingmessage");
             }
           });
       });
+    let prom = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 350);
+    });
+    prom.then(() => {});
   }
 
   makeToken = (length) => {
@@ -171,7 +196,7 @@ class Messenger extends Component {
     while (i < messageCount) {
       let previous = messages[i - 1];
       let current = messages[i];
-
+      let myId = current[0];
       let next = messages[i + 1];
       let isMine = current[0] == this.state.userID;
       let currentMoment = moment(current[2]);
@@ -212,6 +237,9 @@ class Messenger extends Component {
         message: current[1],
         timestamp: current[2],
       };
+      //new added: logo
+      let logoIndex = this.state.logoList.findIndex((logo) => logo[0] == myId);
+      let myLogo = this.state.logoList[logoIndex][1];
       tempMessages.push(
         <Message
           key={i}
@@ -220,6 +248,7 @@ class Messenger extends Component {
           endsSequence={endsSequence}
           showTimestamp={showTimestamp}
           data={current}
+          myLogo={myLogo}
         />
       );
 

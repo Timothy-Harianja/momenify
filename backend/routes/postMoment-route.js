@@ -301,4 +301,37 @@ router.post("/postMoment", (req, res) => {
   }
 });
 
+var ObjectID = require("mongodb").ObjectID;
+
+router.post("/logos", (req, res) => {
+  //req.body.ids: list of userId
+  //return list. elem:[userid,logo]
+  let ids = req.body.ids;
+
+  let objIds = ids.map(function (userId) {
+    return ObjectID(userId);
+  });
+
+  User.find(
+    {
+      _id: { $in: objIds },
+    },
+    (err, result) => {
+      console.log("get logos result: ", result);
+      if (err) {
+        console.log("get logos find err:", err);
+        return res.json({ success: false, logoList: [] });
+      } else if (result == null) {
+        console.log("result is empty, not expected");
+        return res.json({ success: true, logoList: [] });
+      } else {
+        let logoList = result.map((user) => {
+          return [user._id, user.logo];
+        });
+        return res.json({ success: true, logoList: logoList });
+      }
+    }
+  );
+});
+
 module.exports = router;
