@@ -307,7 +307,6 @@ router.post("/logos", (req, res) => {
   //req.body.ids: list of userId
   //return list. elem:[userid,logo]
   let ids = req.body.ids;
-
   let objIds = ids.map(function (userId) {
     return ObjectID(userId);
   });
@@ -317,12 +316,10 @@ router.post("/logos", (req, res) => {
       _id: { $in: objIds },
     },
     (err, result) => {
-      console.log("get logos result: ", result);
       if (err) {
         console.log("get logos find err:", err);
         return res.json({ success: false, logoList: [] });
       } else if (result == null) {
-        console.log("result is empty, not expected");
         return res.json({ success: true, logoList: [] });
       } else {
         let logoList = result.map((user) => {

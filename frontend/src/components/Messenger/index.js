@@ -38,7 +38,6 @@ class Messenger extends Component {
         } else {
           this.setState({ userID: res.data.userId });
           axios.get("/api/config/getMessage").then((res) => {
-            console.log("res.data.chatters: ", res.data.chatters);
             if (res.data.chatters.length != 0) {
               this.setState({
                 chatters: res.data.chatters,
@@ -61,7 +60,6 @@ class Messenger extends Component {
                   if (logoRes.data.success) {
                     this.setState({ logoList: logoRes.data.logoList });
                   } else {
-                    console.log("get logo failed");
                   }
                 })
                 .then(() => {
@@ -74,7 +72,7 @@ class Messenger extends Component {
                   });
                 });
             } else {
-              console.log("oops, you haven't chat with anyone");
+              // console.log("oops, you haven't chat with anyone");
             }
           });
         }
