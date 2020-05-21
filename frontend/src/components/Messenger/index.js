@@ -18,14 +18,13 @@ class Messenger extends Component {
     super(props);
     this.state = {
       socket: null,
-      chatters: [], //elem: [name,id]
-      messageList: [], //elem: [sender id,message, timestamp]
+      chatters: [], //elem: [name,id, roomId]  (order matters)
+      messageList: [], //elem: {roomId:roomId,messages: [[sender id,message, timestamp]....]} (order matters)
       userID: null,
-      roomList: [], //elem: roomId
       selectedInfo: ["", "", []], //[receiverName, receiverId,showing message]
       testNumber: 1,
-      pendingList: [], //elem: {roomId,pendingNumber }
-      logoList: [], //[userId,logoLink]
+      pendingList: [], //elem: [roomId,pendingNumber]  (not in order)
+      logoList: [], //[userId,logoLink] (order not matter)
     };
   }
 
@@ -39,10 +38,17 @@ class Messenger extends Component {
           this.setState({ userID: res.data.userId });
           axios.get("/api/config/getMessage").then((res) => {
             if (res.data.chatters.length != 0) {
+              //we put roomId into chatters
+              let chatters = res.data.chatters;
+              let roomIds = res.data.roomList;
+              for (let i = 0; i < chatters.length; i++) {
+                chatters[i].push(roomIds[i]);
+              }
+              // console.log("after merge chatters and roomids:", chatters);
               this.setState({
-                chatters: res.data.chatters,
+                chatters: chatters,
                 messageList: res.data.messageList,
-                roomList: res.data.roomList,
+                // roomList: res.data.roomList,
               });
 
               // initial socket.io
@@ -59,43 +65,104 @@ class Messenger extends Component {
                 .then((logoRes) => {
                   if (logoRes.data.success) {
                     this.setState({ logoList: logoRes.data.logoList });
-                  } else {
+                    //then get pending number
+                    let receiverId = this.state.userID;
+                    axios
+                      .post("/api/config/getPendingNumber", {
+                        receiverId: receiverId,
+                      })
+                      .then((res) => {
+                        if (res.data.success) {
+                          this.setState({ pendingList: res.data.pendingList });
+                          // console.log("res.data.pendingList", res.data.pendingList);
+                          if (res.data.pendingList.length != 0) {
+                            //here we sort by pendingList
+                            this.sortByPend();
+
+                            //now using the sorted lists to render message
+                            this.setState({
+                              selectedInfo: [
+                                this.state.chatters[0][0],
+                                this.state.chatters[0][1],
+                                this.renderMessages(
+                                  this.state.messageList[0].messages
+                                ),
+                              ],
+                            });
+                          }
+                        }
+                      });
                   }
                 })
-                .then(() => {
-                  this.setState({
-                    selectedInfo: [
-                      res.data.chatters[0][0],
-                      res.data.chatters[0][1],
-                      this.renderMessages(res.data.messageList[0]),
-                    ],
-                  });
-                });
+                .then(() => {});
             } else {
               // console.log("oops, you haven't chat with anyone");
             }
           });
         }
       })
-      .then(() => {
-        let receiverId = this.state.userID;
-        axios
-          .post("/api/config/getPendingNumber", { receiverId: receiverId })
-          .then((res) => {
-            if (res.data.success) {
-              this.setState({ pendingList: res.data.pendingList });
-            } else {
-            }
-          });
-      });
-    let prom = new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 350);
-    });
-    prom.then(() => {});
+      .then(() => {});
   }
 
+  sortByPend = () => {
+    let chatters = this.state.chatters;
+    let messageList = this.state.messageList;
+    let pendingList = this.state.pendingList;
+    //first thing first, sort pendinglist by pending number
+    pendingList.sort((a, b) => {
+      // console.log("a[1]: ", a[1]);
+      return a[1] < b[1];
+    });
+    // console.log("after sort pendinglist:", pendingList);
+
+    /*sort by pendingList: edge case, if pendingList don't find the roomId,
+    no pending message, put to the last
+    */
+    let newChatters = pendingList.map((pending) => {
+      let roomId = pending[0];
+      let retVal = chatters.find((chatter) => {
+        if (chatter[2] == roomId) {
+          return chatter;
+        }
+      });
+      // console.log("should see a chatter retVal instead of null:", retVal);
+      return retVal;
+    });
+    /*now it's possible that chatter with no pending message,
+     which has not added to newChatters, do it here*/
+    for (let i = 0; i < chatters.length; i++) {
+      let index = newChatters.findIndex(
+        (newChatter) => newChatter[2] == chatters[i][2]
+      );
+      if (index == -1) {
+        // console.log("pushed a chatter");
+        newChatters.push(chatters[i]);
+      }
+    }
+
+    /*now time for messageList*/
+
+    let newMessageList = pendingList.map((pending) => {
+      let roomId = pending[0];
+      let retVal = messageList.find((m) => {
+        if (m.roomId == roomId) {
+          return m;
+        }
+      });
+      // console.log("should see a messageList retVal instead of null:", retVal);
+      return retVal;
+    });
+    for (let i = 0; i < chatters.length; i++) {
+      let index = newMessageList.findIndex(
+        (newM) => newM.roomId == messageList[i].roomId
+      );
+      if (index == -1) {
+        // console.log("pushed a messageList");
+        newMessageList.push(messageList[i]);
+      }
+    }
+    this.setState({ chatters: newChatters, messageList: newMessageList });
+  };
   makeToken = (length) => {
     var result = "";
     var characters =
@@ -114,8 +181,8 @@ class Messenger extends Component {
     );
 
     let name = this.state.userID;
-    for (let i = 0; i < this.state.roomList.length; i++) {
-      let roomId = this.state.roomList[i];
+    for (let i = 0; i < this.state.chatters.length; i++) {
+      let roomId = this.state.chatters[i][2];
       socket.emit("join", { name, roomId }, (err) => {
         if (err) {
           console.log("err in join: ", err);
@@ -175,7 +242,7 @@ class Messenger extends Component {
       selectedInfo: [
         theChatter[0],
         theChatter[1],
-        this.renderMessages(this.state.messageList[i]),
+        this.renderMessages(this.state.messageList[i].messages),
       ],
     });
 
@@ -236,7 +303,9 @@ class Messenger extends Component {
         timestamp: current[2],
       };
       //new added: logo
+      // console.log("myId:", myId);
       let logoIndex = this.state.logoList.findIndex((logo) => logo[0] == myId);
+      // console.log("this.state.logoList:", this.state.logoList);
       let myLogo = this.state.logoList[logoIndex][1];
       tempMessages.push(
         <Message
@@ -260,24 +329,33 @@ class Messenger extends Component {
 
   getMessageFromOther = ({ newMessage, sender }) => {
     let selected = this.state.selectedInfo;
-
+    let newChatters = this.state.chatters;
+    // let newMessageList  = this.state.messageList;
     let index = this.state.chatters.findIndex(
       (chatter) => chatter[1] == sender
     );
 
     let newMessageList = this.state.messageList;
-    newMessageList[index] = [
+    newMessageList[index].messages = [
       [sender, newMessage, new Date().getTime()],
-      ...newMessageList[index],
+      ...newMessageList[index].messages,
     ];
+    /*now we put the sender at the front of chatters and messageList*/
+
+    let frontChatter = newChatters.splice(index, 1);
+    newChatters = [frontChatter[0], ...newChatters];
+    let frontMessageList = newMessageList.splice(index, 1);
+    newMessageList = [frontMessageList[0], ...newMessageList];
+
+    this.setState({ chatters: newChatters, messageList: newMessageList });
 
     /*lastly, update new message icon: +1*/
     this.addOnePend(sender);
 
     if (sender == selected[1]) {
-      let newRenderedMessages = this.renderMessages(newMessageList[index]);
+      let newRenderedMessages = this.renderMessages(newMessageList[0].messages);
       selected[2] = newRenderedMessages;
-      this.setState({ selectedInfo: selected, messageList: newMessageList });
+      this.setState({ selectedInfo: selected });
     }
     return true;
   };
@@ -300,7 +378,7 @@ class Messenger extends Component {
       let receiver = receiverId;
       // console.log("newMessage", newMessage);
       let sendMessageSuccess = false;
-      let roomId = this.state.roomList[index];
+      let roomId = this.state.chatters[index][2];
       socket.emit(
         "sendMessage",
         { sender, receiver, message, roomId },
@@ -330,12 +408,14 @@ class Messenger extends Component {
       // });
 
       let newMessageList = this.state.messageList;
-      newMessageList[index] = [
+      newMessageList[index].messages = [
         [this.state.userID, newMessage, new Date().getTime()],
-        ...newMessageList[index],
+        ...newMessageList[index].messages,
       ];
 
-      let newRenderedMessages = this.renderMessages(newMessageList[index]);
+      let newRenderedMessages = this.renderMessages(
+        newMessageList[index].messages
+      );
       selected[2] = newRenderedMessages;
 
       this.setState({ selectedInfo: selected, messageList: newMessageList });
@@ -365,7 +445,7 @@ class Messenger extends Component {
     let index = this.state.chatters.findIndex(
       (chatter) => chatter[1] == chatterId
     );
-    let roomId = this.state.roomList[index];
+    let roomId = this.state.chatters[index][2];
 
     //find number in pendingList
     let numIndex = this.state.pendingList.findIndex(
@@ -395,7 +475,7 @@ class Messenger extends Component {
       (chatter) => chatter[1] == chatterId
     );
 
-    let roomId = this.state.roomList[index];
+    let roomId = this.state.chatters[index][2];
 
     //find number in pendingList
     let numIndex = this.state.pendingList.findIndex(
@@ -432,8 +512,7 @@ class Messenger extends Component {
     let index = this.state.chatters.findIndex(
       (chatter) => chatter[1] == chatterId
     );
-
-    let roomId = this.state.roomList[index];
+    let roomId = this.state.chatters[index][2];
 
     //find number in pendingList
     let numIndex = this.state.pendingList.findIndex(
@@ -478,7 +557,7 @@ class Messenger extends Component {
           getPendNum={(chatterId) => this.getPendNum(chatterId)}
         />
         <MessageList
-          messageList={this.state.messageList}
+          // messageList={this.state.messageList}
           MY_USER_ID={this.state.userID}
           selectedInfo={this.state.selectedInfo}
           sendMessage={(newMessage) => this.sendMessage(newMessage)}
