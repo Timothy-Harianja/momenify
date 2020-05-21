@@ -427,7 +427,10 @@ router.get("/getMessage", (req, res) => {
             : result[i].users[0]
         );
         roomList.push(result[i].roomID);
-        messageList.push(result[i].messageList);
+        messageList.push({
+          roomId: result[i].roomID,
+          messages: result[i].messageList,
+        });
       }
       getAllUser(chatters).then((result2) => {
         chatterList = [];
