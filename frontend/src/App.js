@@ -26,22 +26,33 @@ import { Thanks } from "./components/others/thanks.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class App extends Component {
-  state = {
-    userId: null,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      userId: null,
+      sumPendingNumber: 0,
+    };
+  }
 
   componentDidMount() {
-    axios.get("/api/loginRoute/session").then((res) => {
-      this.setState({ userId: res.data.userId });
+    axios.get("api/config/getSumPendingNumber").then((res) => {
+      if (res.data.success) {
+        this.setState({ sumPendingNumber: res.data.sumPendingNumber });
+      }
     });
   }
+
+  reducePendingSum = (reduction) => {
+    let newNum = this.state.sumPendingNumber - reduction;
+    this.setState({ sumPendingNumber: newNum });
+  };
 
   render() {
     return (
       <React.Fragment>
         <Router>
           {/* <Sidebar /> */}
-          <Header></Header>
+          <Header sumPendingNumber={this.state.sumPendingNumber}></Header>
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
@@ -65,8 +76,15 @@ class App extends Component {
             <Route path="/careers" component={Career} />
             <Route
               path="/message"
-              component={Message}
-              // component={this.state.userId != undefined ? Message : Login}
+              // component={<Message test={this.state.test} />}
+              render={(props) => (
+                <Message
+                  reducePendingSum={(reduction) =>
+                    this.reducePendingSum(reduction)
+                  }
+                  {...props}
+                />
+              )}
             />
             <Route
               path="/accountpage"

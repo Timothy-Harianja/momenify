@@ -43,6 +43,7 @@ class ProfilePage extends Component {
       foundResult: null,
       notfound: null,
       homepage: null,
+      receiverID: null,
     };
   }
 
@@ -220,12 +221,33 @@ class ProfilePage extends Component {
               changeVisible={(e) => this.changeVisible(e)}
               reportPost={(e) => this.reportPost(e)}
               reportID={(e) => this.reportID(e)}
+              sendMessage={(e) => this.sendMessage(e)}
+              checkLogin={(e) => this.checkLogin(e)}
             />
           </div>
         );
       }
     }
     return posts;
+  };
+
+  checkLogin = (e) => {
+    if (this.state.userId == null) {
+      return true;
+    } else {
+      this.setState({ receiverID: this.state.ProfileUserId });
+      return false;
+    }
+  };
+
+  sendMessage = (e) => {
+    axios
+      .post("/api/config/message", {
+        sender: this.state.userId,
+        receiver: this.state.receiverID,
+        message: e.message,
+      })
+      .then((res) => {});
   };
 
   reportID = (e) => {

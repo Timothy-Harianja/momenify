@@ -38,7 +38,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
 // app.use(express.static(path.join(__dirname, "../frontend/build")));
-
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(cors());
@@ -74,98 +74,44 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 });
 
-const server = app.listen(API_PORT, () =>
-  console.log(`LISTENING ON PORT ${API_PORT}`)
-);
-
-let chatRooms = []; //elem: [room id, user1 name, user2 name]
+/*when join, add chatters and roomId given,and socket.id
+  when exit, find all that using socket.id, then delete them
+*/
+let chatters = []; //elem [chatterId, roomId,socketId]
 const socketio = require("socket.io");
+const http = require("http");
+const server = http.createServer(app);
 const io = socketio(server);
-io.on("connect", (socket) => {
+io.on("connection", (socket) => {
   console.log("connected to socket.io");
 
   socket.on("join", ({ name, roomId }, callback) => {
-    //check if roomId in chatRooms
-    addtoRoom({ roomId: roomId, name: name });
+    chatters.push([name, roomId, socket.id]);
     socket.join(roomId);
-    socket.emit("message", {
-      user: "admin",
-      text: name + ", welcome to room " + roomId,
-    });
-    socket.broadcast
-      .to(roomId)
-      .emit("message", { user: "admin", text: `${name} has joined!` });
     callback();
   });
 
-  socket.on("sendMessage", ({ name, room, message }, callback) => {
-    io.to(room).emit("message", { user: name, text: message });
-    callback();
-  });
+  socket.on(
+    "sendMessage",
+    ({ sender, receiver, message, roomId }, callback) => {
+      let receiverIndex = chatters.findIndex(
+        (chatter) => chatter[0] == receiver && chatter[1] == roomId
+      );
+      if (receiverIndex != -1) {
+        //meaning that receiver is ready to chat now
+        // console.log("sendMessage rooomId that found:", roomId);
+        io.to(roomId).emit("message", { user: sender, text: message });
+        callback({ success: true, roomId: roomId });
+      } else {
+        // console.log("receiver is not online");
+        callback({ success: false, roomId: roomId });
+      }
+    }
+  );
 
-  socket.on("disconnect", ({ user, roomId }) => {
-    exitRoom({ roomId: roomId, name: user });
-    console.log("disconnected");
-    io.to(roomId).emit("message", {
-      user: "Admin",
-      text: user + "has left.",
-    });
+  socket.on("disconnect", () => {
+    chatters = chatters.filter((chatter) => chatter[2] == socket.id);
   });
 });
 
-function addtoRoom(newRoom) {
-  let alreadyAdded = false;
-  chatRooms.map((chatRoom) => {
-    if (chatRoom[0] == newRoom.roomId) {
-      alreadyAdded = true;
-    }
-  });
-
-  if (alreadyAdded) {
-    //check if the room has space for user
-    let position = chatRooms.findIndex(
-      (chatRoom) => chatRoom[0] == newRoom.roomId
-    );
-    if (chatRooms[position][1] == "") {
-      chatRooms[position][1] = newRoom.name;
-    } else if (chatRooms[position][2] == "") {
-      chatRooms[position][2] = newRoom.name;
-    } else {
-      console.log("error: the room is full");
-    }
-  } else {
-    //room not created
-    chatRooms.push([newRoom.roomId, newRoom.name, ""]);
-  }
-}
-
-function exitRoom(delRoom) {
-  let alreadyLeft = true;
-  chatRooms.map((chatRoom) => {
-    if (chatRoom[0] == delRoom.roomId) {
-      alreadyLeft = false;
-    }
-  });
-
-  if (!alreadyLeft) {
-    let position = chatRooms.findIndex(
-      (chatRoom) => chatRoom[0] == delRoom.roomId
-    );
-    if (chatRooms[position][2] == "") {
-      //position 2 is empty, meaning only you in the room, then delete the room
-      chatRooms.splice(position, 1);
-    } else {
-      //delete your name, and restruct the room
-      if (chatRooms[position][1] == delRoom.name) {
-        chatRooms[position][1] = chatRooms[position][2];
-        chatRooms[position][2] = "";
-      } else if (chatRooms[position][2] == delRoom.name) {
-        chatRooms[position][2] = "";
-      } else {
-        //should not end up here because should have user's name
-        console.log("don't find you in room");
-      }
-    }
-  }
-}
-// app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+server.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
