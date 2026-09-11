@@ -24,7 +24,7 @@
     "express-session": "^1.17.0",
     "lsof": "^0.1.0",
     "moment": "^2.24.0",
-    "mongoose": "^5.9.2",
+    "mongoose": "^6.13.10",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
